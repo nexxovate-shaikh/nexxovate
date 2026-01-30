@@ -25,18 +25,20 @@ console.log("ENV CHECK:", process.env.EMAIL_USER, process.env.EMAIL_PASS);
     });
 
     await transporter.sendMail({
-      from: `"nexxovate Website" <${process.env.EMAIL_USER}>`,
-      to: "contact@nexxovate.com",
-      subject: "New Lead from nexxovate Website",
-      html: `
-        <h2>New Contact Lead</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Company:</strong> ${company || "N/A"}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message}</p>
-      `,
-    });
+  from: `"Nexxovate Website" <nexxovate@gmail.com>`,
+  to: "nexxovate@gmail.com",
+  replyTo: email, // so you can reply to the user directly
+  subject: "New Lead from Nexxovate Website",
+  html: `
+    <h2>New Contact Lead</h2>
+    <p><strong>Name:</strong> ${name}</p>
+    <p><strong>Email:</strong> ${email}</p>
+    <p><strong>Company:</strong> ${company || "N/A"}</p>
+    <p><strong>Message:</strong></p>
+    <p>${message}</p>
+  `,
+});
+
 
     return NextResponse.json({ success: true });
   } catch (error) {
