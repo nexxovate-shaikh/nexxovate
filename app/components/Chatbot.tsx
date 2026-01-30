@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { MessageCircle, X, Send } from "lucide-react";
 
-type Msg = {
+type Message = {
   role: "bot" | "user";
   text: string;
 };
@@ -12,7 +12,7 @@ type Msg = {
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Msg[]>([
+  const [messages, setMessages] = useState<Message[]>([
     {
       role: "bot",
       text:
@@ -20,21 +20,29 @@ export default function Chatbot() {
     },
   ]);
 
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, open]);
+
   function sendMessage() {
     if (!input.trim()) return;
 
-    const userMsg: Msg = { role: "user", text: input };
+    const userMsg: Message = { role: "user", text: input };
     setMessages((m) => [...m, userMsg]);
     setInput("");
 
     setTimeout(() => {
-      const botReply: Msg = {
-        role: "bot",
-        text:
-          "Great question. Would you like help with services, staffing, AI, cybersecurity, or transformation?",
-      };
-      setMessages((m) => [...m, botReply]);
-    }, 700);
+      setMessages((m) => [
+        ...m,
+        {
+          role: "bot",
+          text:
+            "Great — would you like help with services, staffing, AI, cybersecurity, or transformation?",
+        },
+      ]);
+    }, 600);
   }
 
   return (
@@ -49,41 +57,45 @@ export default function Chatbot() {
         <MessageCircle size={22} />
       </button>
 
-      {/* Overlay */}
       {open && (
         <div className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-sm">
-          {/* Panel */}
+          {/* Chat Panel */}
           <div
-            className="fixed bottom-0 right-0 left-0 sm:left-auto
-            sm:bottom-6 sm:right-6
-            sm:w-[380px] h-[75vh] sm:h-[520px]
-            bg-white rounded-t-3xl sm:rounded-3xl
-            shadow-2xl flex flex-col overflow-hidden"
+            className="
+            fixed bottom-0 left-0 right-0
+            sm:left-auto sm:right-6 sm:bottom-6
+            sm:w-[380px]
+            h-[70vh] sm:h-[520px]
+            bg-white
+            rounded-t-3xl sm:rounded-3xl
+            shadow-2xl
+            flex flex-col
+            overflow-hidden
+          "
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b">
+            <div className="flex items-center justify-between px-4 py-3 border-b">
               <div className="flex items-center gap-3">
                 <Image
                   src="/logo.png"
                   alt="Nexxovate"
-                  width={36}
-                  height={36}
-                  className="rounded"
+                  width={30}
+                  height={30}
                 />
                 <div>
-                  <p className="font-semibold text-sm">Nexxovate Concierge</p>
+                  <p className="text-sm font-semibold">Nexxovate Concierge</p>
                   <p className="text-xs text-gray-500">
                     Intelligent business assistant
                   </p>
                 </div>
               </div>
               <button onClick={() => setOpen(false)}>
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4">
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-gray-50">
               {messages.map((msg, i) => (
                 <div
                   key={i}
@@ -95,34 +107,34 @@ export default function Chatbot() {
                     <Image
                       src="/logo.png"
                       alt="N"
-                      width={28}
-                      height={28}
-                      className="mr-2 rounded"
+                      width={24}
+                      height={24}
+                      className="mr-2"
                     />
                   )}
-
                   <div
                     className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm leading-relaxed
                     ${
                       msg.role === "user"
                         ? "bg-black text-white"
-                        : "bg-gray-100 text-gray-800"
+                        : "bg-white text-gray-800 shadow-sm"
                     }`}
                   >
                     {msg.text}
                   </div>
                 </div>
               ))}
+              <div ref={bottomRef} />
             </div>
 
             {/* Input */}
-            <div className="border-t px-4 py-3">
+            <div className="px-4 py-3 border-t bg-white">
               <div className="flex items-center gap-2">
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                  placeholder="Type your message..."
+                  placeholder="Type your message…"
                   className="flex-1 border rounded-full px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-black/10"
                 />
                 <button
@@ -136,7 +148,7 @@ export default function Chatbot() {
               <a
                 href="https://wa.me/919916347839"
                 target="_blank"
-                className="block text-center text-xs text-gray-500 mt-3"
+                className="block text-center text-[11px] text-gray-500 mt-2"
               >
                 Prefer instant response? → Chat on WhatsApp
               </a>
