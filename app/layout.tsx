@@ -20,25 +20,27 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className="bg-white text-gray-900 antialiased overflow-x-hidden">
 
-        {/* Global Navigation */}
-        <Navbar />
+        {/* Global layout wrapper (CRITICAL for mobile) */}
+        <div className="relative min-h-screen w-full overflow-x-hidden">
 
-        {/* Page Content */}
-        <main className="relative z-10">
-          {children}
-        </main>
+          {/* Navbar */}
+          <Navbar />
 
-        {/* Global Footer */}
-        <Footer />
+          {/* Main content */}
+          <main className="relative z-10 w-full">
+            {children}
+          </main>
 
-        {/* Floating UI (always above everything) */}
-        <div className="fixed inset-0 pointer-events-none z-[9999]">
-          <div className="pointer-events-auto">
+          {/* Footer */}
+          <Footer />
+
+          {/* Floating UI — MOBILE SAFE */}
+          <div className="fixed bottom-4 right-4 z-[9999] flex flex-col gap-3 pointer-events-auto">
             <Chatbot />
             <NexxovateAI />
           </div>
-        </div>
 
+        </div>
       </body>
     </html>
   );
