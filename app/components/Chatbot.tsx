@@ -1,14 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  MessageCircle,
-  X,
-  Send,
-  Mic,
-  Volume2,
-  VolumeX,
-} from "lucide-react";
+import { MessageCircle, X, Send, Mic, Volume2, VolumeX } from "lucide-react";
 
 type Role = "bot" | "user";
 
@@ -21,6 +14,7 @@ type Lead = {
   name?: string;
   email?: string;
   interest?: string;
+  service?: string;
 };
 
 export default function Chatbot() {
@@ -29,26 +23,29 @@ export default function Chatbot() {
   const [voiceOn, setVoiceOn] = useState(true);
   const [listening, setListening] = useState(false);
 
+  const [step, setStep] = useState<
+    "welcome" | "interest" | "name" | "email" | "service" | "done"
+  >("welcome");
+
   const [lead, setLead] = useState<Lead>({});
+
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "bot",
-      text: "👋 Welcome to Nexxovate Concierge. How can I assist you today?",
+      text:
+        "👋 Welcome to Nexxovate Concierge.\n\nWe offer:\n• IT Managed Services\n• Cloud & Infrastructure\n• AI & Automation\n• Cybersecurity\n• Digital Transformation\n\nIs this inquiry for **Business / Managed Services**?",
     },
   ]);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  /* =========================
-     AUTO SCROLL
-  ========================= */
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open]);
 
-  /* =========================
-     TEXT TO SPEECH
-  ========================= */
+  /* ======================
+     SPEAK
+  ====================== */
   function speak(text: string) {
     if (!voiceOn || typeof window === "undefined") return;
     const u = new SpeechSynthesisUtterance(text);
@@ -62,143 +59,92 @@ export default function Chatbot() {
     speak(text);
   }
 
-  /* =========================
-     SPEECH TO TEXT
-  ========================= */
-  function startListening() {
-    const SpeechRecognition =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-      alert("Speech recognition not supported on this browser.");
-      return;
-    }
-
-    const recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
-    recognition.interimResults = false;
-
-    setListening(true);
-    recognition.start();
-
-    recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      setInput(transcript);
-      setListening(false);
-    };
-
-    recognition.onerror = () => setListening(false);
-    recognition.onend = () => setListening(false);
-  }
-
-  /* =========================
-     LOGIC (NO LOOPING)
-  ========================= */
+  /* ======================
+     HANDLE FLOW
+  ====================== */
   function handleUser(text: string) {
-    const t = text.toLowerCase();
+    if (step === "welcome") {
+      setLead({ interest: text });
+      bot("Great. May I know your name?");
+      setStep("name");
+      return;
+    }
 
-    if (!lead.interest) {
-      setLead({ ...lead, interest: text });
+    if (step === "name") {
+      setLead((l) => ({ ...l, name: text }));
+      bot(`Nice to meet you, ${text}! 😊\n\nCould you share your email address?`);
+      setStep("email");
+      return;
+    }
+
+    if (step === "email") {
+      setLead((l) => ({ ...l, email: text }));
       bot(
-        "Great. May I know your name so I can assist you better?"
+        "Thanks! Which service would you like to know more about?\n\n• IT Managed Services\n• Cloud\n• AI\n• Cybersecurity\n• Digital Transformation"
       );
+      setStep("service");
       return;
     }
 
-    if (!lead.name) {
-      setLead({ ...lead, name: text });
-      bot("Thanks! Could you share your email address?");
-      return;
-    }
+    if (step === "service") {
+      const finalLead = {
+        ...lead,
+        service: text,
+        source: "Nexxovate Website Chatbot",
+        time: new Date().toISOString(),
+      };
 
-    if (!lead.email) {
-      setLead({ ...lead, email: text });
-
-      // CRM PAYLOAD (READY)
-      console.log("📩 NEW LEAD:", {
-        name: lead.name,
-        email: text,
-        interest: lead.interest,
-        source: "Website Chatbot",
-      });
+      console.log("📩 NEW LEAD:", finalLead);
 
       bot(
-        "Thank you! Our team will contact you shortly. You can also continue instantly on WhatsApp."
+        "Thank you for the details. Our team will get back to you shortly.\n\nFor immediate assistance, you can also continue on WhatsApp below."
       );
+
+      setStep("done");
       return;
     }
 
-    bot(
-      "If you’d like immediate assistance, please use WhatsApp below."
-    );
+    bot("For faster assistance, please use WhatsApp below.");
   }
 
   function send() {
     if (!input.trim()) return;
     const text = input;
     setInput("");
-
     setMessages((m) => [...m, { role: "user", text }]);
     setTimeout(() => handleUser(text), 400);
   }
 
-  /* =========================
+  /* ======================
      UI
-  ========================= */
+  ====================== */
   return (
     <>
-      {/* Floating Button */}
-      <button
-        onClick={() => setOpen(true)}
-        className="fixed bottom-5 right-5 z-[9999]
-        w-14 h-14 rounded-full bg-black text-white
-        flex items-center justify-center shadow-2xl
-        transition-transform hover:scale-105 active:scale-95"
-      >
-        <MessageCircle size={22} />
-      </button>
+      {!open && (
+        <button
+          onClick={() => setOpen(true)}
+          className="fixed bottom-5 right-5 z-[9999]
+          w-14 h-14 rounded-full bg-black
+          flex items-center justify-center shadow-2xl"
+        >
+          <img src="/favicon.ico" className="w-6 h-6" />
+        </button>
+      )}
 
       {open && (
         <div className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-md">
-          <div
-            className="fixed bottom-0 left-0 right-0
-            sm:left-auto sm:right-6 sm:bottom-6
-            sm:w-[380px]
-            h-[75vh] sm:h-[560px]
-            bg-white/80 backdrop-blur-2xl
-            rounded-t-3xl sm:rounded-3xl
-            shadow-[0_40px_140px_rgba(0,0,0,0.4)]
-            flex flex-col overflow-hidden
-            animate-[fadeIn_0.3s_ease-out]"
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b bg-white/60">
-              <div className="flex items-center gap-3">
-                <img
-                  src="/favicon.ico"
-                  alt="Nexxovate"
-                  width={28}
-                  height={28}
-                  style={{ minWidth: 28 }}
-                />
-                <div>
-                  <p className="text-sm font-semibold">
-                    Nexxovate Concierge
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Intelligent business assistant
-                  </p>
-                </div>
-              </div>
+          <div className="fixed bottom-0 right-0 left-0 sm:left-auto sm:right-6 sm:bottom-6 sm:w-[380px]
+            h-[78vh] sm:h-[560px] bg-white rounded-t-3xl sm:rounded-3xl flex flex-col overflow-hidden">
 
-              <div className="flex items-center gap-2">
+            {/* Header */}
+            <div className="flex justify-between px-4 py-3 border-b">
+              <div>
+                <p className="text-sm font-semibold">Nexxovate Concierge</p>
+                <p className="text-xs text-gray-500">Business assistant</p>
+              </div>
+              <div className="flex gap-2">
                 <button onClick={() => setVoiceOn(!voiceOn)}>
-                  {voiceOn ? (
-                    <Volume2 size={16} />
-                  ) : (
-                    <VolumeX size={16} />
-                  )}
+                  {voiceOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
                 </button>
                 <button onClick={() => setOpen(false)}>
                   <X size={18} />
@@ -209,33 +155,9 @@ export default function Chatbot() {
             {/* Messages */}
             <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-gray-50">
               {messages.map((m, i) => (
-                <div
-                  key={i}
-                  className={`flex ${
-                    m.role === "user"
-                      ? "justify-end"
-                      : "justify-start"
-                  }`}
-                >
-                  {m.role === "bot" && (
-                    <img
-                      src="/favicon.ico"
-                      alt="N"
-                      width={20}
-                      height={20}
-                      style={{ minWidth: 20 }}
-                      className="mr-2 mt-1"
-                    />
-                  )}
-                  <div
-                    className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm
-                    transition-all duration-300
-                    ${
-                      m.role === "user"
-                        ? "bg-black text-white"
-                        : "bg-white text-gray-800 shadow"
-                    }`}
-                  >
+                <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                  <div className={`max-w-[78%] px-4 py-3 rounded-2xl text-sm
+                    ${m.role === "user" ? "bg-black text-white" : "bg-white shadow"}`}>
                     {m.text}
                   </div>
                 </div>
@@ -245,35 +167,19 @@ export default function Chatbot() {
 
             {/* Input */}
             <div className="px-4 py-3 border-t bg-white">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={startListening}
-                  className={`w-10 h-10 rounded-full
-                  flex items-center justify-center
-                  ${listening ? "bg-red-600" : "bg-gray-200"}
-                  transition`}
-                >
-                  <Mic size={16} />
-                </button>
-
+              <div className="flex gap-2">
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && send()}
-                  placeholder="Type or speak…"
-                  className="flex-1 border rounded-full px-4 py-2 text-sm outline-none"
+                  placeholder="Type here…"
+                  className="flex-1 border rounded-full px-4 py-2 text-sm"
                 />
-
-                <button
-                  onClick={send}
-                  className="w-10 h-10 rounded-full bg-black text-white
-                  flex items-center justify-center shrink-0"
-                >
+                <button onClick={send} className="w-10 h-10 bg-black text-white rounded-full">
                   <Send size={16} />
                 </button>
               </div>
 
-              {/* WhatsApp */}
               <a
                 href="https://wa.me/919916347839"
                 target="_blank"
