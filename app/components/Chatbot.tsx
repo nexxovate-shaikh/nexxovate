@@ -34,7 +34,7 @@ export default function Chatbot() {
     {
       role: "bot",
       text:
-        "👋 Welcome to Nexxovate.\n\nWe help businesses grow through Digital Marketing, IT Services, AI solutions, and Staffing.\n\nWhat would you like to improve today?",
+        "Welcome to Nexxovate.\n\nWe help businesses grow through Digital Marketing, IT Services, AI solutions, and Staffing.\n\nWhat would you like to improve today?",
     },
   ]);
 
@@ -168,7 +168,7 @@ export default function Chatbot() {
           hover:scale-105 transition"
         >
           <img
-            src="/logo.png"
+            src="/logo1.png"
             alt="Nexxovate"
             className="w-8 h-8 object-contain"
           />
@@ -194,7 +194,7 @@ export default function Chatbot() {
                 <div>
                   <p className="text-sm font-semibold">Nexxovate Concierge</p>
                   <p className="text-xs text-gray-500">
-                    Business Growth Advisor
+                    Powering Intelligent IT Operations
                   </p>
                 </div>
               </div>
