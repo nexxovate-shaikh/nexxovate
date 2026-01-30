@@ -160,20 +160,22 @@ export default function Chatbot() {
   return (
     <>
       {!open && (
-        <button
-          onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-[9999]
-          w-14 h-14 rounded-full bg-black
-          flex items-center justify-center shadow-2xl
-          hover:scale-105 transition"
-        >
-          <img
-            src="/logo1.png"
-            alt="Nexxovate"
-            className="w-8 h-8 object-contain"
-          />
-        </button>
-      )}
+  <button
+    onClick={() => setOpen(true)}
+    className="fixed bottom-6 right-6 z-[9999]
+    w-14 h-14 rounded-full
+    shadow-2xl
+    overflow-hidden
+    hover:scale-105 transition-transform"
+  >
+    <img
+      src="/logo1.png"
+      alt="Nexxovate"
+      className="w-full h-full object-cover"
+    />
+  </button>
+)}
+
 
       {open && (
         <div className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-md">
@@ -192,7 +194,7 @@ export default function Chatbot() {
               <div className="flex items-center gap-3">
                 <img src="/logo.png" className="h-7 object-contain" />
                 <div>
-                  <p className="text-sm font-semibold">Nexxovate Concierge</p>
+                  <p className="text-sm font-semibold">Nexxovate</p>
                   <p className="text-xs text-gray-500">
                     Powering Intelligent IT Operations
                   </p>
