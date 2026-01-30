@@ -138,7 +138,7 @@ export default function HomePage() {
         { name: "React", gradient: "from-cyan-400 to-blue-500" },
         { name: "Node.js", gradient: "from-green-400 to-emerald-500" },
         { name: "Python", gradient: "from-yellow-400 to-indigo-500" },
-        { name: "Kubernetes", gradient: "from-indigo-500 to-purple-500" },
+        { name: "Kubernetes", gradient: "from-indigo-400 to-purple-500" },
         { name: "Docker", gradient: "from-sky-400 to-blue-600" },
       ].map((item) => (
         <div
