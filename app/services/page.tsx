@@ -136,7 +136,7 @@ export default function ServicesPage() {
                 { value: "7.6+", label: "Years Experience" },
                 { value: "24/7", label: "Operational Readiness" },
                 { value: "100%", label: "Client-Centric Delivery" },
-                { value: "Security", label: "by Design" },
+                { value: "Secure", label: "by Design" },
               ].map((item, i) => (
                 <div key={i}>
                   <p className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
