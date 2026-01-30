@@ -14,52 +14,57 @@ export default function HomePage() {
     <div className="bg-white overflow-x-hidden">
 
       {/* HERO */}
-      <section className="relative min-h-[95vh] flex items-center text-white">
-        <Image
-          src="/images/hero-tech.jpg"
-          alt="Enterprise Technology"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-purple-900/70 to-pink-900/60" />
+<section className="relative min-h-[100svh] flex items-center text-white overflow-hidden">
+  <Image
+    src="/images/hero-tech.jpg"
+    alt="Enterprise Technology"
+    fill
+    priority
+    className="object-cover"
+  />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 pt-44 pb-24">
+  {/* Overlay */}
+  <div className="absolute inset-0 bg-gradient-to-br from-black/85 via-purple-900/70 to-pink-900/60" />
 
+  <div className="relative z-10 w-full">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 text-center md:text-left">
 
-          <p className="uppercase tracking-widest text-pink-300 text-sm mb-6">
-            Powering Intelligent IT Operations
-          </p>
+      <p className="uppercase tracking-widest text-pink-300 text-xs sm:text-sm mb-4">
+        Powering Intelligent IT Operations
+      </p>
 
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight max-w-5xl">
-            Engineering future-ready enterprises with
-            <span className="block bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-300 bg-clip-text text-transparent">
-              intelligence, security & execution excellence
-            </span>
-          </h1>
+      <h1 className="text-[2.2rem] sm:text-4xl md:text-6xl font-bold leading-tight max-w-4xl mx-auto md:mx-0">
+        Engineering future-ready enterprises with
+        <span className="block mt-2 bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-300 bg-clip-text text-transparent">
+          intelligence, security & execution excellence
+        </span>
+      </h1>
 
-          <p className="mt-8 max-w-3xl text-lg text-gray-200">
-            Nexxovate partners with organizations to modernize IT operations,
-            embed AI-driven efficiency, strengthen cybersecurity posture and build scalable talent ecosystems.
-          </p>
+      <p className="mt-6 text-base sm:text-lg text-gray-200 max-w-2xl mx-auto md:mx-0">
+        Nexxovate partners with organizations to modernize IT operations, embed AI-driven efficiency,
+        strengthen cybersecurity posture and build scalable talent ecosystems.
+      </p>
 
-          <div className="mt-12 flex gap-6 flex-wrap">
-            <Link
-              href="/contact"
-              className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-full font-medium hover:scale-105 transition"
-            >
-              Talk to an Expert
-            </Link>
+      <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+        <Link
+          href="/contact"
+          className="inline-flex justify-center items-center bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-full font-medium hover:scale-105 transition"
+        >
+          Talk to an Expert
+        </Link>
 
-            <Link
-              href="/services"
-              className="border border-white/40 px-8 py-4 rounded-full font-medium hover:bg-white/10 transition"
-            >
-              Explore Services
-            </Link>
-          </div>
-        </div>
-      </section>
+        <Link
+          href="/services"
+          className="inline-flex justify-center items-center border border-white/40 px-8 py-4 rounded-full font-medium hover:bg-white/10 transition"
+        >
+          Explore Services
+        </Link>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
       {/* SERVICES GRID */}
       <section className="py-28">
