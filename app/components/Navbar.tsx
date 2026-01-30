@@ -2,136 +2,127 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
 
 export default function Navbar() {
-  const pathname = usePathname();
-  const isHome = pathname === "/";
+  const [open, setOpen] = useState(false);
 
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 120);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const links = [
+    { name: "Home", href: "/" },
+    { name: "Services", href: "/services" },
+    { name: "Staffing", href: "/staffing" },
+    { name: "Training", href: "/training" },
+    { name: "Insights", href: "/insights" },
+    { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" },
+  ];
 
   return (
-    <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500
-        ${
-          isHome
-            ? scrolled
-              ? "bg-white/95 backdrop-blur-xl shadow-lg"
-              : "bg-transparent"
-            : "bg-white/95 backdrop-blur-xl shadow-md"
-        }
-      `}
-    >
-      <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+    <>
+      {/* HEADER */}
+      <header className="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="h-16 flex items-center justify-between">
 
-        {/* LOGO */}
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/logo.png"
-            alt="Nexxovate"
-            width={220}
-            height={100}
-            priority
-            className={`transition-all duration-500 ${
-              scrolled || !isHome ? "h-8" : "h-9"
-            } w-auto`}
-          />
-        </Link>
+            {/* LOGO */}
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/images/logo.png"
+                alt="Nexxovate"
+                width={130}
+                height={36}
+                priority
+                className="h-8 w-auto"
+              />
+            </Link>
 
-        {/* DESKTOP MENU */}
-        <nav className="hidden md:flex gap-10 text-sm font-medium items-center tracking-wide">
-          {[
-            { name: "Home", path: "/" },
-            { name: "Services", path: "/services" },
-            { name: "Staffing", path: "/staffing" },
-            { name: "Training", path: "/training" },
-            { name: "Insights", path: "/insights" },
-            { name: "About", path: "/about" },
-            { name: "Contact", path: "/contact" },
-          ].map((item) => (
-            <NavLink
-              key={item.name}
-              href={item.path}
-              label={item.name}
-              pathname={pathname}
-              light={isHome && !scrolled}
-            />
-          ))}
-        </nav>
+            {/* DESKTOP NAV */}
+            <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700">
+              {links.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className="hover:text-purple-600 transition"
+                >
+                  {link.name}
+                </Link>
+              ))}
 
-        {/* MOBILE */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className={`md:hidden text-2xl transition ${
-            isHome && !scrolled ? "text-white" : "text-gray-800"
-          }`}
-        >
-          ☰
-        </button>
-      </div>
-
-      {/* MOBILE MENU */}
-      {menuOpen && (
-        <div className="md:hidden bg-white shadow-xl border-t">
-          <nav className="flex flex-col px-6 py-6 space-y-4 text-sm font-medium">
-            {["Home","Services","Staffing","Training","Insights","About","Contact"].map((item) => (
               <Link
-                key={item}
-                href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                onClick={() => setMenuOpen(false)}
-                className="text-gray-700 hover:text-indigo-600 transition"
+                href="/contact"
+                className="ml-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-5 py-2 rounded-full text-sm hover:scale-105 transition"
               >
-                {item}
+                Talk to an Expert
               </Link>
-            ))}
-          </nav>
+            </nav>
+
+            {/* MOBILE TOGGLE */}
+            <button
+              onClick={() => setOpen(true)}
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100"
+              aria-label="Open menu"
+            >
+              <Menu className="w-6 h-6 text-gray-900" />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* MOBILE MENU OVERLAY */}
+      {open && (
+        <div className="fixed inset-0 z-[999] bg-black/40 backdrop-blur-sm">
+          <div className="absolute top-0 right-0 h-full w-[85%] max-w-sm bg-white shadow-2xl flex flex-col">
+
+            {/* MOBILE HEADER */}
+            <div className="h-16 px-4 flex items-center justify-between border-b">
+              <Image
+                src="/images/logo.png"
+                alt="Nexxovate"
+                width={120}
+                height={32}
+                className="h-7 w-auto"
+              />
+
+              <button
+                onClick={() => setOpen(false)}
+                className="p-2 rounded-lg hover:bg-gray-100"
+                aria-label="Close menu"
+              >
+                <X className="w-6 h-6 text-gray-900" />
+              </button>
+            </div>
+
+            {/* MOBILE LINKS */}
+            <nav className="flex-1 px-6 py-8 flex flex-col gap-6 text-base font-medium">
+              {links.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="text-gray-800 hover:text-purple-600 transition"
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </nav>
+
+            {/* MOBILE CTA */}
+            <div className="px-6 pb-8">
+              <Link
+                href="/contact"
+                onClick={() => setOpen(false)}
+                className="block w-full text-center bg-gradient-to-r from-pink-500 to-purple-600 text-white py-4 rounded-full font-medium"
+              >
+                Talk to an Expert
+              </Link>
+            </div>
+          </div>
         </div>
       )}
-    </header>
-  );
-}
 
-function NavLink({
-  href,
-  label,
-  pathname,
-  light,
-}: {
-  href: string;
-  label: string;
-  pathname: string;
-  light: boolean;
-}) {
-  const active = pathname === href;
-
-  return (
-    <Link
-      href={href}
-      className={`relative transition-colors duration-300 ${
-        light
-          ? active
-            ? "text-indigo-300"
-            : "text-white hover:text-indigo-300"
-          : active
-          ? "text-indigo-600"
-          : "text-gray-700 hover:text-indigo-600"
-      }`}
-    >
-      {label}
-
-      <span
-        className={`absolute left-0 -bottom-2 h-[2px] bg-gradient-to-r from-pink-500 to-purple-600 transition-all duration-500 ${
-          active ? "w-full" : "w-0 hover:w-full"
-        }`}
-      />
-    </Link>
+      {/* SPACER FOR FIXED HEADER */}
+      <div className="h-16" />
+    </>
   );
 }
