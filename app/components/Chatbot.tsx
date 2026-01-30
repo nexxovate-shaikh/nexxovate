@@ -40,7 +40,7 @@ export default function Chatbot() {
     {
       role: "bot",
       text:
-        "👋 Welcome to Nexxovate.\n\nWe help businesses grow through Digital Marketing, IT Services, Staffing, and AI-driven solutions.\n\nWhat would you like to explore today?",
+        "Welcome to Nexxovate.\n\nWe help businesses grow through Digital Marketing, IT Services, Staffing, and AI-driven solutions.\n\nWhat would you like to explore today?",
     },
   ]);
 
