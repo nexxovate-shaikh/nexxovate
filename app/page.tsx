@@ -99,9 +99,7 @@ export default function HomePage() {
                   <h3 className="text-base md:text-xl font-semibold">
                     {item.title}
                   </h3>
-                  <p className="mt-1 text-xs md:text-sm text-gray-200">
-                    Enterprise-grade delivery at scale.
-                  </p>
+                  
                 </div>
               </div>
             ))}
