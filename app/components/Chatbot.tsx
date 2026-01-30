@@ -1,16 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  MessageCircle,
-  X,
-  Send,
-  Mic,
-  Volume2,
-  VolumeX,
-} from "lucide-react";
+import { MessageCircle, X, Send, Mic, Volume2, VolumeX } from "lucide-react";
 
+/* ---------------- TYPES ---------------- */
 type Role = "bot" | "user";
+type Step = "interest" | "business" | "name" | "email" | "done";
 
 type Message = {
   role: Role;
@@ -24,37 +19,53 @@ type Lead = {
   email?: string;
 };
 
+/* ---------------- COMPONENT ---------------- */
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [voiceOn, setVoiceOn] = useState(true);
   const [listening, setListening] = useState(false);
-
+  const [step, setStep] = useState<Step>("interest");
   const [lead, setLead] = useState<Lead>({});
+
+  /* 🌍 Language detection */
+  const userLang =
+    typeof navigator !== "undefined"
+      ? navigator.language.split("-")[0]
+      : "en";
+
+  const bottomRef = useRef<HTMLDivElement>(null);
+
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "bot",
       text:
-        "Welcome to Nexxovate. We help organizations scale Digital Marketing, IT Services, AI, and Staffing with enterprise-grade execution.\n\nWhich area are you exploring today?",
+        "👋 Welcome to Nexxovate.\n\nWe help businesses grow through Digital Marketing, IT Services, Staffing, and AI-driven solutions.\n\nWhat would you like to explore today?",
     },
   ]);
 
-  const bottomRef = useRef<HTMLDivElement>(null);
-
-  /* =========================
-     AUTO SCROLL
-  ========================= */
+  /* ---------------- AUTO SCROLL ---------------- */
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open]);
 
-  /* =========================
-     TEXT TO SPEECH
-  ========================= */
+  /* ---------------- VOICE (TTS) ---------------- */
   function speak(text: string) {
     if (!voiceOn || typeof window === "undefined") return;
+
+    const langMap: Record<string, string> = {
+      en: "en-US",
+      hi: "hi-IN",
+      ar: "ar-SA",
+      fr: "fr-FR",
+      es: "es-ES",
+      de: "de-DE",
+    };
+
     const u = new SpeechSynthesisUtterance(text);
+    u.lang = langMap[userLang] || "en-US";
     u.rate = 0.95;
+
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
   }
@@ -64,101 +75,95 @@ export default function Chatbot() {
     speak(text);
   }
 
-  /* =========================
-     SPEECH TO TEXT
-  ========================= */
+  /* ---------------- VOICE INPUT ---------------- */
   function startListening() {
     const SpeechRecognition =
       (window as any).SpeechRecognition ||
       (window as any).webkitSpeechRecognition;
 
-    if (!SpeechRecognition) {
-      alert("Speech recognition not supported on this browser.");
-      return;
-    }
+    if (!SpeechRecognition) return;
 
     const recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
-    recognition.interimResults = false;
-
-    setListening(true);
+    recognition.lang = userLang;
     recognition.start();
+    setListening(true);
 
-    recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      setInput(transcript);
+    recognition.onresult = (e: any) => {
+      setInput(e.results[0][0].transcript);
       setListening(false);
     };
 
-    recognition.onerror = () => setListening(false);
     recognition.onend = () => setListening(false);
   }
 
-  /* =========================
-     SALES LOGIC (NO LOOPING)
-  ========================= */
+  /* ---------------- BUSINESS LOGIC ---------------- */
   function handleUser(text: string) {
-    const t = text.toLowerCase();
+    const value = text.trim();
+    const lower = value.toLowerCase();
 
     // 1️⃣ Interest
-    if (!lead.interest) {
-      setLead({ ...lead, interest: text });
+    if (step === "interest") {
+      setLead({ interest: value });
+      setStep("business");
 
-      if (t.includes("marketing")) {
+      if (lower.includes("marketing")) {
         bot(
-          "Excellent choice. We drive growth through SEO, performance marketing, branding, and lead generation.\n\nIs this for your own business or for a client?"
+          "Excellent. We drive growth using SEO, paid campaigns, branding, and lead generation.\n\nIs this for a Startup, Growing Business, or Enterprise?"
         );
-      } else if (t.includes("staff")) {
+      } else if (lower.includes("staff")) {
         bot(
-          "Great. We provide contract staffing, permanent hiring, and dedicated tech teams.\n\nIs this for your company or a client?"
+          "Understood. We provide contract staffing, permanent hiring, and dedicated teams.\n\nWhat best describes your organization size?"
         );
-      } else if (t.includes("ai")) {
+      } else if (lower.includes("ai")) {
         bot(
-          "AI is a major focus for us — automation, internal copilots, analytics, and intelligent operations.\n\nIs this for your business or a client engagement?"
+          "AI can significantly improve efficiency and decision-making.\n\nAre you exploring AI for internal operations or customer-facing solutions?"
         );
       } else {
         bot(
-          "We specialize in Managed IT, Cloud, Security, and enterprise support.\n\nIs this for your business or a client?"
+          "We support Managed IT, Cloud, Security, and enterprise operations.\n\nWhat type of business are you representing?"
         );
       }
       return;
     }
 
-    // 2️⃣ Business type
-    if (!lead.businessType) {
-      setLead({ ...lead, businessType: text });
-      bot("Perfect. May I have your name?");
+    // 2️⃣ Business Type
+    if (step === "business") {
+      setLead((l) => ({ ...l, businessType: value }));
+      setStep("name");
+      bot("Perfect. May I know your name?");
       return;
     }
 
     // 3️⃣ Name
-    if (!lead.name) {
-      setLead({ ...lead, name: text });
-      bot(`Nice to meet you, ${text} \n\nWhat’s the best email to reach you?`);
-      return;
-    }
-
-    // 4️⃣ Email
-    if (!lead.email) {
-      const updatedLead = { ...lead, email: text };
-      setLead(updatedLead);
-
-      // 🔐 CRM / LOGGING POINT
-      console.log("📩 NEW LEAD CAPTURED:", {
-        ...updatedLead,
-        source: "Nexxovate Website Chatbot",
-        timestamp: new Date().toISOString(),
-      });
-
+    if (step === "name") {
+      setLead((l) => ({ ...l, name: value }));
+      setStep("email");
       bot(
-        `Thank you, ${lead.name}. Our team will get back to you shortly.\n\nFor urgent discussions, you can also connect with us instantly on WhatsApp below.`
+        `Nice to meet you, ${value}.\n\nWhat’s the best email to share a tailored proposal or next steps?`
       );
       return;
     }
 
-    bot(
-      "If you need immediate assistance, please use WhatsApp below and our team will respond quickly."
-    );
+    // 4️⃣ Email
+    if (step === "email") {
+      const finalLead = { ...lead, email: value };
+      setLead(finalLead);
+      setStep("done");
+
+      /* 🔐 CRM / EMAIL / GOOGLE SHEET HOOK */
+      console.log("📩 NEW LEAD:", {
+        ...finalLead,
+        source: "Nexxovate Website Concierge",
+        timestamp: new Date().toISOString(),
+      });
+
+      bot(
+        `Thank you, ${lead.name}.\n\nOur team will review your requirement and contact you shortly.\n\nFor urgent discussions, WhatsApp is the fastest option below.`
+      );
+      return;
+    }
+
+    bot("Our team will connect shortly. Thank you for choosing Nexxovate.");
   }
 
   function send() {
@@ -166,55 +171,45 @@ export default function Chatbot() {
     const text = input;
     setInput("");
     setMessages((m) => [...m, { role: "user", text }]);
-    setTimeout(() => handleUser(text), 400);
+    setTimeout(() => handleUser(text), 300);
   }
 
-  /* =========================
-     UI
-  ========================= */
+  /* ---------------- UI ---------------- */
   return (
     <>
-      {/* Floating Button */}
-      <button
-        onClick={() => setOpen(true)}
-        className="fixed bottom-5 right-5 z-[9999]
-        w-14 h-14 rounded-full bg-black text-white
-        flex items-center justify-center shadow-2xl
-        transition-transform hover:scale-105 active:scale-95"
-      >
-        <MessageCircle size={22} />
-      </button>
+      {!open && (
+        <button
+          onClick={() => setOpen(true)}
+          className="fixed bottom-6 right-6 z-[9999]
+          w-14 h-14 rounded-full bg-black text-white
+          flex items-center justify-center shadow-2xl
+          hover:scale-105 transition"
+        >
+          <MessageCircle size={22} />
+        </button>
+      )}
 
       {open && (
         <div className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-md">
           <div
             className="fixed bottom-0 left-0 right-0
             sm:left-auto sm:right-6 sm:bottom-6
-            sm:w-[380px]
-            h-[75vh] sm:h-[560px]
-            bg-white/85 backdrop-blur-2xl
+            sm:w-[400px]
+            h-[78vh] sm:h-[600px]
+            bg-white/95 backdrop-blur-2xl
             rounded-t-3xl sm:rounded-3xl
-            shadow-[0_40px_140px_rgba(0,0,0,0.4)]
+            shadow-[0_40px_160px_rgba(0,0,0,0.45)]
             flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b bg-white/70">
+            <div className="flex items-center justify-between px-4 py-3 border-b bg-white/90">
               <div className="flex items-center gap-3">
-                <img
-                  src="/logo.png"
-                  alt="Nexxovate"
-                  className="w-7 h-7 object-contain"
-                />
+                <img src="/logo.png" className="h-7 object-contain" />
                 <div>
-                  <p className="text-sm font-semibold">
-                    Powering Intelligent IT Operations
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Business Growth Advisor
-                  </p>
+                  <p className="text-sm font-semibold">Nexxovate Concierge</p>
+                  <p className="text-xs text-gray-500">Business Growth Advisor</p>
                 </div>
               </div>
-
               <div className="flex items-center gap-2">
                 <button onClick={() => setVoiceOn(!voiceOn)}>
                   {voiceOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
@@ -235,7 +230,7 @@ export default function Chatbot() {
                   }`}
                 >
                   <div
-                    className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm
+                    className={`max-w-[78%] px-4 py-3 rounded-2xl text-sm
                     ${
                       m.role === "user"
                         ? "bg-black text-white"
@@ -254,8 +249,7 @@ export default function Chatbot() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={startListening}
-                  className={`w-10 h-10 rounded-full
-                  flex items-center justify-center
+                  className={`w-10 h-10 rounded-full flex items-center justify-center
                   ${listening ? "bg-red-600" : "bg-gray-200"}`}
                 >
                   <Mic size={16} />
@@ -271,8 +265,7 @@ export default function Chatbot() {
 
                 <button
                   onClick={send}
-                  className="w-10 h-10 rounded-full bg-black text-white
-                  flex items-center justify-center shrink-0"
+                  className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center"
                 >
                   <Send size={16} />
                 </button>
