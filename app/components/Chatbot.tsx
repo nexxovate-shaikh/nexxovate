@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { MessageCircle, X, Send } from "lucide-react";
 
+type Role = "bot" | "user";
+
 type Message = {
-  role: "bot" | "user";
+  role: Role;
   text: string;
 };
 
@@ -16,7 +18,7 @@ export default function Chatbot() {
     {
       role: "bot",
       text:
-        "👋 Welcome to Nexxovate.\nHow can I help you today?\n\n• Services\n• Staffing\n• AI\n• Cybersecurity\n• Contact",
+        "👋 Welcome to Nexxovate. I can help with Services, Staffing, AI, Cybersecurity, or Digital Transformation.",
     },
   ]);
 
@@ -26,46 +28,45 @@ export default function Chatbot() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open]);
 
-  function getBotReply(text: string): string {
-    const msg = text.toLowerCase();
+  function getBotReply(userText: string): string {
+    const text = userText.toLowerCase();
 
-    if (msg.includes("hi") || msg.includes("hello")) {
-      return "Hello 👋 How can I help you today?\n\nYou can ask about Services, Staffing, AI, or Cybersecurity.";
+    if (text.includes("service")) {
+      return "Our Services include IT Managed Services, Cloud, AI Automation, Cybersecurity, and Digital Transformation. Would you like details on any one?";
     }
 
-    if (msg.includes("service")) {
-      return "💼 Our Services include:\n• IT & Managed Services\n• Digital Transformation\n• Consulting\n\nWould you like to talk to an expert?";
+    if (text.includes("staff")) {
+      return "We provide contract staffing, permanent hiring, and enterprise workforce solutions. Are you hiring or exploring talent strategy?";
     }
 
-    if (msg.includes("staff")) {
-      return "👥 We provide enterprise staffing for IT, NOC, SOC, Cloud, and AI roles.\n\nNeed help hiring?";
+    if (text.includes("ai")) {
+      return "We help organizations adopt AI responsibly — automation, analytics, and intelligent operations. Would you like a use-case discussion?";
     }
 
-    if (msg.includes("ai")) {
-      return "🤖 We help organizations adopt AI through automation, analytics, and intelligent operations.";
+    if (text.includes("cyber")) {
+      return "Cybersecurity is core to Nexxovate. We cover risk assessment, SOC, compliance, and security architecture.";
     }
 
-    if (msg.includes("cyber")) {
-      return "🔐 Our cybersecurity services cover risk management, SOC, compliance, and security operations.";
+    if (text.includes("contact") || text.includes("talk")) {
+      return "Perfect. You can reach us via the Contact page or WhatsApp for immediate assistance.";
     }
 
-    if (msg.includes("contact")) {
-      return "📩 You can reach us via the Contact page or chat instantly on WhatsApp.";
-    }
-
-    return "Thanks for reaching out 🙂 Please tell me whether you're interested in Services, Staffing, AI, or Cybersecurity.";
+    return "Got it. Could you tell me whether this is related to Services, Staffing, AI, Cybersecurity, or Transformation?";
   }
 
   function sendMessage() {
     if (!input.trim()) return;
 
-    const userText = input.trim();
-    setMessages((m) => [...m, { role: "user", text: userText }]);
+    const userMessage: Message = { role: "user", text: input };
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
 
     setTimeout(() => {
-      const reply = getBotReply(userText);
-      setMessages((m) => [...m, { role: "bot", text: reply }]);
+      const reply: Message = {
+        role: "bot",
+        text: getBotReply(userMessage.text),
+      };
+      setMessages((prev) => [...prev, reply]);
     }, 500);
   }
 
@@ -74,22 +75,22 @@ export default function Chatbot() {
       {/* Floating Button */}
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-5 right-5 z-[9999]
-        w-14 h-14 rounded-full bg-black text-white
-        flex items-center justify-center shadow-xl"
+        className="fixed bottom-5 right-5 z-[9999] w-14 h-14 rounded-full
+        bg-black text-white flex items-center justify-center shadow-xl"
       >
         <MessageCircle size={22} />
       </button>
 
       {open && (
         <div className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-sm">
-          {/* Chat Panel */}
-          <div className="fixed bottom-0 left-0 right-0
-            sm:left-auto sm:right-6 sm:bottom-6 sm:w-[380px]
-            h-[70vh] sm:h-[520px]
+          <div
+            className="fixed bottom-0 left-0 right-0
+            sm:left-auto sm:right-6 sm:bottom-6
+            sm:w-[380px]
+            h-[75vh] sm:h-[520px]
             bg-white rounded-t-3xl sm:rounded-3xl
-            shadow-2xl flex flex-col overflow-hidden">
-
+            shadow-2xl flex flex-col overflow-hidden"
+          >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b">
               <div className="flex items-center gap-3">
@@ -123,14 +124,14 @@ export default function Chatbot() {
                   {msg.role === "bot" && (
                     <Image
                       src="/favicon.ico"
-                      alt="Bot"
+                      alt="N"
                       width={22}
                       height={22}
-                      className="mr-2"
+                      className="mr-2 mt-1"
                     />
                   )}
                   <div
-                    className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm whitespace-pre-line
+                    className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm
                     ${
                       msg.role === "user"
                         ? "bg-black text-white"
