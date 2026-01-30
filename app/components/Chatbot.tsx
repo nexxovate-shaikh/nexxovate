@@ -35,7 +35,7 @@ export default function Chatbot() {
     {
       role: "bot",
       text:
-        "👋 Welcome to Nexxovate. We help organizations scale Digital Marketing, IT Services, AI, and Staffing with enterprise-grade execution.\n\nWhich area are you exploring today?",
+        "Welcome to Nexxovate. We help organizations scale Digital Marketing, IT Services, AI, and Staffing with enterprise-grade execution.\n\nWhich area are you exploring today?",
     },
   ]);
 
@@ -207,7 +207,7 @@ export default function Chatbot() {
                 />
                 <div>
                   <p className="text-sm font-semibold">
-                    Nexxovate Concierge
+                    Powering Intelligent IT Operations
                   </p>
                   <p className="text-xs text-gray-500">
                     Business Growth Advisor
