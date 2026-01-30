@@ -134,7 +134,7 @@ export default function Chatbot() {
     // 3️⃣ Name
     if (!lead.name) {
       setLead({ ...lead, name: text });
-      bot(`Nice to meet you, ${text} 👋\n\nWhat’s the best email to reach you?`);
+      bot(`Nice to meet you, ${text} \n\nWhat’s the best email to reach you?`);
       return;
     }
 
