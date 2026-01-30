@@ -99,7 +99,9 @@ export default function HomePage() {
                   <h3 className="text-base md:text-xl font-semibold">
                     {item.title}
                   </h3>
-                  
+                  <p className="mt-1 text-xs md:text-sm text-gray-200">
+                    Enterprise-grade delivery at scale.
+                  </p>
                 </div>
               </div>
             ))}
@@ -128,7 +130,9 @@ export default function HomePage() {
                 >
                   <div className="h-1 w-10 mx-auto bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mb-3" />
                   <h3 className="text-sm md:text-lg font-semibold">{name}</h3>
-                  
+                  <p className="mt-1 text-xs md:text-sm text-gray-500">
+                    Enterprise-grade capability
+                  </p>
                 </div>
               )
             )}
