@@ -28,19 +28,13 @@ export default function Chatbot() {
   const [step, setStep] = useState<Step>("interest");
   const [lead, setLead] = useState<Lead>({});
 
-  /* 🌍 Language detection */
-  const userLang =
-    typeof navigator !== "undefined"
-      ? navigator.language.split("-")[0]
-      : "en";
-
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "bot",
       text:
-        "Welcome to Nexxovate.\n\nWe help businesses grow through Digital Marketing, IT Services, Staffing, and AI-driven solutions.\n\nWhat would you like to explore today?",
+        "👋 Welcome to Nexxovate.\n\nWe help businesses grow through Digital Marketing, IT Services, AI solutions, and Staffing.\n\nWhat would you like to improve today?",
     },
   ]);
 
@@ -52,20 +46,8 @@ export default function Chatbot() {
   /* ---------------- VOICE (TTS) ---------------- */
   function speak(text: string) {
     if (!voiceOn || typeof window === "undefined") return;
-
-    const langMap: Record<string, string> = {
-      en: "en-US",
-      hi: "hi-IN",
-      ar: "ar-SA",
-      fr: "fr-FR",
-      es: "es-ES",
-      de: "de-DE",
-    };
-
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = langMap[userLang] || "en-US";
     u.rate = 0.95;
-
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
   }
@@ -84,7 +66,7 @@ export default function Chatbot() {
     if (!SpeechRecognition) return;
 
     const recognition = new SpeechRecognition();
-    recognition.lang = userLang;
+    recognition.lang = "en-US";
     recognition.start();
     setListening(true);
 
@@ -96,7 +78,7 @@ export default function Chatbot() {
     recognition.onend = () => setListening(false);
   }
 
-  /* ---------------- BUSINESS LOGIC ---------------- */
+  /* ---------------- SALES LOGIC ---------------- */
   function handleUser(text: string) {
     const value = text.trim();
     const lower = value.toLowerCase();
@@ -108,15 +90,15 @@ export default function Chatbot() {
 
       if (lower.includes("marketing")) {
         bot(
-          "Excellent. We drive growth using SEO, paid campaigns, branding, and lead generation.\n\nIs this for a Startup, Growing Business, or Enterprise?"
+          "Great choice. We help companies generate qualified leads, improve brand visibility, and increase conversions.\n\nIs this for a Startup, Growing Business, or Enterprise?"
         );
       } else if (lower.includes("staff")) {
         bot(
-          "Understood. We provide contract staffing, permanent hiring, and dedicated teams.\n\nWhat best describes your organization size?"
+          "Understood. We provide contract staffing, permanent hiring, and dedicated tech teams.\n\nWhat best describes your organization size?"
         );
       } else if (lower.includes("ai")) {
         bot(
-          "AI can significantly improve efficiency and decision-making.\n\nAre you exploring AI for internal operations or customer-facing solutions?"
+          "AI can dramatically improve efficiency and decision-making.\n\nAre you exploring AI for internal operations or customer-facing solutions?"
         );
       } else {
         bot(
@@ -126,7 +108,7 @@ export default function Chatbot() {
       return;
     }
 
-    // 2️⃣ Business Type
+    // 2️⃣ Business type
     if (step === "business") {
       setLead((l) => ({ ...l, businessType: value }));
       setStep("name");
@@ -139,7 +121,7 @@ export default function Chatbot() {
       setLead((l) => ({ ...l, name: value }));
       setStep("email");
       bot(
-        `Nice to meet you, ${value}.\n\nWhat’s the best email to share a tailored proposal or next steps?`
+        `Nice to meet you, ${value}.\n\nWhat’s the best email to share a tailored solution or proposal?`
       );
       return;
     }
@@ -150,10 +132,10 @@ export default function Chatbot() {
       setLead(finalLead);
       setStep("done");
 
-      /* 🔐 CRM / EMAIL / GOOGLE SHEET HOOK */
+      // 👉 Replace this later with API / Email / Google Sheet
       console.log("📩 NEW LEAD:", {
         ...finalLead,
-        source: "Nexxovate Website Concierge",
+        source: "Nexxovate Website Chatbot",
         timestamp: new Date().toISOString(),
       });
 
@@ -163,7 +145,7 @@ export default function Chatbot() {
       return;
     }
 
-    bot("Our team will connect shortly. Thank you for choosing Nexxovate.");
+    bot("Thank you for connecting with Nexxovate.");
   }
 
   function send() {
@@ -181,11 +163,15 @@ export default function Chatbot() {
         <button
           onClick={() => setOpen(true)}
           className="fixed bottom-6 right-6 z-[9999]
-          w-14 h-14 rounded-full bg-black text-white
+          w-14 h-14 rounded-full bg-black
           flex items-center justify-center shadow-2xl
           hover:scale-105 transition"
         >
-          <MessageCircle size={22} />
+          <img
+            src="/logo.png"
+            alt="Nexxovate"
+            className="w-8 h-8 object-contain"
+          />
         </button>
       )}
 
@@ -207,7 +193,9 @@ export default function Chatbot() {
                 <img src="/logo.png" className="h-7 object-contain" />
                 <div>
                   <p className="text-sm font-semibold">Nexxovate Concierge</p>
-                  <p className="text-xs text-gray-500">Business Growth Advisor</p>
+                  <p className="text-xs text-gray-500">
+                    Business Growth Advisor
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
