@@ -17,6 +17,7 @@ type Lead = {
   businessType?: string;
   name?: string;
   email?: string;
+  page?: string;
 };
 
 /* ---------------- COMPONENT ---------------- */
@@ -30,12 +31,22 @@ export default function Chatbot() {
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  /* 🌍 PAGE CONTEXT */
+  const page =
+    typeof window !== "undefined" ? window.location.pathname : "/";
+
+  const initialMessage = (() => {
+    if (page.includes("training"))
+      return "You’re exploring Nexxovate Training. Are you looking for corporate training or individual upskilling?";
+    if (page.includes("services"))
+      return "Looking for IT, AI, Cybersecurity, or Staffing services? Tell me your priority.";
+    if (page.includes("about"))
+      return "Want to understand how Nexxovate helps enterprises scale with confidence?";
+    return "Welcome to Nexxovate. How can we help your business grow today?";
+  })();
+
   const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "bot",
-      text:
-        "Welcome to Nexxovate.\n\nWe help businesses grow through Digital Marketing, IT Services, AI solutions, and Staffing.\n\nWhat would you like to improve today?",
-    },
+    { role: "bot", text: initialMessage },
   ]);
 
   /* ---------------- AUTO SCROLL ---------------- */
@@ -47,6 +58,7 @@ export default function Chatbot() {
   function speak(text: string) {
     if (!voiceOn || typeof window === "undefined") return;
     const u = new SpeechSynthesisUtterance(text);
+    u.lang = navigator.language || "en-US";
     u.rate = 0.95;
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
@@ -66,7 +78,7 @@ export default function Chatbot() {
     if (!SpeechRecognition) return;
 
     const recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
+    recognition.lang = navigator.language || "en-US";
     recognition.start();
     setListening(true);
 
@@ -79,34 +91,36 @@ export default function Chatbot() {
   }
 
   /* ---------------- SALES LOGIC ---------------- */
-  function handleUser(text: string) {
+  async function handleUser(text: string) {
     const value = text.trim();
     const lower = value.toLowerCase();
 
+    // 1️⃣ INTEREST
     if (step === "interest") {
-      setLead({ interest: value });
+      setLead({ interest: value, page });
       setStep("business");
 
       if (lower.includes("marketing")) {
         bot(
-          "Great choice. We help companies generate qualified leads, improve brand visibility, and increase conversions.\n\nIs this for a Startup, Growing Business, or Enterprise?"
+          "Excellent. We scale digital growth using SEO, performance marketing, branding and conversion optimization.\n\nIs this for a Startup, Growing Business, or Enterprise?"
         );
       } else if (lower.includes("staff")) {
         bot(
-          "Understood. We provide contract staffing, permanent hiring, and dedicated tech teams.\n\nWhat best describes your organization size?"
+          "We help companies hire faster with contract staffing, permanent hiring and dedicated teams.\n\nWhat best describes your organization size?"
         );
       } else if (lower.includes("ai")) {
         bot(
-          "AI can dramatically improve efficiency and decision-making.\n\nAre you exploring AI for internal operations or customer-facing solutions?"
+          "AI adoption is accelerating across enterprises.\n\nAre you exploring AI for internal efficiency or customer-facing solutions?"
         );
       } else {
         bot(
-          "We support Managed IT, Cloud, Security, and enterprise operations.\n\nWhat type of business are you representing?"
+          "We deliver Managed IT, Cloud, Security and enterprise operations at scale.\n\nWhat type of organization are you representing?"
         );
       }
       return;
     }
 
+    // 2️⃣ BUSINESS TYPE
     if (step === "business") {
       setLead((l) => ({ ...l, businessType: value }));
       setStep("name");
@@ -114,28 +128,39 @@ export default function Chatbot() {
       return;
     }
 
+    // 3️⃣ NAME
     if (step === "name") {
       setLead((l) => ({ ...l, name: value }));
       setStep("email");
       bot(
-        `Nice to meet you, ${value}.\n\nWhat’s the best email to share a tailored solution or proposal?`
+        `Nice to meet you, ${value}.\n\nWhat’s the best email to share a tailored proposal or next steps?`
       );
       return;
     }
 
+    // 4️⃣ EMAIL (FINAL SUBMIT)
     if (step === "email") {
       const finalLead = { ...lead, email: value };
       setLead(finalLead);
       setStep("done");
 
-      console.log("📩 NEW LEAD:", {
-        ...finalLead,
-        source: "Nexxovate Website Chatbot",
-        timestamp: new Date().toISOString(),
-      });
+      // 🔥 REAL LEAD SUBMISSION
+      try {
+        await fetch("/api/lead", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...finalLead,
+            source: "Nexxovate Website Concierge",
+            timestamp: new Date().toISOString(),
+          }),
+        });
+      } catch (e) {
+        console.error("Lead submission failed", e);
+      }
 
       bot(
-        `Thank you, ${lead.name}.\n\nOur team will review your requirement and contact you shortly.`
+        `Thank you, ${finalLead.name}.\n\nOur team will review your requirement and reach out shortly.\n\nIf needed, we can also schedule a strategy discussion.`
       );
       return;
     }
@@ -154,7 +179,7 @@ export default function Chatbot() {
   /* ---------------- UI ---------------- */
   return (
     <>
-      {/* 🔵 NEO TECH CHAT BUBBLE */}
+      {/* 🟦 NEO-TECH CHAT BUBBLE */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
@@ -167,11 +192,9 @@ export default function Chatbot() {
           hover:scale-110 transition-transform duration-300
           overflow-hidden"
         >
-          {/* Soft animated aura */}
           <span className="absolute inset-0 rounded-full animate-pulse
             bg-gradient-to-r from-cyan-300/40 via-blue-400/40 to-purple-400/40" />
 
-          {/* Inner glass core */}
           <span className="relative z-10 w-11 h-11 rounded-full
             bg-white/90 backdrop-blur-xl
             flex items-center justify-center
@@ -197,14 +220,13 @@ export default function Chatbot() {
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b bg-white/90">
-              <div className="flex items-center gap-3">
-                <img src="/logo.png" className="h-7 object-contain" />
-                <div>
-                  <p className="text-sm font-semibold">Nexxovate</p>
-                  <p className="text-xs text-gray-500">
-                    Business Growth Advisor
-                  </p>
-                </div>
+              <div>
+                <p className="text-sm font-semibold">
+                  Nexxovate Business Concierge
+                </p>
+                <p className="text-xs text-gray-500">
+                  Enterprise Growth Advisor
+                </p>
               </div>
               <div className="flex items-center gap-2">
                 <button onClick={() => setVoiceOn(!voiceOn)}>
@@ -226,8 +248,7 @@ export default function Chatbot() {
                   }`}
                 >
                   <div
-                    className={`max-w-[78%] px-4 py-3 rounded-2xl text-sm
-                    ${
+                    className={`max-w-[78%] px-4 py-3 rounded-2xl text-sm ${
                       m.role === "user"
                         ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
                         : "bg-white text-gray-800 shadow"
