@@ -164,18 +164,18 @@ export default function Chatbot() {
     onClick={() => setOpen(true)}
     className="fixed bottom-6 right-6 z-[9999]
     w-16 h-16 rounded-full
-    bg-black
-    shadow-2xl
-    flex items-center justify-center
-    hover:scale-105 transition-transform"
+    shadow-2xl overflow-hidden
+    hover:scale-105 transition-transform
+    bg-white"
   >
     <img
       src="/logo1.png"
-      alt="Nexxovate"
-      className="w-[85%] h-[85%] object-contain"
+      alt="Nexxovate Chat"
+      className="w-full h-full object-cover"
     />
   </button>
 )}
+
 
 
       {open && (
