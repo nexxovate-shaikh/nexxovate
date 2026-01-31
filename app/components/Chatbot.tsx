@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MessageCircle, X, Send, Mic, Volume2, VolumeX } from "lucide-react";
+import { X, Send, Mic, Volume2, VolumeX } from "lucide-react";
 
 /* ---------------- TYPES ---------------- */
 type Role = "bot" | "user";
@@ -83,7 +83,6 @@ export default function Chatbot() {
     const value = text.trim();
     const lower = value.toLowerCase();
 
-    // 1️⃣ Interest
     if (step === "interest") {
       setLead({ interest: value });
       setStep("business");
@@ -108,7 +107,6 @@ export default function Chatbot() {
       return;
     }
 
-    // 2️⃣ Business type
     if (step === "business") {
       setLead((l) => ({ ...l, businessType: value }));
       setStep("name");
@@ -116,7 +114,6 @@ export default function Chatbot() {
       return;
     }
 
-    // 3️⃣ Name
     if (step === "name") {
       setLead((l) => ({ ...l, name: value }));
       setStep("email");
@@ -126,13 +123,11 @@ export default function Chatbot() {
       return;
     }
 
-    // 4️⃣ Email
     if (step === "email") {
       const finalLead = { ...lead, email: value };
       setLead(finalLead);
       setStep("done");
 
-      // 👉 Replace this later with API / Email / Google Sheet
       console.log("📩 NEW LEAD:", {
         ...finalLead,
         source: "Nexxovate Website Chatbot",
@@ -140,7 +135,7 @@ export default function Chatbot() {
       });
 
       bot(
-        `Thank you, ${lead.name}.\n\nOur team will review your requirement and contact you shortly.\n\nFor urgent discussions, WhatsApp is the fastest option below.`
+        `Thank you, ${lead.name}.\n\nOur team will review your requirement and contact you shortly.`
       );
       return;
     }
@@ -159,39 +154,34 @@ export default function Chatbot() {
   /* ---------------- UI ---------------- */
   return (
     <>
+      {/* 🔵 NEO TECH CHAT BUBBLE */}
       {!open && (
-  <button
-    onClick={() => setOpen(true)}
-    aria-label="Open AI Concierge"
-    className="fixed bottom-6 right-6 z-[9999]
-    w-16 h-16 rounded-full
-    flex items-center justify-center
-    bg-black/80 backdrop-blur-xl
-    shadow-[0_0_40px_rgba(168,85,247,0.45)]
-    transition-transform duration-300
-    hover:scale-110"
-  >
-    {/* Animated gradient ring */}
-    <span className="absolute inset-0 rounded-full animate-spin-slow
-    bg-[conic-gradient(from_0deg,#ec4899,#a855f7,#6366f1,#ec4899)]
-    opacity-90 blur-[2px]" />
+        <button
+          onClick={() => setOpen(true)}
+          aria-label="Open Nexxovate Concierge"
+          className="fixed bottom-6 right-6 z-[9999]
+          w-16 h-16 rounded-full
+          flex items-center justify-center
+          bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600
+          shadow-[0_0_40px_rgba(59,130,246,0.6)]
+          hover:scale-110 transition-transform duration-300
+          overflow-hidden"
+        >
+          {/* Soft animated aura */}
+          <span className="absolute inset-0 rounded-full animate-pulse
+            bg-gradient-to-r from-cyan-300/40 via-blue-400/40 to-purple-400/40" />
 
-    {/* Inner glass core */}
-    <span className="relative z-10 w-12 h-12 rounded-full
-    bg-gradient-to-br from-black via-gray-900 to-black
-    flex items-center justify-center
-    shadow-inner">
-
-      {/* AI Core Dot */}
-      <span className="w-3 h-3 rounded-full
-      bg-gradient-to-r from-pink-400 to-purple-500
-      animate-pulse" />
-    </span>
-  </button>
-)}
-
-
-
+          {/* Inner glass core */}
+          <span className="relative z-10 w-11 h-11 rounded-full
+            bg-white/90 backdrop-blur-xl
+            flex items-center justify-center
+            shadow-inner">
+            <span className="w-2.5 h-2.5 rounded-full
+              bg-gradient-to-r from-blue-500 to-purple-600
+              animate-ping" />
+          </span>
+        </button>
+      )}
 
       {open && (
         <div className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-md">
@@ -212,7 +202,7 @@ export default function Chatbot() {
                 <div>
                   <p className="text-sm font-semibold">Nexxovate</p>
                   <p className="text-xs text-gray-500">
-                    Powering Intelligent IT Operations
+                    Business Growth Advisor
                   </p>
                 </div>
               </div>
@@ -239,7 +229,7 @@ export default function Chatbot() {
                     className={`max-w-[78%] px-4 py-3 rounded-2xl text-sm
                     ${
                       m.role === "user"
-                        ? "bg-black text-white"
+                        ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
                         : "bg-white text-gray-800 shadow"
                     }`}
                   >
@@ -256,7 +246,7 @@ export default function Chatbot() {
                 <button
                   onClick={startListening}
                   className={`w-10 h-10 rounded-full flex items-center justify-center
-                  ${listening ? "bg-red-600" : "bg-gray-200"}`}
+                  ${listening ? "bg-red-500" : "bg-gray-200"}`}
                 >
                   <Mic size={16} />
                 </button>
@@ -271,19 +261,13 @@ export default function Chatbot() {
 
                 <button
                   onClick={send}
-                  className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center"
+                  className="w-10 h-10 rounded-full
+                  bg-gradient-to-r from-blue-600 to-purple-600
+                  text-white flex items-center justify-center"
                 >
                   <Send size={16} />
                 </button>
               </div>
-
-              <a
-                href="https://wa.me/919916347839"
-                target="_blank"
-                className="block text-center text-[11px] text-gray-500 mt-2"
-              >
-                Prefer instant response? → Chat on WhatsApp
-              </a>
             </div>
           </div>
         </div>
