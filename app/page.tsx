@@ -158,32 +158,61 @@ export default function HomePage() {
             />
           </div>
 
-          {/* Mobile – LOGOS (NO TEXT) */}
-          <div className="md:hidden mt-10 overflow-x-auto">
-            <div className="flex gap-6 w-max px-2">
-              {[
-                "/images/clients/client-1.png",
-                "/images/clients/client-2.png",
-                "/images/clients/client-3.png",
-                "/images/clients/client-4.png",
-              ].map((logo, i) => (
-                <div
-                  key={i}
-                  className="min-w-[180px] h-[90px]
-                  bg-white border rounded-xl shadow-sm
-                  flex items-center justify-center"
-                >
-                  <img
-                    src={logo}
-                    alt="Client logo"
-                    className="max-h-[50px] max-w-[140px] object-contain"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* Industries served – Mobile */}
+<div className="md:hidden mt-12">
+  <h4 className="text-sm font-semibold text-gray-900 tracking-wide uppercase mb-6">
+    Industries we serve
+  </h4>
+
+  <div className="grid grid-cols-2 gap-4">
+    {[
+      "Technology & SaaS",
+      "E-commerce",
+      "Healthcare",
+      "Finance & FinTech",
+      "Manufacturing",
+      "Startups & Scaleups",
+    ].map((industry) => (
+      <div
+        key={industry}
+        className="bg-white border border-gray-100
+        rounded-2xl px-4 py-5 text-center
+        shadow-sm"
+      >
+        <p className="text-sm font-medium text-gray-800">
+          {industry}
+        </p>
+      </div>
+    ))}
+  </div>
+</div>
+
         </div>
       </section>
+{/* Business trust metrics – Mobile */}
+<div className="md:hidden mt-12 grid grid-cols-3 gap-4">
+  {[
+    { value: "50+", label: "Organizations supported" },
+    { value: "10+ yrs", label: "Ops leadership experience" },
+    { value: "24/7", label: "Enterprise coverage" },
+  ].map((item) => (
+    <div
+      key={item.label}
+      className="bg-gray-50 rounded-2xl py-5 text-center"
+    >
+      <p className="text-xl font-semibold text-gray-900">
+        {item.value}
+      </p>
+      <p className="text-[11px] text-gray-500 mt-1 leading-tight">
+        {item.label}
+      </p>
+    </div>
+  ))}
+</div>
+<p className="md:hidden mt-8 text-sm text-gray-600 text-center leading-relaxed">
+  We partner long-term — across IT operations, security,
+  digital growth, AI adoption and talent strategy.
+</p>
 
       {/* CTA */}
       <section className="bg-gradient-to-r from-purple-900 via-pink-900 to-red-900 text-white py-16 md:py-28">
