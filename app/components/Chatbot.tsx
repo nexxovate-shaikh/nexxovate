@@ -54,8 +54,8 @@ export default function Chatbot() {
   function speak(text: string) {
     if (!voiceOn || typeof window === "undefined") return;
     const u = new SpeechSynthesisUtterance(text);
-    u.rate = 0.95;
     u.lang = navigator.language || "en-US";
+    u.rate = 0.95;
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
   }
@@ -87,6 +87,21 @@ export default function Chatbot() {
   /* ---------------- LOGIC ---------------- */
   async function handleUser(text: string) {
     const lower = text.toLowerCase();
+
+    /* 📅 CALENDAR ACTION */
+    if (text === "📅 Book a Strategy Call") {
+      window.open(
+        "https://calendly.com/nexxovate/strategy-call",
+        "_blank"
+      );
+      bot("Perfect. I’ve opened the calendar for you. Looking forward to speaking!");
+      return;
+    }
+
+    if (text === "Maybe Later") {
+      bot("No problem at all. Our team will reach out with next steps.");
+      return;
+    }
 
     /* 1️⃣ INTEREST */
     if (step === "interest") {
@@ -124,7 +139,7 @@ export default function Chatbot() {
       setStep("name");
 
       bot(
-        "That’s a common challenge we solve for clients.\n\nMay I know your name?"
+        "That’s a challenge we help clients solve every day.\n\nMay I know your name?"
       );
       return;
     }
@@ -158,8 +173,10 @@ export default function Chatbot() {
       setStep("done");
 
       bot(
-        `Thank you, ${finalLead.name}.\n\nOur team will review your requirement and reach out shortly.\n\nIf helpful, we can also schedule a focused strategy discussion.`
+        `Thank you, ${finalLead.name}.\n\nOur team will review your requirement and reach out shortly.\n\nWould you like to schedule a free 30-minute strategy discussion now?`,
+        ["📅 Book a Strategy Call", "Maybe Later"]
       );
+      return;
     }
   }
 
@@ -175,47 +192,40 @@ export default function Chatbot() {
   /* ---------------- UI ---------------- */
   return (
     <>
-      {/* 🟣 ULTRA NEO PULSE CHAT BUBBLE (FIXED) */}
+      {/* 🔵 NEO GRADIENT CHAT BUBBLE — CLEAN */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          aria-label="Open Nexxovate Concierge"
           className="fixed bottom-6 right-6 z-[9999]
           w-16 h-16 rounded-full
           flex items-center justify-center
-          bg-black/80 backdrop-blur-xl
-          shadow-[0_0_45px_rgba(168,85,247,0.6)]
-          hover:scale-110 transition"
+          bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600
+          shadow-[0_0_45px_rgba(99,102,241,0.6)]
+          hover:scale-110 transition overflow-hidden"
         >
-          {/* spinning ring */}
-          <span className="absolute inset-0 rounded-full animate-spin-slow
-            bg-[conic-gradient(from_0deg,#22d3ee,#6366f1,#a855f7,#22d3ee)]
-            blur-[2px]" />
-
-          {/* inner glass */}
+          <span className="absolute inset-0 animate-spin
+          bg-[conic-gradient(#22d3ee,#6366f1,#a855f7,#22d3ee)] opacity-80" />
           <span className="relative z-10 w-12 h-12 rounded-full
-            bg-black/90 flex items-center justify-center">
+          bg-white flex items-center justify-center">
             <span className="w-3 h-3 rounded-full
-              bg-gradient-to-r from-cyan-400 to-purple-500
-              animate-pulse" />
+            bg-gradient-to-r from-blue-600 to-purple-600 animate-pulse" />
           </span>
         </button>
       )}
 
       {open && (
-        <div className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur">
+        <div className="fixed inset-0 z-[9998] bg-black/40">
           <div className="fixed bottom-0 right-0 sm:bottom-6 sm:right-6
           w-full sm:w-[400px] h-[80vh] sm:h-[600px]
-          bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col">
+          bg-white rounded-t-3xl sm:rounded-3xl
+          shadow-2xl flex flex-col">
 
             {/* HEADER */}
-            <div className="flex items-center gap-3 px-4 py-3 border-b">
+            <div className="flex items-center gap-3 px-4 py-3 border-b bg-white">
               <img src="/logo.png" className="h-7" />
               <div className="flex-1">
                 <p className="text-sm font-semibold">Nexxovate Concierge</p>
-                <p className="text-xs text-gray-500">
-                  Enterprise Growth Advisor
-                </p>
+                <p className="text-xs text-gray-500">Enterprise Growth Advisor</p>
               </div>
               <button onClick={() => setVoiceOn(!voiceOn)}>
                 {voiceOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
@@ -225,28 +235,21 @@ export default function Chatbot() {
               </button>
             </div>
 
-            {/* MESSAGES */}
+            {/* MESSAGES — ❌ NO BLUR */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
               {messages.map((m, i) => (
                 <div key={i}>
-                  <div
-                    className={`flex ${
-                      m.role === "user" ? "justify-end" : "justify-start"
-                    }`}
-                  >
+                  <div className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                     <div
                       className={`px-4 py-3 rounded-2xl text-sm max-w-[75%]
-                      ${
-                        m.role === "user"
-                          ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-                          : "bg-white shadow"
-                      }`}
+                      ${m.role === "user"
+                        ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+                        : "bg-white text-gray-900 shadow"}`}
                     >
                       {m.text}
                     </div>
                   </div>
 
-                  {/* QUICK OPTIONS */}
                   {m.options && (
                     <div className="flex flex-wrap gap-2 mt-2">
                       {m.options.map((o) => (
@@ -268,7 +271,7 @@ export default function Chatbot() {
             </div>
 
             {/* INPUT */}
-            <div className="p-3 border-t flex gap-2">
+            <div className="p-3 border-t flex gap-2 bg-white">
               <button
                 onClick={startListening}
                 className={`w-10 h-10 rounded-full flex items-center justify-center
