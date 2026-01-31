@@ -184,25 +184,50 @@ export default function Chatbot() {
   /* ---------------- UI ---------------- */
   return (
     <>
-      {/* 🔵 NEO PULSE CHAT BUBBLE (UNCHANGED) */}
-      {!open && (
-        <button
-          onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-[9999]
-          w-16 h-16 rounded-full flex items-center justify-center
-          overflow-hidden hover:scale-110 transition"
-        >
-          <span className="absolute inset-0 rounded-full animate-ping
-          bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 opacity-40" />
-          <span className="absolute inset-0 rounded-full animate-spin
-          bg-[conic-gradient(#22d3ee,#6366f1,#a855f7,#22d3ee)] opacity-90" />
-          <span className="relative z-10 w-12 h-12 rounded-full
-          bg-white/85 backdrop-blur flex items-center justify-center">
-            <span className="w-3 h-3 rounded-full
-            bg-gradient-to-r from-blue-600 to-purple-600 animate-pulse" />
-          </span>
-        </button>
-      )}
+     {/* 🔵 NEO PULSE CHAT BUBBLE — WORKING FIX */}
+{!open && (
+  <button
+    onClick={() => setOpen(true)}
+    aria-label="Open Nexxovate Concierge"
+    className="fixed bottom-6 right-6 z-[9999]
+    w-16 h-16 rounded-full
+    flex items-center justify-center
+    overflow-hidden hover:scale-110 transition-transform duration-300"
+  >
+    {/* 🌊 OUTER PULSE RING (REAL PULSE) */}
+    <span
+      className="absolute inset-0 rounded-full
+      bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600
+      opacity-50
+      animate-ping"
+    />
+
+    {/* 🔄 ROTATING NEO GRADIENT (INLINE ANIMATION – SAFE) */}
+    <span
+      className="absolute inset-0 rounded-full
+      bg-[conic-gradient(from_0deg,#22d3ee,#6366f1,#a855f7,#22d3ee)]
+      opacity-90"
+      style={{
+        animation: "spin 6s linear infinite",
+      }}
+    />
+
+    {/* 💎 GLASS CORE */}
+    <span
+      className="relative z-10 w-12 h-12 rounded-full
+      bg-white/90 backdrop-blur-xl
+      flex items-center justify-center
+      shadow-[0_0_25px_rgba(99,102,241,0.6)]"
+    >
+      {/* ❤️ HEARTBEAT DOT (CENTER PULSE) */}
+      <span
+        className="w-3 h-3 rounded-full
+        bg-gradient-to-r from-blue-600 to-purple-600
+        animate-pulse"
+      />
+    </span>
+  </button>
+)}
 
       {open && (
         <div className="fixed inset-0 z-[9998] bg-black/40">
