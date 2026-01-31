@@ -88,12 +88,7 @@ export default function HomePage() {
                 key={i}
                 className="relative h-[200px] sm:h-[240px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg"
               >
-                <Image
-                  src={item.img}
-                  alt={item.title}
-                  fill
-                  className="object-cover"
-                />
+                <Image src={item.img} alt={item.title} fill className="object-cover" />
                 <div className="absolute inset-0 bg-black/55" />
                 <div className="absolute bottom-0 p-5 text-white">
                   <h3 className="text-base md:text-xl font-semibold">
@@ -139,48 +134,56 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-{/* CLIENTS / TRUST */}
-<section className="relative py-20 md:py-28 bg-white overflow-hidden">
-  {/* Soft background */}
-  <div className="absolute inset-0 bg-gradient-to-b from-pink-50/60 via-white to-white" />
 
-  <div className="relative max-w-6xl mx-auto px-4 sm:px-6 text-center">
-    <h3 className="text-2xl md:text-4xl font-bold tracking-tight text-gray-900">
-      Trusted by growing teams
-    </h3>
+      {/* CLIENTS / TRUST */}
+      <section className="relative py-20 md:py-28 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+          <h3 className="text-2xl md:text-4xl font-bold tracking-tight">
+            Trusted by growing teams
+          </h3>
 
-    <p className="mt-4 md:mt-6 text-sm md:text-lg text-gray-600 max-w-2xl mx-auto">
-      We partner with startups, SMEs, and enterprises to build secure,
-      scalable, and future-ready technology foundations.
-    </p>
+          <p className="mt-4 md:mt-6 text-sm md:text-lg text-gray-600 max-w-2xl mx-auto">
+            We partner with startups, SMEs, and enterprises to build secure,
+            scalable, future-ready foundations.
+          </p>
 
-    {/* Desktop logo wall */}
-    <div className="hidden md:block mt-14 bg-white/80 backdrop-blur-xl border border-gray-100 rounded-3xl px-10 py-12 shadow-xl">
-      <Image
-        src="/images/clients.png"
-        alt="Nexxovate clients"
-        width={1000}
-        height={200}
-        className="mx-auto opacity-90 hover:opacity-100 transition duration-500"
-      />
-    </div>
-
-    {/* Mobile logos (scrollable & clean) */}
-    <div className="md:hidden mt-10 overflow-x-auto">
-      <div className="flex gap-6 px-2 w-max">
-        {["Client A", "Client B", "Client C", "Client D"].map((client, i) => (
-          <div
-            key={i}
-            className="min-w-[160px] h-[80px] flex items-center justify-center
-            bg-white rounded-xl shadow-md border text-gray-500 text-sm font-medium"
-          >
-            {client}
+          {/* Desktop */}
+          <div className="hidden md:block mt-14 bg-white/80 backdrop-blur-xl border border-gray-100 rounded-3xl px-10 py-12 shadow-xl">
+            <Image
+              src="/images/clients.png"
+              alt="Nexxovate clients"
+              width={1000}
+              height={200}
+              className="mx-auto opacity-90"
+            />
           </div>
-        ))}
-      </div>
-    </div>
-  </div>
-</section>
+
+          {/* Mobile – LOGOS (NO TEXT) */}
+          <div className="md:hidden mt-10 overflow-x-auto">
+            <div className="flex gap-6 w-max px-2">
+              {[
+                "/images/clients/client-1.png",
+                "/images/clients/client-2.png",
+                "/images/clients/client-3.png",
+                "/images/clients/client-4.png",
+              ].map((logo, i) => (
+                <div
+                  key={i}
+                  className="min-w-[180px] h-[90px]
+                  bg-white border rounded-xl shadow-sm
+                  flex items-center justify-center"
+                >
+                  <img
+                    src={logo}
+                    alt="Client logo"
+                    className="max-h-[50px] max-w-[140px] object-contain"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* CTA */}
       <section className="bg-gradient-to-r from-purple-900 via-pink-900 to-red-900 text-white py-16 md:py-28">
