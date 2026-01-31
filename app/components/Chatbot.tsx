@@ -192,26 +192,50 @@ export default function Chatbot() {
   /* ---------------- UI ---------------- */
   return (
     <>
-      {/* 🔵 NEO GRADIENT CHAT BUBBLE — CLEAN */}
-      {!open && (
-        <button
-          onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-[9999]
-          w-16 h-16 rounded-full
-          flex items-center justify-center
-          bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600
-          shadow-[0_0_45px_rgba(99,102,241,0.6)]
-          hover:scale-110 transition overflow-hidden"
-        >
-          <span className="absolute inset-0 animate-spin
-          bg-[conic-gradient(#22d3ee,#6366f1,#a855f7,#22d3ee)] opacity-80" />
-          <span className="relative z-10 w-12 h-12 rounded-full
-          bg-white flex items-center justify-center">
-            <span className="w-3 h-3 rounded-full
-            bg-gradient-to-r from-blue-600 to-purple-600 animate-pulse" />
-          </span>
-        </button>
-      )}
+      {/* 🔵 NEO PULSE CHAT BUBBLE — FIXED */}
+{!open && (
+  <button
+    onClick={() => setOpen(true)}
+    aria-label="Open Nexxovate Concierge"
+    className="fixed bottom-6 right-6 z-[9999]
+    w-16 h-16 rounded-full
+    flex items-center justify-center
+    overflow-hidden
+    hover:scale-110 transition-transform duration-300"
+  >
+    {/* 🌊 OUTER PULSE RING */}
+    <span
+      className="absolute inset-0 rounded-full
+      animate-ping
+      bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600
+      opacity-40"
+    />
+
+    {/* 🔄 ROTATING NEO GRADIENT */}
+    <span
+      className="absolute inset-0 rounded-full
+      animate-spin-slow
+      bg-[conic-gradient(from_0deg,#22d3ee,#6366f1,#a855f7,#22d3ee)]
+      opacity-90"
+    />
+
+    {/* 💎 GLASS CORE */}
+    <span
+      className="relative z-10 w-12 h-12 rounded-full
+      bg-white/85 backdrop-blur-xl
+      flex items-center justify-center
+      shadow-[0_0_25px_rgba(99,102,241,0.6)]"
+    >
+      {/* ❤️ AI HEARTBEAT DOT */}
+      <span
+        className="w-3 h-3 rounded-full
+        bg-gradient-to-r from-blue-600 to-purple-600
+        animate-pulse"
+      />
+    </span>
+  </button>
+)}
+
 
       {open && (
         <div className="fixed inset-0 z-[9998] bg-black/40">
