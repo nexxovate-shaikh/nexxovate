@@ -31,3 +31,16 @@ body {
 h1, h2, h3 {
   letter-spacing: -0.02em;
 }
+/* Client logo auto-scroll (mobile) */
+@keyframes scroll-x {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll-x {
+  animation: scroll-x 25s linear infinite;
+}
