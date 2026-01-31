@@ -162,19 +162,34 @@ export default function Chatbot() {
       {!open && (
   <button
     onClick={() => setOpen(true)}
+    aria-label="Open AI Concierge"
     className="fixed bottom-6 right-6 z-[9999]
     w-16 h-16 rounded-full
-    shadow-2xl overflow-hidden
-    hover:scale-105 transition-transform
-    bg-white"
+    flex items-center justify-center
+    bg-black/80 backdrop-blur-xl
+    shadow-[0_0_40px_rgba(168,85,247,0.45)]
+    transition-transform duration-300
+    hover:scale-110"
   >
-    <img
-      src="/logo.png"
-      alt="Nexxovate Chat"
-      className="w-full h-full object-cover"
-    />
+    {/* Animated gradient ring */}
+    <span className="absolute inset-0 rounded-full animate-spin-slow
+    bg-[conic-gradient(from_0deg,#ec4899,#a855f7,#6366f1,#ec4899)]
+    opacity-90 blur-[2px]" />
+
+    {/* Inner glass core */}
+    <span className="relative z-10 w-12 h-12 rounded-full
+    bg-gradient-to-br from-black via-gray-900 to-black
+    flex items-center justify-center
+    shadow-inner">
+
+      {/* AI Core Dot */}
+      <span className="w-3 h-3 rounded-full
+      bg-gradient-to-r from-pink-400 to-purple-500
+      animate-pulse" />
+    </span>
   </button>
 )}
+
 
 
 
