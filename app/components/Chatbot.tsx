@@ -169,7 +169,7 @@ export default function Chatbot() {
     bg-white"
   >
     <img
-      src="/logo1.png"
+      src="/logo.png"
       alt="Nexxovate Chat"
       className="w-full h-full object-cover"
     />
