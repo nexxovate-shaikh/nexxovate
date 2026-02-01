@@ -1,23 +1,33 @@
 import { NextResponse } from "next/server";
-import { saveOTP } from "@/lib/otpStore";
-
-function generateOTP() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
+import nodemailer from "nodemailer";
+import { generateOTP } from "@/lib/otpStore";
 
 export async function POST(req: Request) {
   const { email } = await req.json();
 
-  if (!email) {
-    return NextResponse.json({ error: "Missing email" }, { status: 400 });
-  }
+  const otp = generateOTP(email);
 
-  const code = generateOTP();
+  const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
-  saveOTP(email, code);
 
-  console.log("OTP for", email, "is:", code);
+  await transporter.sendMail({
+    from: `"Nexxovate Security" <${process.env.EMAIL_USER}>`,
 
-  // TODO: send email here (next step)
+    to: email,
+    subject: "Your Nexxovate Verification Code",
+    html: `
+      <h2>Verification Code</h2>
+      <p>Your OTP is:</p>
+      <h1>${otp}</h1>
+      <p>This code expires in 5 minutes.</p>
+    `,
+  });
+
   return NextResponse.json({ success: true });
 }
