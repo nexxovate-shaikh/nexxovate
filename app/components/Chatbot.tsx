@@ -185,24 +185,7 @@ export default function Chatbot() {
   return (
     <>
      {/* 🔵 NEO PULSE CHAT BUBBLE — WORKING FIX */}
-{!open && (
-  <button
-    onClick={() => setOpen(true)}
-    aria-label="Open Nexxovate Concierge"
-    className="fixed bottom-6 right-6 z-[9999]
-    w-16 h-16 rounded-full
-    flex items-center justify-center
-    overflow-hidden hover:scale-110 transition-transform duration-300"
-  >
-    {/* 🌊 OUTER PULSE RING (REAL PULSE) */}
-    <span
-      className="absolute inset-0 rounded-full
-      bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600
-      opacity-50
-      animate-ping"
-    />
-
-    {/* 🔵 NEO N HEARTBEAT CHAT BUBBLE */}
+{/* 🔵 NEO N HEARTBEAT CHAT BUBBLE */}
 {!open && (
   <button
     onClick={() => setOpen(true)}
@@ -249,7 +232,6 @@ export default function Chatbot() {
     </span>
   </button>
 )}
-
 
       {open && (
         <div className="fixed inset-0 z-[9998] bg-black/40">
