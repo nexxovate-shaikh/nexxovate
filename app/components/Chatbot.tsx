@@ -11,7 +11,6 @@ type Step =
   | "challenge"
   | "name"
   | "email"
-  | "otp"
   | "done";
 
 type Message = {
@@ -115,17 +114,19 @@ export default function Chatbot() {
       setStep("challenge");
 
       bot(
-        "Please describe the main challenge or goal you’re facing.\n\nThe more detail you share, the better solution we design."
+        "Now the important part.\n\nPlease describe the main challenge, bottleneck, or goal you’re dealing with right now.\n\nFeel free to be specific — the more context you share, the better solution we can design."
       );
       return;
     }
 
-    /* 3️⃣ CHALLENGE */
+    /* 3️⃣ CHALLENGE (FREE TEXT) */
     if (step === "challenge") {
       setLead((l: any) => ({ ...l, challenge: value }));
       setStep("name");
 
-      bot("Thank you for sharing that.\n\nMay I know your name?");
+      bot(
+        "Thank you for sharing that — this is exactly the kind of problem we help solve.\n\nMay I know your name?"
+      );
       return;
     }
 
@@ -135,56 +136,37 @@ export default function Chatbot() {
       setStep("email");
 
       bot(
-        `Nice to meet you, ${value}.\n\nWhat’s the best work email to continue?`
+        `Nice to meet you, ${value}.\n\nWhat’s the best work email to share insights or next steps?`
       );
       return;
     }
 
-    /* 5️⃣ EMAIL */
+    /* 5️⃣ EMAIL (VALIDATED) */
     if (step === "email") {
       if (!isValidEmail(value)) {
-        bot("That email looks invalid. Please enter a real work email.");
+        bot(
+          "That email doesn’t look valid.\n\nPlease enter a correct work email (example: name@company.com)."
+        );
         return;
       }
 
-      setLead((l: any) => ({ ...l, email: value }));
-      setStep("otp");
-
-      await fetch("/api/otp/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: value }),
-      });
-
-      bot("We sent a verification code to your email.\n\nEnter OTP:");
-      return;
-    }
-
-    /* 6️⃣ OTP */
-    if (step === "otp") {
-      const res = await fetch("/api/otp/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: lead.email, otp: value }),
-      });
-
-      const data = await res.json();
-
-      if (!data.success) {
-        bot("Invalid OTP. Please try again.");
-        return;
-      }
-
-      setStep("done");
+      const finalLead = {
+        ...lead,
+        email: value,
+        source: "Website Chatbot",
+        timestamp: new Date().toISOString(),
+      };
 
       await fetch("/api/contact/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(lead),
+        body: JSON.stringify(finalLead),
       });
 
+      setStep("done");
+
       bot(
-        `Verified ✅\n\nThank you ${lead.name}. Our team will contact you shortly.`
+        `Thank you, ${finalLead.name}.\n\nOur team will review your challenge and get back with a thoughtful, solution-oriented response.\n\nYou’re in good hands.`
       );
       return;
     }
@@ -202,25 +184,80 @@ export default function Chatbot() {
   /* ---------------- UI ---------------- */
   return (
     <>
-      {/* 🔵 NEO N BUBBLE */}
-      {!open && (
-        <button
-          onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-[9999]
-          w-16 h-16 rounded-full flex items-center justify-center
-          overflow-hidden hover:scale-110 transition"
-        >
-          <span className="absolute inset-0 animate-ping bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 opacity-40" />
-          <span className="absolute inset-0 bg-[conic-gradient(#22d3ee,#6366f1,#a855f7,#22d3ee)] animate-spin" />
-          <span className="relative z-10 text-white font-bold text-xl">N</span>
-        </button>
-      )}
+     {/* 🔵 NEO PULSE CHAT BUBBLE — WORKING FIX */}
+{!open && (
+  <button
+    onClick={() => setOpen(true)}
+    aria-label="Open Nexxovate Concierge"
+    className="fixed bottom-6 right-6 z-[9999]
+    w-16 h-16 rounded-full
+    flex items-center justify-center
+    overflow-hidden hover:scale-110 transition-transform duration-300"
+  >
+    {/* 🌊 OUTER PULSE RING (REAL PULSE) */}
+    <span
+      className="absolute inset-0 rounded-full
+      bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600
+      opacity-50
+      animate-ping"
+    />
+
+    {/* 🔵 NEO N HEARTBEAT CHAT BUBBLE */}
+{!open && (
+  <button
+    onClick={() => setOpen(true)}
+    aria-label="Open Nexxovate Concierge"
+    className="fixed bottom-6 right-6 z-[9999]
+    w-16 h-16
+    flex items-center justify-center
+    overflow-hidden
+    hover:scale-110 transition-transform duration-300"
+  >
+    {/* 🌊 OUTER HEARTBEAT PULSE */}
+    <span
+      className="absolute inset-0
+      bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600
+      opacity-40
+      animate-ping"
+    />
+
+    {/* 🔄 ROTATING NEO GRADIENT */}
+    <span
+      className="absolute inset-0
+      bg-[conic-gradient(from_0deg,#22d3ee,#6366f1,#a855f7,#22d3ee)]
+      opacity-90"
+      style={{
+        animation: "spin 6s linear infinite",
+      }}
+    />
+
+    {/* 💎 GLASS CORE */}
+    <span
+      className="relative z-10 w-12 h-12
+      backdrop-blur-xl
+      flex items-center justify-center
+      shadow-[0_0_25px_rgba(99,102,241,0.6)]"
+    >
+      {/* ❤️ N LETTER HEARTBEAT */}
+      <span
+        className="text-white font-black text-xl
+        animate-pulse
+        drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+      >
+        N
+      </span>
+    </span>
+  </button>
+)}
+
 
       {open && (
         <div className="fixed inset-0 z-[9998] bg-black/40">
           <div className="fixed bottom-0 right-0 sm:bottom-6 sm:right-6
-          w-full sm:w-[400px] h-[80vh] bg-white rounded-3xl flex flex-col">
+          w-full sm:w-[400px] h-[80vh] sm:h-[600px]
+          bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col">
 
+            {/* HEADER */}
             <div className="flex items-center gap-3 px-4 py-3 border-b">
               <img src="/logo.png" className="h-7" />
               <div className="flex-1">
@@ -235,28 +272,63 @@ export default function Chatbot() {
               </button>
             </div>
 
+            {/* MESSAGES */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
               {messages.map((m, i) => (
                 <div key={i}>
-                  <div className={`flex ${m.role === "user" ? "justify-end" : ""}`}>
-                    <div className="bg-white shadow px-4 py-3 rounded-xl text-sm">
+                  <div className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <div
+                      className={`px-4 py-3 rounded-2xl text-sm max-w-[75%]
+                      ${m.role === "user"
+                        ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+                        : "bg-white text-gray-900 shadow"}`}
+                    >
                       {m.text}
                     </div>
                   </div>
+
+                  {m.options && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {m.options.map((o) => (
+                        <button
+                          key={o}
+                          onClick={() => send(o)}
+                          className="px-3 py-1.5 rounded-full text-xs
+                          bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+                        >
+                          {o}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
               <div ref={bottomRef} />
             </div>
 
+            {/* INPUT */}
             <div className="p-3 border-t flex gap-2">
+              <button
+                onClick={startListening}
+                className={`w-10 h-10 rounded-full flex items-center justify-center
+                ${listening ? "bg-red-500" : "bg-gray-200"}`}
+              >
+                <Mic size={16} />
+              </button>
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && send()}
+                placeholder="Type or speak…"
                 className="flex-1 border rounded-full px-4 py-2 text-sm"
               />
-              <button onClick={() => send()}>
-                <Send size={18} />
+              <button
+                onClick={() => send()}
+                className="w-10 h-10 rounded-full
+                bg-gradient-to-r from-blue-600 to-purple-600
+                text-white flex items-center justify-center"
+              >
+                <Send size={16} />
               </button>
             </div>
           </div>
