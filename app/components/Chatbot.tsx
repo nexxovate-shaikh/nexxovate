@@ -11,7 +11,9 @@ type Step =
   | "challenge"
   | "name"
   | "email"
+  | "otp"
   | "done";
+
 
 type Message = {
   role: Role;
@@ -26,6 +28,8 @@ export default function Chatbot() {
   const [lead, setLead] = useState<any>({});
   const [voiceOn, setVoiceOn] = useState(true);
   const [listening, setListening] = useState(false);
+const [otp, setOtp] = useState("");
+const [otpSent, setOtpSent] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const page =
@@ -91,95 +95,143 @@ export default function Chatbot() {
   function isValidEmail(email: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
   }
+/* ---------------- OTP FUNCTIONS ---------------- */
+async function sendOTP(email: string) {
+  try {
+    await fetch("/api/otp/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    setOtpSent(true);
+  } catch (e) {
+    bot("Failed to send OTP. Please try again.");
+  }
+}
 
-  /* ---------------- LOGIC ---------------- */
-  async function handleUser(text: string) {
-    const value = text.trim();
+async function verifyOTP(code: string) {
+  try {
+    const res = await fetch("/api/otp/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: lead.email, code }),
+    });
 
-    /* 1️⃣ INTEREST */
-    if (step === "interest") {
-      setLead({ interest: value, page });
-      setStep("business");
+    const data = await res.json();
+    return data.valid;
+  } catch {
+    return false;
+  }
+}
 
-      bot(
-        "Great choice. What stage is your organization currently in?",
-        ["Startup", "Growing Business", "Enterprise"]
-      );
-      return;
-    }
+ /* ---------------- LOGIC ---------------- */
+async function handleUser(text: string) {
+  const value = text.trim();
 
-    /* 2️⃣ BUSINESS */
-    if (step === "business") {
-      setLead((l: any) => ({ ...l, businessType: value }));
-      setStep("challenge");
+  /* 1️⃣ INTEREST */
+  if (step === "interest") {
+    setLead({ interest: value, page });
+    setStep("business");
 
-      bot(
-        "Now the important part.\n\nPlease describe the main challenge, bottleneck, or goal you’re dealing with right now.\n\nFeel free to be specific — the more context you share, the better solution we can design."
-      );
-      return;
-    }
-
-    /* 3️⃣ CHALLENGE (FREE TEXT) */
-    if (step === "challenge") {
-      setLead((l: any) => ({ ...l, challenge: value }));
-      setStep("name");
-
-      bot(
-        "Thank you for sharing that — this is exactly the kind of problem we help solve.\n\nMay I know your name?"
-      );
-      return;
-    }
-
-    /* 4️⃣ NAME */
-    if (step === "name") {
-      setLead((l: any) => ({ ...l, name: value }));
-      setStep("email");
-
-      bot(
-        `Nice to meet you, ${value}.\n\nWhat’s the best work email to share insights or next steps?`
-      );
-      return;
-    }
-
-    /* 5️⃣ EMAIL (VALIDATED) */
-    if (step === "email") {
-      if (!isValidEmail(value)) {
-        bot(
-          "That email doesn’t look valid.\n\nPlease enter a correct work email (example: name@company.com)."
-        );
-        return;
-      }
-
-      const finalLead = {
-        ...lead,
-        email: value,
-        source: "Website Chatbot",
-        timestamp: new Date().toISOString(),
-      };
-
-      await fetch("/api/contact/lead", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(finalLead),
-      });
-
-      setStep("done");
-
-      bot(
-        `Thank you, ${finalLead.name}.\n\nOur team will review your challenge and get back with a thoughtful, solution-oriented response.\n\nYou’re in good hands.`
-      );
-      return;
-    }
+    bot(
+      "Great choice. What stage is your organization currently in?",
+      ["Startup", "Growing Business", "Enterprise"]
+    );
+    return;
   }
 
-  function send(text?: string) {
-    const value = text ?? input;
-    if (!value.trim()) return;
+  /* 2️⃣ BUSINESS */
+  if (step === "business") {
+    setLead((l: any) => ({ ...l, businessType: value }));
+    setStep("challenge");
 
-    setInput("");
-    setMessages((m) => [...m, { role: "user", text: value }]);
-    setTimeout(() => handleUser(value), 300);
+    bot(
+      "Now the important part.\n\nPlease describe the main challenge, bottleneck, or goal you’re dealing with right now.\n\nFeel free to be specific — the more context you share, the better solution we can design."
+    );
+    return;
   }
+
+  /* 3️⃣ CHALLENGE */
+  if (step === "challenge") {
+    setLead((l: any) => ({ ...l, challenge: value }));
+    setStep("name");
+
+    bot(
+      "Thank you for sharing that — this is exactly the kind of problem we help solve.\n\nMay I know your name?"
+    );
+    return;
+  }
+
+  /* 4️⃣ NAME */
+  if (step === "name") {
+    setLead((l: any) => ({ ...l, name: value }));
+    setStep("email");
+
+    bot(
+      `Nice to meet you, ${value}.\n\nWhat’s the best work email to share insights or next steps?`
+    );
+    return;
+  }
+
+  /* 5️⃣ EMAIL → SEND OTP */
+  if (step === "email") {
+    if (!isValidEmail(value)) {
+      bot(
+        "That email doesn’t look valid.\n\nPlease enter a correct work email (example: name@company.com)."
+      );
+      return;
+    }
+
+    setLead((l: any) => ({ ...l, email: value }));
+    setStep("otp");
+
+    await sendOTP(value);
+
+    bot(
+      "We sent a 6-digit verification code to your email.\n\nPlease enter the OTP to continue."
+    );
+    return;
+  }
+
+  /* 6️⃣ OTP VERIFY */
+  if (step === "otp") {
+    const valid = await verifyOTP(value);
+
+    if (!valid) {
+      bot("Invalid OTP. Please try again.");
+      return;
+    }
+
+    const finalLead = {
+      ...lead,
+      source: "Website Chatbot",
+      timestamp: new Date().toISOString(),
+    };
+
+    await fetch("/api/contact/lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(finalLead),
+    });
+
+    setStep("done");
+
+    bot(
+      `Verification complete.\n\nThank you ${finalLead.name}. Our team will contact you shortly.`
+    );
+    return;
+  }
+}
+
+/* ---------------- SEND ---------------- */
+function send(text?: string) {
+  const value = text ?? input;
+  if (!value.trim()) return;
+
+  setInput("");
+  setMessages((m) => [...m, { role: "user", text: value }]);
+  setTimeout(() => handleUser(value), 300);
+}
 
   /* ---------------- UI ---------------- */
   return (
@@ -214,13 +266,15 @@ export default function Chatbot() {
       }}
     />
 
-    {/* 💎 GLASS CORE */}
-    <span
-      className="relative z-10 w-12 h-12
-      backdrop-blur-xl
-      flex items-center justify-center
-      shadow-[0_0_25px_rgba(99,102,241,0.6)]"
-    >
+    {/* 💎 GLASS CORE — CIRCLE PREMIUM */}
+<span
+  className="relative z-10 w-12 h-12 rounded-full
+  bg-white/20 backdrop-blur-2xl
+  border border-white/30
+  flex items-center justify-center
+  shadow-[0_0_25px_rgba(99,102,241,0.7)]"
+>
+
       {/* ❤️ N LETTER HEARTBEAT */}
       <span
         className="text-white font-black text-xl
