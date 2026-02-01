@@ -3,26 +3,29 @@ type OTPEntry = {
   expires: number;
 };
 
-const store = new Map<string, OTPEntry>();
+const store: Map<string, OTPEntry> =
+  globalThis.otpStore || new Map();
 
-export function saveOTP(email: string, code: string) {
+globalThis.otpStore = store;
+
+export function generateOTP(email: string) {
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+
   store.set(email, {
     code,
-    expires: Date.now() + 5 * 60 * 1000,
+    expires: Date.now() + 5 * 60 * 1000, // 5 minutes
   });
+
+  console.log("OTP for", email, "=", code); // debug
+
+  return code;
 }
 
-export function verifyOTP(email: string, code: string) {
+export function verifyOTP(email: string, input: string) {
   const entry = store.get(email);
 
   if (!entry) return false;
-  if (Date.now() > entry.expires) {
-    store.delete(email);
-    return false;
-  }
+  if (Date.now() > entry.expires) return false;
 
-  if (entry.code !== code) return false;
-
-  store.delete(email);
-  return true;
+  return entry.code === input;
 }
