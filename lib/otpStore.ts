@@ -1,31 +1,19 @@
-type OTPEntry = {
-  code: string;
-  expires: number;
-};
+import { Redis } from "@upstash/redis";
 
-const store: Map<string, OTPEntry> =
-  globalThis.otpStore || new Map();
+export const redis = Redis.fromEnv();
 
-globalThis.otpStore = store;
-
-export function generateOTP(email: string) {
+export async function generateOTP(email: string) {
   const code = Math.floor(100000 + Math.random() * 900000).toString();
 
-  store.set(email, {
-    code,
-    expires: Date.now() + 5 * 60 * 1000, // 5 minutes
-  });
+  await redis.set(`otp:${email}`, code, { ex: 300 }); // 5 minutes
 
-  console.log("OTP for", email, "=", code); // debug
+  console.log("OTP for", email, "=", code);
 
   return code;
 }
 
-export function verifyOTP(email: string, input: string) {
-  const entry = store.get(email);
+export async function verifyOTP(email: string, input: string) {
+  const stored = await redis.get<string>(`otp:${email}`);
 
-  if (!entry) return false;
-  if (Date.now() > entry.expires) return false;
-
-  return entry.code === input;
+  return stored === input;
 }
