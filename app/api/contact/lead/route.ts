@@ -9,25 +9,25 @@ export async function POST(req: Request) {
   try {
     const data = await req.json();
 
-    // 1️⃣ Send to Google Sheet
+    // 1️⃣ Save to Google Sheet
     await fetch(GOOGLE_SHEET_WEBHOOK, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
 
-    // 2️⃣ Send Email Notification
+    // 2️⃣ Email Notification
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
     await transporter.sendMail({
-      from: `"Nexxovate Concierge" <${process.env.MAIL_USER}>`,
-      to: process.env.MAIL_USER,
+      from: `"Nexxovate Concierge" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
       subject: "📩 New Lead – Nexxovate Website",
       html: `
         <h3>New Lead Captured</h3>
@@ -57,7 +57,7 @@ export async function GET() {
     const data = await res.json();
 
     return NextResponse.json(data);
-  } catch (e) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to fetch leads" },
       { status: 500 }

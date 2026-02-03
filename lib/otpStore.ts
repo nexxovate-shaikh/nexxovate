@@ -9,12 +9,13 @@ export async function generateOTP(email: string) {
     ex: 60 * 5, // 5 minutes
   });
 
-  console.log("OTP:", email, code);
+  console.log("OTP for", email, "=", code);
 
   return code;
 }
 
 export async function verifyOTP(email: string, input: string) {
   const stored = await redis.get<string>(`otp:${email}`);
+
   return stored === input;
 }
