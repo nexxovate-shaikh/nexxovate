@@ -5,20 +5,19 @@ import { generateOTP } from "@/lib/otpStore";
 export async function POST(req: Request) {
   const { email } = await req.json();
 
-  const otp = generateOTP(email);
+  // ✅ WAIT for OTP
+  const otp = await generateOTP(email);
 
   const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
 
   await transporter.sendMail({
-    from: `"Nexxovate Security" <nexxovatesecurity@nexxovate.com>`,
-
+    from: `"Nexxovate Security" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: "Your Nexxovate Verification Code",
     html: `
