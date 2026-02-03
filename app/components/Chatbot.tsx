@@ -153,14 +153,27 @@ async function handleUser(text: string) {
 
   /* 3️⃣ CHALLENGE */
   if (step === "challenge") {
-    setLead((l: any) => ({ ...l, challenge: value }));
-    setStep("name");
-
+  if (value.length < 10) {
     bot(
-      "Thank you for sharing that — this is exactly the kind of problem we help solve.\n\nMay I know your name?"
+      "Please describe your challenge with a bit more detail so we can understand properly."
     );
     return;
   }
+
+  if (/^[^a-zA-Z0-9]+$/.test(value)) {
+    bot("Please enter a meaningful description.");
+    return;
+  }
+
+  setLead((l: any) => ({ ...l, challenge: value }));
+  setStep("name");
+
+  bot(
+    "Thank you for sharing that — this is exactly the kind of problem we help solve.\n\nMay I know your name?"
+  );
+  return;
+}
+
 
   /* 4️⃣ NAME */
   if (step === "name") {
@@ -243,8 +256,9 @@ function send(text?: string) {
     onClick={() => setOpen(true)}
     aria-label="Open Nexxovate Concierge"
     className="fixed bottom-6 right-6 z-[9999]
-    w-16 h-16
-    flex items-center justify-center
+w-16 h-16 rounded-full
+flex items-center justify-center
+
     overflow-hidden
     hover:scale-110 transition-transform duration-300"
   >

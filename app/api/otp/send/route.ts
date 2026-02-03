@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
 
   await transporter.sendMail({
-    from: `"Nexxovate Security" <${process.env.EMAIL_USER}>`,
+    from: `"Nexxovate Security" <nexxovatesecurity@nexxovate.com>`,
 
     to: email,
     subject: "Your Nexxovate Verification Code",

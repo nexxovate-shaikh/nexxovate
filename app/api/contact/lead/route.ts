@@ -4,6 +4,7 @@ import nodemailer from "nodemailer";
 const GOOGLE_SHEET_WEBHOOK =
   "https://script.google.com/macros/s/AKfycbygM38Rztf-R_CyivX9XtARIWoOLHoZQl1QAhzreAu52tzwyuXzqMUMpWBqnSTAUsA/exec";
 
+/* ---------------- POST → Save Lead ---------------- */
 export async function POST(req: Request) {
   try {
     const data = await req.json();
@@ -43,5 +44,23 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error("Lead API Error:", err);
     return NextResponse.json({ success: false }, { status: 500 });
+  }
+}
+
+/* ---------------- GET → Read Leads ---------------- */
+export async function GET() {
+  try {
+    const res = await fetch(process.env.CRM_READ_URL!, {
+      cache: "no-store",
+    });
+
+    const data = await res.json();
+
+    return NextResponse.json(data);
+  } catch (e) {
+    return NextResponse.json(
+      { error: "Failed to fetch leads" },
+      { status: 500 }
+    );
   }
 }
