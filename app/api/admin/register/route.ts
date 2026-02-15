@@ -1,19 +1,10 @@
 import { NextResponse } from "next/server";
-import { findUser } from "@/lib/users";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-
-/* Prevent browser 405 panic */
-export async function GET() {
-  return NextResponse.json({
-    status: "Admin login API ready",
-    method: "Use POST",
-  });
-}
+import { createUser, findUser } from "@/lib/users";
 
 export async function POST(req: Request) {
   try {
-    const { email, password } = await req.json();
+    const body = await req.json();
+    const { email, password, role } = body;
 
     if (!email || !password) {
       return NextResponse.json(
@@ -22,49 +13,30 @@ export async function POST(req: Request) {
       );
     }
 
-    const user = await findUser(email);
+    const exists = await findUser(email);
 
-    if (!user) {
+    if (exists) {
       return NextResponse.json(
-        { error: "Invalid login" },
-        { status: 401 }
+        { error: "User already exists" },
+        { status: 400 }
       );
     }
 
-    const ok = await bcrypt.compare(password, user.password);
-
-    if (!ok) {
-      return NextResponse.json(
-        { error: "Invalid login" },
-        { status: 401 }
-      );
-    }
-
-    if (!process.env.JWT_SECRET) {
-      throw new Error("JWT_SECRET missing in environment");
-    }
-
-    const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    const user = await createUser(email, password, role || "staff");
 
     return NextResponse.json({
       success: true,
-      token,
       user: {
         id: user.id,
         email: user.email,
         role: user.role,
       },
     });
-
   } catch (err) {
-    console.error("LOGIN ERROR:", err);
+    console.error("Register error:", err);
 
     return NextResponse.json(
-      { error: "Server error during login" },
+      { error: "Server error" },
       { status: 500 }
     );
   }

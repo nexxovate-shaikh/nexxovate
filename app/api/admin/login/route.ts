@@ -1,39 +1,57 @@
 import { NextResponse } from "next/server";
-import { createUser, findUser } from "@/lib/users";
+import { findUser } from "@/lib/users";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
-/* Prevent browser 405 panic */
-export async function GET() {
-  return NextResponse.json({
-    status: "Admin register API ready",
-    method: "Use POST",
-  });
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error("Missing JWT_SECRET environment variable");
 }
 
 export async function POST(req: Request) {
   try {
-    const { email, password, role } = await req.json();
+    const { email, password } = await req.json();
 
+    // validation
     if (!email || !password) {
       return NextResponse.json(
-        { error: "Missing fields" },
+        { error: "Missing credentials" },
         { status: 400 }
       );
     }
 
-    const exists = await findUser(email);
+    const user = await findUser(email);
 
-    if (exists) {
+    if (!user) {
       return NextResponse.json(
-        { error: "User already exists" },
-        { status: 400 }
+        { error: "Invalid login" },
+        { status: 401 }
       );
     }
 
-    const user = await createUser(email, password, role || "staff");
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return NextResponse.json(
+        { error: "Invalid login" },
+        { status: 401 }
+      );
+    }
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
     return NextResponse.json({
       success: true,
-      message: "User created",
+      token,
       user: {
         id: user.id,
         email: user.email,
@@ -41,11 +59,11 @@ export async function POST(req: Request) {
       },
     });
 
-  } catch (err) {
-    console.error("REGISTER ERROR:", err);
+  } catch (error) {
+    console.error("Login error:", error);
 
     return NextResponse.json(
-      { error: "Server error during register" },
+      { error: "Server error" },
       { status: 500 }
     );
   }
