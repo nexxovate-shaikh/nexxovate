@@ -1,19 +1,51 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET!, {
-  apiVersion: "2026-01-28.clover",
+// prevent build-time execution
+export const dynamic = "force-dynamic";
 
-});
+const stripeSecret = process.env.STRIPE_SECRET;
+
+// safe init
+const stripe = stripeSecret
+  ? new Stripe(stripeSecret, {
+      apiVersion: "2023-10-16" as any, // ← force compatible version
+    })
+  : null;
 
 export async function POST(req: Request) {
-  const { email, amount } = await req.json();
+  try {
+    if (!stripe) {
+      return NextResponse.json(
+        { error: "Stripe not configured" },
+        { status: 500 }
+      );
+    }
 
-  const invoice = await stripe.paymentIntents.create({
-    amount,
-    currency: "usd",
-    receipt_email: email,
-  });
+    const { email, amount } = await req.json();
 
-  return NextResponse.json({ clientSecret: invoice.client_secret });
+    if (!email || !amount) {
+      return NextResponse.json(
+        { error: "Missing email or amount" },
+        { status: 400 }
+      );
+    }
+
+    const payment = await stripe.paymentIntents.create({
+      amount,
+      currency: "usd",
+      receipt_email: email,
+    });
+
+    return NextResponse.json({
+      clientSecret: payment.client_secret,
+    });
+  } catch (err) {
+    console.error("Stripe error:", err);
+
+    return NextResponse.json(
+      { error: "Stripe failed" },
+      { status: 500 }
+    );
+  }
 }
