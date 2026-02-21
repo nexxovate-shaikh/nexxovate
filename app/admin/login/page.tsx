@@ -4,27 +4,39 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
-  const [pass, setPass] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
 
-  // if already logged in → go to dashboard
+  // If already logged in → redirect
   useEffect(() => {
     const ok = sessionStorage.getItem("admin");
     if (ok) router.push("/admin");
   }, [router]);
 
   async function login() {
-    const res = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pass }),
-    });
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          password: password, // ✅ MUST MATCH backend
+        }),
+      });
 
-    if (res.ok) {
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "Login failed");
+        return;
+      }
+
       sessionStorage.setItem("admin", "true");
       router.push("/admin");
-    } else {
-      alert("Wrong password");
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Something went wrong");
     }
   }
 
@@ -38,8 +50,8 @@ export default function Login() {
         <input
           type="password"
           placeholder="Password"
-          value={pass}
-          onChange={(e) => setPass(e.target.value)}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           className="border p-2 w-full mb-3 rounded"
         />
 
