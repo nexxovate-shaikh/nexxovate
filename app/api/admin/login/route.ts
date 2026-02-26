@@ -1,20 +1,41 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { signToken } from "@/lib/auth";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
 export const dynamic = "force-dynamic";
 
+/* -------------------- RATE LIMIT SETUP -------------------- */
+
+const redis = Redis.fromEnv();
+
+const ratelimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(5, "10 m"), // 5 attempts per 10 minutes
+});
+
+/* -------------------- LOGIN HANDLER -------------------- */
+
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    // Get client IP (important for Vercel)
+    const ip =
+      req.headers.get("x-forwarded-for") ??
+      req.headers.get("x-real-ip") ??
+      "anonymous";
 
-    // 🔥 Support BOTH formats:
-    // { password: "..." }
-    // OR just "..."
-    const password =
-      typeof body === "string"
-        ? body
-        : body?.password;
+    // Apply rate limit
+    const { success } = await ratelimit.limit(ip);
+
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many login attempts. Try again later." },
+        { status: 429 }
+      );
+    }
+
+    const { password } = await req.json();
 
     if (!password || typeof password !== "string") {
       return NextResponse.json(
@@ -32,7 +53,11 @@ export async function POST(req: Request) {
       );
     }
 
-    const isValid = password.trim() === "Nexxovate@2026!UltraSecure";
+    const isValid = await bcrypt.compare(
+      password.trim(),
+      ADMIN_PASSWORD_HASH
+    );
+
     if (!isValid) {
       return NextResponse.json(
         { error: "Invalid credentials" },
@@ -43,12 +68,10 @@ export async function POST(req: Request) {
     const token = signToken({
       email: "admin@nexxovate.com",
       role: "admin",
+      tokenVersion: 0, // if using enterprise token versioning
     });
 
-    const response = NextResponse.json(
-      { success: true },
-      { status: 200 }
-    );
+    const response = NextResponse.json({ success: true });
 
     response.cookies.set({
       name: "admin_token",
@@ -57,7 +80,7 @@ export async function POST(req: Request) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
     return response;

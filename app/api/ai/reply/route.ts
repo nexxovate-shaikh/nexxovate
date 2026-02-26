@@ -1,31 +1,43 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-});
 
 export async function POST(req: Request) {
-  const { lead } = await req.json();
+  try {
+    const { lead } = await req.json();
 
-  const prompt = `
-You are a sales expert.
-Write a professional reply email to this lead:
+    const prompt = `
+You are a sales expert for Nexxovate.
+Write a professional reply email.
 
 Name: ${lead.Name}
 Interest: ${lead.Interest}
 Business: ${lead["Business Type"]}
 
-Make it friendly, premium, confident.
+Friendly, premium, confident.
 Offer consultation and next steps.
 `;
 
-  const res = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [{ role: "user", content: prompt }],
-  });
+    const response = await fetch("http://localhost:11434/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "llama3",
+        prompt,
+        stream: false,
+      }),
+    });
 
-  return NextResponse.json({
-    reply: res.choices[0].message.content,
-  });
+    const data = await response.json();
+
+    return NextResponse.json({
+      reply: data.response,
+    });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json(
+      { error: "AI failed" },
+      { status: 500 }
+    );
+  }
 }

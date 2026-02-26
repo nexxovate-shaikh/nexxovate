@@ -1,34 +1,26 @@
-import bcrypt from "bcryptjs";
+export type AdminRole = "superadmin" | "admin" | "staff";
 
-export type Role = "admin" | "staff";
-
-export type User = {
+export type AdminAccount = {
   id: string;
   email: string;
-  password: string;
-  role: Role;
+  passwordHash: string;
+  role: AdminRole;
+  tokenVersion: number;
 };
 
-const users: User[] = [];
+const admins: AdminAccount[] = [];
 
-export async function createUser(email: string, password: string, role: Role) {
-  const hashed = await bcrypt.hash(password, 10);
-
-  const user: User = {
-    id: crypto.randomUUID(),
-    email,
-    password: hashed,
-    role,
-  };
-
-  users.push(user);
-  return user;
+export function getAdminByEmail(email: string) {
+  return admins.find(a => a.email === email);
 }
 
-export async function findUser(email: string) {
-  return users.find((u) => u.email === email);
+export function addAdmin(admin: AdminAccount) {
+  admins.push(admin);
 }
 
-export function listUsers() {
-  return users;
+export function incrementTokenVersion(email: string) {
+  const admin = getAdminByEmail(email);
+  if (admin) {
+    admin.tokenVersion++;
+  }
 }
