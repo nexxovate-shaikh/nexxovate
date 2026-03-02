@@ -1,6 +1,12 @@
 const bcrypt = require("bcryptjs");
 
-const password = "Nexxovate@2026!UltraSecure";
-const hash = bcrypt.hashSync(password, 12);
+(async () => {
+  const password = "admin123";   // use simple password for test
+  const hash = await bcrypt.hash(password, 10);
 
-console.log(hash);
+  console.log("PASSWORD:", password);
+  console.log("HASH:", hash);
+
+  const match = await bcrypt.compare(password, hash);
+  console.log("MATCH TEST:", match);
+})();

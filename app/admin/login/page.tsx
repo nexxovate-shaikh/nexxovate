@@ -7,10 +7,10 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  // If already logged in → redirect
+  // Redirect if already logged in
   useEffect(() => {
     const ok = sessionStorage.getItem("admin");
-    if (ok) router.push("/admin");
+    if (ok) router.replace("/admin");
   }, [router]);
 
   async function login() {
@@ -20,9 +20,8 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          password: password, // ✅ MUST MATCH backend
-        }),
+        credentials: "include", // ✅ allow cookie
+        body: JSON.stringify({ password }),
       });
 
       const data = await res.json();
@@ -32,11 +31,15 @@ export default function Login() {
         return;
       }
 
+      // mark logged in locally
       sessionStorage.setItem("admin", "true");
-      router.push("/admin");
+
+      // redirect
+      router.replace("/admin");
+
     } catch (err) {
-      console.error("Login error:", err);
-      alert("Something went wrong");
+      console.error(err);
+      alert("Login failed");
     }
   }
 

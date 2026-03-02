@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import { signToken } from "@/lib/auth";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
@@ -12,20 +11,20 @@ const redis = Redis.fromEnv();
 
 const ratelimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(5, "10 m"), // 5 attempts per 10 minutes
+  limiter: Ratelimit.slidingWindow(100, "1 m"),
 });
 
 /* -------------------- LOGIN HANDLER -------------------- */
 
 export async function POST(req: Request) {
   try {
-    // Get client IP (important for Vercel)
+    // Get client IP
     const ip =
       req.headers.get("x-forwarded-for") ??
       req.headers.get("x-real-ip") ??
       "anonymous";
 
-    // Apply rate limit
+    // Rate limit
     const { success } = await ratelimit.limit(ip);
 
     if (!success) {
@@ -44,19 +43,17 @@ export async function POST(req: Request) {
       );
     }
 
-    const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
+    // ✅ Use plain env password (permanent fix)
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
-    if (!ADMIN_PASSWORD_HASH) {
+    if (!ADMIN_PASSWORD) {
       return NextResponse.json(
         { error: "Server configuration error" },
         { status: 500 }
       );
     }
 
-    const isValid = await bcrypt.compare(
-      password.trim(),
-      ADMIN_PASSWORD_HASH
-    );
+    const isValid = password.trim() === ADMIN_PASSWORD.trim();
 
     if (!isValid) {
       return NextResponse.json(
@@ -65,10 +62,11 @@ export async function POST(req: Request) {
       );
     }
 
+    // Create JWT token
     const token = signToken({
       email: "admin@nexxovate.com",
       role: "admin",
-      tokenVersion: 0, // if using enterprise token versioning
+      tokenVersion: 0,
     });
 
     const response = NextResponse.json({ success: true });
@@ -80,12 +78,14 @@ export async function POST(req: Request) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return response;
+
   } catch (error) {
     console.error("Login error:", error);
+
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
