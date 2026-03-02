@@ -1,28 +1,30 @@
 import { NextResponse } from "next/server";
 import { generateAI } from "@/lib/ai";
 
+export const runtime = "nodejs"; // ⭐ REQUIRED FOR GROQ
+
 export async function POST(req: Request) {
   try {
     const { lead } = await req.json();
 
     const prompt = `
-You are Nexxovate's elite sales closer.
-
-Name: ${lead.Name}
+Client name: ${lead.Name}
 Interest: ${lead.Interest}
-Business: ${lead["Business Type"]}
+Business type: ${lead["Business Type"]}
 
-Write a premium reply email.
+Write a professional sales email reply from Nexxovate.
 `;
 
     const reply = await generateAI(prompt);
 
-    return NextResponse.json({ reply });
+    return NextResponse.json({
+      reply: reply || "AI failed to generate reply."
+    });
 
   } catch (err) {
-    console.error(err);
+    console.error("AI ROUTE ERROR:", err);
     return NextResponse.json(
-      { error: "AI failed" },
+      { reply: "Server error generating AI reply." },
       { status: 500 }
     );
   }
