@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-
+export const runtime = "nodejs";
 export async function GET(req: Request) {
 
   const cookie = req.headers.get("cookie") || "";
