@@ -1,10 +1,10 @@
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
-export async function generateAI(prompt: string) {
+export async function generateAI(prompt: string): Promise<string> {
   try {
     if (!GROQ_API_KEY) {
       console.error("Missing GROQ_API_KEY");
-      return null;
+      return "Missing GROQ API key.";
     }
 
     const response = await fetch(
@@ -21,7 +21,7 @@ export async function generateAI(prompt: string) {
             {
               role: "system",
               content:
-                "You are Nexxovate's enterprise AI sales assistant. Write professional replies.",
+                "You are Nexxovate's elite enterprise sales closer. Write short professional email replies.",
             },
             {
               role: "user",
@@ -36,12 +36,15 @@ export async function generateAI(prompt: string) {
 
     const data = await response.json();
 
-    console.log("GROQ RESPONSE:", JSON.stringify(data));
+    console.log("GROQ RAW:", JSON.stringify(data));
 
-    return data?.choices?.[0]?.message?.content || null;
+    return (
+      data?.choices?.[0]?.message?.content ??
+      "Groq returned empty content."
+    );
 
   } catch (error) {
-    console.error("AI ERROR:", error);
-    return null;
+    console.error("GROQ ERROR:", error);
+    return "Groq connection failed.";
   }
 }
