@@ -1,25 +1,35 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-});
 
 export async function POST(req: Request) {
-  const { leads } = await req.json();
+  try {
+    const { leads } = await req.json();
 
-  const res = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      {
-        role: "user",
-        content: `Forecast monthly revenue from these leads:
-        ${JSON.stringify(leads)}`,
+    const prompt = `
+Forecast monthly revenue based on these leads:
+${JSON.stringify(leads)}
+
+Return estimated revenue and reasoning.
+`;
+
+    const res = await fetch("http://localhost:11434/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    ],
-  });
+      body: JSON.stringify({
+        model: "gemma3:4b",
+        prompt,
+        stream: false,
+      }),
+    });
 
-  return NextResponse.json({
-    forecast: res.choices[0].message.content,
-  });
+    const data = await res.json();
+
+    return NextResponse.json({
+      forecast: data.response,
+    });
+
+  } catch (err) {
+    return NextResponse.json({ error: "Forecast failed" }, { status: 500 });
+  }
 }

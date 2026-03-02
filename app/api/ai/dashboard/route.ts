@@ -1,25 +1,33 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-});
 
 export async function POST(req: Request) {
-  const { leads } = await req.json();
+  try {
+    const { leads } = await req.json();
 
-  const res = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      {
-        role: "user",
-        content: `Analyze this CRM data and summarize business insights:
-        ${JSON.stringify(leads)}`,
+    const prompt = `
+Analyze this CRM dashboard data and summarize key business insights:
+${JSON.stringify(leads)}
+`;
+
+    const res = await fetch("http://localhost:11434/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    ],
-  });
+      body: JSON.stringify({
+        model: "gemma3:4b",
+        prompt,
+        stream: false,
+      }),
+    });
 
-  return NextResponse.json({
-    insights: res.choices[0].message.content,
-  });
+    const data = await res.json();
+
+    return NextResponse.json({
+      insights: data.response,
+    });
+
+  } catch {
+    return NextResponse.json({ error: "Dashboard failed" }, { status: 500 });
+  }
 }

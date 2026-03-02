@@ -1,25 +1,37 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-});
 
 export async function POST(req: Request) {
-  const { lead } = await req.json();
+  try {
+    const { lead } = await req.json();
 
-  const res = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      {
-        role: "user",
-        content: `Score this lead 1-100 based on purchase intent:
-        ${JSON.stringify(lead)}`,
+    const prompt = `
+Score this lead from 1 to 100 based on purchase intent.
+
+Lead:
+${JSON.stringify(lead)}
+
+Return only the number and short reason.
+`;
+
+    const res = await fetch("http://localhost:11434/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    ],
-  });
+      body: JSON.stringify({
+        model: "gemma3:4b",
+        prompt,
+        stream: false,
+      }),
+    });
 
-  return NextResponse.json({
-    score: res.choices[0].message.content,
-  });
+    const data = await res.json();
+
+    return NextResponse.json({
+      score: data.response,
+    });
+
+  } catch {
+    return NextResponse.json({ error: "Predict failed" }, { status: 500 });
+  }
 }

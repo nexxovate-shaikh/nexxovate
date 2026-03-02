@@ -1,37 +1,41 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-});
 
 export async function POST(req: Request) {
-  const { lead, history } = await req.json();
+  try {
+    const { lead, history } = await req.json();
 
-  const res = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      {
-        role: "system",
-        content:
-          "You are Nexxovate's elite AI sales strategist. Close deals intelligently.",
-      },
-      {
-        role: "user",
-        content: `
+    const prompt = `
+You are Nexxovate's elite AI sales strategist.
+
 Lead:
 ${JSON.stringify(lead)}
 
 Conversation history:
 ${JSON.stringify(history)}
 
-Write the best next message to move toward closing.
-        `,
-      },
-    ],
-  });
+Write the best next message to close the deal.
+`;
 
-  return NextResponse.json({
-    reply: res.choices[0].message.content,
-  });
+    const res = await fetch("http://localhost:11434/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "gemma3:4b",
+        prompt,
+        stream: false,
+      }),
+    });
+
+    const data = await res.json();
+
+    return NextResponse.json({
+      reply: data.response,
+    });
+
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Brain failed" }, { status: 500 });
+  }
 }
