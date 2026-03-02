@@ -1,10 +1,6 @@
 import { MongoClient, Db } from "mongodb";
 
-const uri = process.env.MONGODB_URI!;
-
-if (!uri) {
-  throw new Error("Missing MONGODB_URI");
-}
+const uri = process.env.MONGODB_URI!; // ✅ tell TypeScript it's defined
 
 let client: MongoClient;
 let db: Db;
@@ -20,4 +16,5 @@ export async function getDB(): Promise<Db> {
   db = client.db("nexxovate");
 
   return db;
+
 }
