@@ -1,86 +1,159 @@
+import { getDB } from "./db";
+import bcrypt from "bcryptjs";
+
 export type User = {
-  id: string;
+
+  id?: string;
+
   email: string;
+
   password: string;
-  role: string;
-  tokenVersion: number;
+
+  role: "admin" | "client";
+
+  name?: string;
+
+  company?: string;
+
+  createdAt?: Date;
+
+  tokenVersion?: number;
+
 };
 
-/**
- * Temporary in-memory users
- */
-const users: User[] = [
-  {
-    id: "1",
-    email: "admin@nexxovate.com",
-    password: "admin123",
-    role: "admin",
-    tokenVersion: 0,
-  },
-];
-
 
 /**
- * FIND USER BY EMAIL
+ * Create user (admin or client)
  */
-export function getUserByEmail(email: string): User | null {
-
-  const user =
-    users.find(
-      (u) => u.email === email
-    );
-
-  return user || null;
-
-}
-
-
-/**
- * ADMIN alias
- */
-export function getAdminByEmail(email: string): User | null {
-
-  return getUserByEmail(email);
-
-}
-
-
-/**
- * CREATE USER
- */
-export function createUser(
+export async function createUser(
   email: string,
   password: string,
-  role: string = "client"
-): User {
+  role: "admin" | "client" = "client",
+  name?: string,
+  company?: string
+) {
+
+  const db = await getDB();
 
   const existing =
-    getUserByEmail(email);
+    await db
+      .collection("users")
+      .findOne({ email });
 
-  if (existing) {
+  if (existing)
     throw new Error("User already exists");
-  }
 
-  const user: User = {
-    id: crypto.randomUUID(),
+  const hashed =
+    await bcrypt.hash(password, 10);
+
+  const result =
+    await db
+      .collection("users")
+      .insertOne({
+
+        email,
+        password: hashed,
+
+        role,
+
+        name,
+
+        company,
+
+        tokenVersion: 0,
+
+        createdAt: new Date(),
+
+      });
+
+  return {
+
+    id: result.insertedId.toString(),
+
     email,
-    password,
+
     role,
-    tokenVersion: 0,
+
   };
-
-  users.push(user);
-
-  return user;
 
 }
 
 
 /**
- * FIND USER alias
+ * Get user by email
  */
-export function findUser(email: string) {
+export async function getUserByEmail(
+  email: string
+) {
 
-  return getUserByEmail(email);
+  const db = await getDB();
+
+  const user =
+    await db
+      .collection("users")
+      .findOne({ email });
+
+  if (!user)
+    return null;
+
+  return {
+
+    id: user._id.toString(),
+
+    email: user.email,
+
+    password: user.password,
+
+    role: user.role,
+
+    name: user.name,
+
+    company: user.company,
+
+    tokenVersion:
+      user.tokenVersion || 0,
+
+    createdAt: user.createdAt,
+
+  };
+
+}
+
+
+/**
+ * Validate password (login)
+ */
+export async function validatePassword(
+  email: string,
+  password: string
+) {
+
+  const user =
+    await getUserByEmail(email);
+
+  if (!user)
+    return null;
+
+  const valid =
+    await bcrypt.compare(
+      password,
+      user.password
+    );
+
+  if (!valid)
+    return null;
+
+  return {
+
+    id: user.id,
+
+    email: user.email,
+
+    role: user.role,
+
+    tokenVersion:
+      user.tokenVersion || 0,
+
+  };
 
 }

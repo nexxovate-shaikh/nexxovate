@@ -1,12 +1,9 @@
 import jwt from "jsonwebtoken";
-import { getAdminByEmail } from "./users";
+import { getUserByEmail } from "./users";
 
-/**
- * Use env secret in production
- * fallback for local/dev so build never crashes
- */
 const JWT_SECRET =
-  process.env.JWT_SECRET || "dev-secret-change-in-production";
+  process.env.JWT_SECRET ||
+  "dev-secret-change-in-production";
 
 export type AdminTokenPayload = {
   email: string;
@@ -15,9 +12,11 @@ export type AdminTokenPayload = {
 };
 
 /**
- * Sign admin JWT
+ * Sign JWT
  */
-export function signToken(payload: AdminTokenPayload) {
+export function signToken(
+  payload: AdminTokenPayload
+) {
 
   return jwt.sign(
     payload,
@@ -30,9 +29,11 @@ export function signToken(payload: AdminTokenPayload) {
 }
 
 /**
- * Verify admin JWT
+ * Verify JWT
  */
-export function verifyToken(token: string) {
+export async function verifyToken(
+  token: string
+) {
 
   try {
 
@@ -42,13 +43,16 @@ export function verifyToken(token: string) {
         JWT_SECRET
       ) as AdminTokenPayload;
 
-    const admin =
-      getAdminByEmail(decoded.email);
+    const user =
+      await getUserByEmail(
+        decoded.email
+      );
 
-    if (!admin) return null;
+    if (!user)
+      return null;
 
     if (
-      admin.tokenVersion !==
+      user.tokenVersion !==
       decoded.tokenVersion
     ) {
       return null;

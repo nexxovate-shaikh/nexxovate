@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createUser, findUser } from "@/lib/users";
+import { createUser } from "@/lib/users";
 
 export async function POST(req: Request) {
   try {
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const exists = await findUser(email);
+    const exists = await (email);
 
     if (exists) {
       return NextResponse.json(
