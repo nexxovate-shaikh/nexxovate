@@ -1,11 +1,7 @@
-const GROQ_API_KEY = process.env.GROQ_API_KEY;
+const GROQ_API_KEY = process.env.GROQ_API_KEY!;
 
 export async function generateAI(prompt: string) {
   try {
-    if (!GROQ_API_KEY) {
-      return "GROQ_API_KEY not set.";
-    }
-
     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -17,7 +13,8 @@ export async function generateAI(prompt: string) {
         messages: [
           {
             role: "system",
-            content: "You are Nexxovate's elite enterprise sales closer.",
+            content:
+              "You are Nexxovate's elite enterprise sales closer. Write premium professional replies.",
           },
           {
             role: "user",
@@ -25,15 +22,22 @@ export async function generateAI(prompt: string) {
           },
         ],
         temperature: 0.7,
+        max_tokens: 500,
       }),
     });
 
     const data = await res.json();
 
-    return data.choices?.[0]?.message?.content || "No response.";
+    console.log("GROQ RESPONSE:", data);
+
+    if (!data || !data.choices || data.choices.length === 0) {
+      return "AI returned empty response.";
+    }
+
+    return data.choices[0].message.content;
 
   } catch (err) {
-    console.error(err);
-    return "AI server not connected.";
+    console.error("AI ERROR:", err);
+    return "AI server error.";
   }
 }
