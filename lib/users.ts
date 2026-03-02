@@ -1,4 +1,5 @@
 export type User = {
+  id: string;
   email: string;
   password: string;
   role: string;
@@ -7,10 +8,10 @@ export type User = {
 
 /**
  * Temporary in-memory users
- * Later we connect database
  */
 const users: User[] = [
   {
+    id: "1",
     email: "admin@nexxovate.com",
     password: "admin123",
     role: "admin",
@@ -24,9 +25,10 @@ const users: User[] = [
  */
 export function getUserByEmail(email: string): User | null {
 
-  const user = users.find(
-    (u) => u.email === email
-  );
+  const user =
+    users.find(
+      (u) => u.email === email
+    );
 
   return user || null;
 
@@ -34,7 +36,7 @@ export function getUserByEmail(email: string): User | null {
 
 
 /**
- * ADMIN alias (for auth.ts compatibility)
+ * ADMIN alias
  */
 export function getAdminByEmail(email: string): User | null {
 
@@ -44,7 +46,7 @@ export function getAdminByEmail(email: string): User | null {
 
 
 /**
- * REGISTER NEW USER
+ * CREATE USER
  */
 export function createUser(
   email: string,
@@ -60,6 +62,7 @@ export function createUser(
   }
 
   const user: User = {
+    id: crypto.randomUUID(),
     email,
     password,
     role,
@@ -74,7 +77,7 @@ export function createUser(
 
 
 /**
- * FIND USER (alias)
+ * FIND USER alias
  */
 export function findUser(email: string) {
 
