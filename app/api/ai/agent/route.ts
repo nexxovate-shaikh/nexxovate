@@ -1,29 +1,17 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-});
+import { generateAI } from "@/lib/ai";
 
 export async function POST(req: Request) {
   const { lead } = await req.json();
 
-  const res = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      {
-        role: "system",
-        content: "You are an elite AI sales closer for Nexxovate.",
-      },
-      {
-        role: "user",
-        content: `Write a persuasive follow-up message for this lead:
-        ${JSON.stringify(lead)}`,
-      },
-    ],
-  });
+  const reply = await generateAI(`
+You are Nexxovate's AI sales agent.
 
-  return NextResponse.json({
-    message: res.choices[0].message.content,
-  });
+Lead:
+${JSON.stringify(lead)}
+
+Write best follow-up message.
+`);
+
+  return NextResponse.json({ reply });
 }

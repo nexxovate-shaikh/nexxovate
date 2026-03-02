@@ -1,26 +1,52 @@
-export type AdminRole = "superadmin" | "admin" | "staff";
-
-export type AdminAccount = {
+export type User = {
   id: string;
   email: string;
-  passwordHash: string;
-  role: AdminRole;
+  password: string;
+  role: string;
   tokenVersion: number;
 };
 
-const admins: AdminAccount[] = [];
+const users: User[] = [];
 
-export function getAdminByEmail(email: string) {
-  return admins.find(a => a.email === email);
+/** create new user/admin */
+export function createUser(
+  email: string,
+  password: string,
+  role?: string
+): User {
+  const exists = users.find((u) => u.email === email);
+
+  if (exists) {
+    throw new Error("User already exists");
+  }
+
+  const user: User = {
+    id: crypto.randomUUID(),
+    email,
+    password,
+    role: role ?? "staff",
+    tokenVersion: 0,
+  };
+
+  users.push(user);
+
+  return user;
 }
 
-export function addAdmin(admin: AdminAccount) {
-  admins.push(admin);
+/** find user */
+export function findUser(email: string): User | undefined {
+  return users.find((u) => u.email === email);
 }
 
+/** used by auth */
+export function getAdminByEmail(email: string): User | undefined {
+  return users.find((u) => u.email === email);
+}
+
+/** optional: invalidate tokens */
 export function incrementTokenVersion(email: string) {
-  const admin = getAdminByEmail(email);
-  if (admin) {
-    admin.tokenVersion++;
+  const user = users.find((u) => u.email === email);
+  if (user) {
+    user.tokenVersion++;
   }
 }
