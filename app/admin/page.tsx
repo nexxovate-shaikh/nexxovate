@@ -24,10 +24,16 @@ export default function AdminDashboard() {
   const [aiReply, setAiReply] = useState("");
 
   /* ---------- Auth ---------- */
-  useEffect(() => {
-    const ok = sessionStorage.getItem("admin");
-    if (!ok) router.push("/admin/login");
-  }, [router]);
+  /* ---------- Auth ---------- */
+useEffect(() => {
+  fetch("/api/admin/check", {
+    credentials: "include",
+  }).then(res => {
+    if (!res.ok) {
+      router.replace("/admin/login");
+    }
+  });
+}, [router]);
 
   /* ---------- Load leads ---------- */
   useEffect(() => {
@@ -82,10 +88,14 @@ export default function AdminDashboard() {
     saveAs(new Blob([buf]), "nexxovate_leads.xlsx");
   }
 
-  function logout() {
-    sessionStorage.removeItem("admin");
-    router.push("/admin/login");
-  }
+  async function logout() {
+  await fetch("/api/admin/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+
+  router.replace("/admin/login");
+}
 
   const filtered = leads.filter(
     l =>
