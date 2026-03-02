@@ -1,68 +1,42 @@
 import { NextResponse } from "next/server";
 import { signToken } from "@/lib/auth";
+import { getUserByEmail } from "@/lib/users";
 
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
-
   try {
+    const { email, password } = await req.json();
 
-    const body = await req.json();
-    const password = body.password;
+    const user = getUserByEmail(email);
 
-    const ADMIN_PASSWORD =
-      process.env.ADMIN_PASSWORD;
-
-    if (!ADMIN_PASSWORD) {
-
-      return NextResponse.json(
-        { error: "ADMIN_PASSWORD not set" },
-        { status: 500 }
-      );
-
-    }
-
-    if (password !== ADMIN_PASSWORD) {
-
+    if (!user || user.password !== password) {
       return NextResponse.json(
         { error: "Invalid credentials" },
         { status: 401 }
       );
-
     }
 
     const token = signToken({
-      email: "admin@nexxovate.com",
-      role: "admin",
-      tokenVersion: 0,
+      email: user.email,
+      role: user.role,
+      tokenVersion: user.tokenVersion,
     });
 
-    const response =
-      NextResponse.json({
-        success: true,
-      });
+    const res = NextResponse.json({ success: true });
 
-    response.cookies.set(
-      "admin_token",
-      token,
-      {
-        httpOnly: true,
-        path: "/",
-        maxAge: 60 * 60 * 24 * 7,
-      }
-    );
+    res.cookies.set("admin_token", token, {
+      httpOnly: true,
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
 
-    return response;
+    return res;
 
-  } catch (error) {
-
-    console.error(error);
-
+  } catch (err) {
     return NextResponse.json(
       { error: "Server error" },
       { status: 500 }
     );
-
   }
-
 }
