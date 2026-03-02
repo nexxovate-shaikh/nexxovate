@@ -1,35 +1,47 @@
-const GROQ_API_KEY = process.env.GROQ_API_KEY!;
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
 export async function generateAI(prompt: string) {
   try {
-    const res = await fetch(
+    if (!GROQ_API_KEY) {
+      console.error("Missing GROQ_API_KEY");
+      return null;
+    }
+
+    const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${GROQ_API_KEY}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           model: "llama3-8b-8192",
           messages: [
             {
+              role: "system",
+              content:
+                "You are Nexxovate's enterprise AI sales assistant. Write professional replies.",
+            },
+            {
               role: "user",
               content: prompt,
             },
           ],
+          temperature: 0.7,
+          max_tokens: 300,
         }),
       }
     );
 
-    const data = await res.json();
+    const data = await response.json();
 
-    console.log("GROQ DATA:", JSON.stringify(data));
+    console.log("GROQ RESPONSE:", JSON.stringify(data));
 
-    return data?.choices?.[0]?.message?.content;
+    return data?.choices?.[0]?.message?.content || null;
 
-  } catch (e) {
-    console.error("GROQ ERROR:", e);
+  } catch (error) {
+    console.error("AI ERROR:", error);
     return null;
   }
 }
