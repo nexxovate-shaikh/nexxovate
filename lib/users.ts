@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getDB } from "./db";
 import bcrypt from "bcryptjs";
 
