@@ -1,9 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import LayoutClient from "./LayoutClient";
-import { ensureAdminExists } from "@/lib/users";
 
-await ensureAdminExists();
 export const metadata: Metadata = {
   title: "Nexxovate – Powering Intelligent IT Operations",
   description:
