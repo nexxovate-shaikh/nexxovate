@@ -17,247 +17,290 @@ type Lead = {
 };
 
 export default function AdminDashboard() {
+
   const router = useRouter();
+
   const [leads, setLeads] = useState<Lead[]>([]);
-  const [log, setLog] = useState<string[]>([]);
   const [search, setSearch] = useState("");
   const [aiReply, setAiReply] = useState("");
 
-  /* ---------- Auth ---------- */
-  /* ---------- Auth ---------- */
-useEffect(() => {
-  fetch("/api/admin/check", {
-    credentials: "include",
-  }).then(res => {
-    if (!res.ok) {
-      router.replace("/admin/login");
-    }
-  });
-}, [router]);
-
-  /* ---------- Load leads ---------- */
   useEffect(() => {
+
+    fetch("/api/admin/check", {
+      credentials: "include",
+    }).then(res => {
+      if (!res.ok) router.replace("/admin/login");
+    });
+
+  }, [router]);
+
+  useEffect(() => {
+
     fetch("/api/contact/lead")
       .then(res => res.json())
       .then((data: any[]) => {
-        const enhanced = data.map(l => ({
+
+        const enhanced: Lead[] = data.map(l => ({
           ...l,
           status: "New",
           score: scoreLead(l),
-          notes: "",
+          notes: ""
         }));
+
         setLeads(enhanced);
-      });
+      })
+      .catch(err => console.error("Lead fetch error:", err));
+
   }, []);
 
   function scoreLead(lead: any) {
+
     let s = 0;
-    if (lead.Interest?.includes("AI")) s += 40;
-    if (lead["Business Type"] === "Enterprise") s += 30;
-    if (lead.Interest?.includes("IT")) s += 20;
+
+    if (lead?.Interest?.includes("AI")) s += 40;
+    if (lead?.["Business Type"] === "Enterprise") s += 30;
+    if (lead?.Interest?.includes("IT")) s += 20;
+
     return s;
   }
 
-  /* ---------- Actions ---------- */
-
   function updateStatus(i: number, status: Lead["status"]) {
+
     const copy = [...leads];
-    copy[i].status = status;
+    copy[i] = { ...copy[i], status };
+
     setLeads(copy);
-    addLog(`Lead ${copy[i].Name} → ${status}`);
   }
 
   function setReminder(i: number, date: string) {
+
     const copy = [...leads];
-    copy[i].followUp = date;
+    copy[i] = { ...copy[i], followUp: date };
+
     setLeads(copy);
-    addLog(`Follow-up set for ${copy[i].Name}`);
   }
 
-  function addLog(entry: string) {
-    setLog(prev => [new Date().toLocaleString() + " — " + entry, ...prev]);
-  }
+  async function generateReply(lead: Lead) {
 
-  /* ---------- Export ---------- */
+    try {
+
+      setAiReply("Generating AI reply...");
+
+      const res = await fetch("/api/ai/reply", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          lead: lead
+        })
+      });
+
+      const data = await res.json();
+
+      setAiReply(data.reply || "AI failed to generate reply.");
+
+    } catch (error) {
+
+      console.error("AI FETCH ERROR:", error);
+      setAiReply("Error generating AI reply.");
+
+    }
+  }
 
   function exportExcel() {
+
     const ws = XLSX.utils.json_to_sheet(leads);
     const wb = XLSX.utils.book_new();
+
     XLSX.utils.book_append_sheet(wb, ws, "Leads");
-    const buf = XLSX.write(wb, { type: "array", bookType: "xlsx" });
+
+    const buf = XLSX.write(wb, {
+      type: "array",
+      bookType: "xlsx"
+    });
+
     saveAs(new Blob([buf]), "nexxovate_leads.xlsx");
   }
 
   async function logout() {
-  await fetch("/api/admin/logout", {
-    method: "POST",
-    credentials: "include",
-  });
 
-  router.replace("/admin/login");
-}
+    await fetch("/api/admin/logout", {
+      method: "POST",
+      credentials: "include"
+    });
 
-  const filtered = leads.filter(
-    l =>
-      l.Name?.toLowerCase().includes(search.toLowerCase()) ||
-      l.Email?.toLowerCase().includes(search.toLowerCase())
+    router.replace("/admin/login");
+  }
+
+  const filtered = leads.filter(l =>
+    l.Name?.toLowerCase().includes(search.toLowerCase()) ||
+    l.Email?.toLowerCase().includes(search.toLowerCase())
   );
 
-  /* ---------- UI ---------- */
-
   return (
-    <div className="min-h-screen bg-gray-100">
 
-      {/* Header */}
-      <div className="flex justify-between items-center bg-black text-white px-6 py-3">
-        <h1 className="font-semibold text-lg">Nexxovate CRM</h1>
+    <div className="space-y-10">
+
+      <div className="flex justify-between items-center">
+
+        <h1 className="text-3xl font-bold text-gray-800">
+          Dashboard
+        </h1>
 
         <div className="flex gap-3">
-          <button onClick={exportExcel} className="bg-green-600 px-3 py-1 rounded">
+
+          <button
+            onClick={exportExcel}
+            className="bg-emerald-500 text-white px-4 py-2 rounded-lg"
+          >
             Export Excel
           </button>
-          <button onClick={logout} className="bg-red-500 px-3 py-1 rounded">
+
+          <button
+            onClick={logout}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg"
+          >
             Logout
           </button>
+
         </div>
+
       </div>
 
-      <div className="p-8 space-y-6">
+      <div className="grid grid-cols-3 gap-6">
 
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-4">
-          <div className="bg-white p-4 shadow rounded">
-            <h3>Hot Leads</h3>
-            <p className="text-2xl font-bold">
-              {leads.filter(l => l.score > 50).length}
-            </p>
-          </div>
-
-          <div className="bg-white p-4 shadow rounded">
-            <h3>Contacted</h3>
-            <p className="text-2xl font-bold">
-              {leads.filter(l => l.status === "Contacted").length}
-            </p>
-          </div>
-
-          <div className="bg-white p-4 shadow rounded">
-            <h3>Closed</h3>
-            <p className="text-2xl font-bold">
-              {leads.filter(l => l.status === "Closed").length}
-            </p>
-          </div>
+        <div className="bg-white p-6 rounded-xl shadow">
+          <p className="text-gray-500 text-sm">
+            Hot Leads
+          </p>
+          <p className="text-3xl font-bold text-orange-500">
+            {leads.filter(l => l.score > 50).length}
+          </p>
         </div>
 
-        {/* Search */}
-        <input
-          placeholder="Search leads…"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="border p-2 w-full rounded"
-        />
+        <div className="bg-white p-6 rounded-xl shadow">
+          <p className="text-gray-500 text-sm">
+            Contacted
+          </p>
+          <p className="text-3xl font-bold text-blue-500">
+            {leads.filter(l => l.status === "Contacted").length}
+          </p>
+        </div>
 
-        {/* Leads table */}
-        <div className="bg-white rounded shadow overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="p-2">Name</th>
-                <th>Email</th>
-                <th>Interest</th>
-                <th>Status</th>
-                <th>Score</th>
-                <th>Follow-up</th>
-                <th>Actions</th>
+        <div className="bg-white p-6 rounded-xl shadow">
+          <p className="text-gray-500 text-sm">
+            Closed
+          </p>
+          <p className="text-3xl font-bold text-green-500">
+            {leads.filter(l => l.status === "Closed").length}
+          </p>
+        </div>
+
+      </div>
+
+      <div className="bg-white rounded-xl shadow p-6 space-y-4">
+
+        
+
+        <table className="w-full text-sm">
+
+          <thead className="text-left text-gray-500">
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Interest</th>
+              <th>Status</th>
+              <th>Score</th>
+              <th>Follow-up</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            {filtered.map((lead, i) => (
+
+              <tr key={lead.Email || i} className="border-t">
+
+                <td>{lead.Name}</td>
+                <td>{lead.Email}</td>
+                <td>{lead.Interest}</td>
+
+                <td>
+                  <select
+                    value={lead.status}
+                    onChange={e =>
+                      updateStatus(i, e.target.value as Lead["status"])
+                    }
+                  >
+                    <option value="New">New</option>
+                    <option value="Contacted">Contacted</option>
+                    <option value="Closed">Closed</option>
+                  </select>
+                </td>
+
+                <td className="text-purple-600 font-bold">
+                  {lead.score}
+                </td>
+
+                <td>
+                  <input
+                    type="date"
+                    value={lead.followUp || ""}
+                    onChange={e =>
+                      setReminder(i, e.target.value)
+                    }
+                  />
+                </td>
+
+                <td className="flex gap-2">
+
+                  <button
+                    onClick={() => generateReply(lead)}
+                    className="bg-purple-600 text-white px-3 py-1 rounded"
+                  >
+                    AI Reply
+                  </button>
+
+                  <a
+                    href={`mailto:${lead.Email}`}
+                    className="bg-blue-500 text-white px-3 py-1 rounded"
+                  >
+                    Email
+                  </a>
+
+                </td>
+
               </tr>
-            </thead>
 
-            <tbody>
-              {filtered.map((lead, i) => (
-                <tr key={i} className="border-t">
-
-                  <td className="p-2">{lead.Name}</td>
-                  <td>{lead.Email}</td>
-                  <td>{lead.Interest}</td>
-
-                  <td>
-                    <select
-                      value={lead.status}
-                      onChange={e => updateStatus(i, e.target.value as any)}
-                      className="border p-1"
-                    >
-                      <option>New</option>
-                      <option>Contacted</option>
-                      <option>Closed</option>
-                    </select>
-                  </td>
-
-                  <td className="font-bold text-purple-600">{lead.score}</td>
-
-                  <td>
-                    <input
-                      type="date"
-                      onChange={e => setReminder(i, e.target.value)}
-                      className="border p-1"
-                    />
-                  </td>
-
-                  <td className="flex gap-2">
-
-                    <button
-                      onClick={async () => {
-                        const res = await fetch("/api/ai/reply", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ lead }),
-                        });
-
-                        const data = await res.json();
-                        setAiReply(data.reply);
-                      }}
-                      className="bg-purple-600 text-white px-2 rounded"
-                    >
-                      AI Reply
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        (window.location.href = `mailto:${lead.Email}`)
-                      }
-                      className="bg-blue-500 text-white px-2 rounded"
-                    >
-                      Email
-                    </button>
-
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* AI Reply Panel */}
-        {aiReply && (
-          <div className="bg-white p-4 rounded shadow">
-            <h3 className="font-semibold mb-2">AI Suggested Reply</h3>
-            <textarea
-              value={aiReply}
-              readOnly
-              className="w-full h-40 border p-2 rounded"
-            />
-          </div>
-        )}
-
-        {/* Activity log */}
-        <div className="bg-white rounded shadow p-4">
-          <h3 className="font-semibold mb-2">Activity Log</h3>
-          <div className="text-sm max-h-40 overflow-y-auto">
-            {log.map((l, i) => (
-              <div key={i}>{l}</div>
             ))}
-          </div>
-        </div>
+
+          </tbody>
+
+        </table>
 
       </div>
+
+      {aiReply && (
+
+        <div className="bg-white p-6 rounded-xl shadow">
+
+          <h2 className="font-semibold mb-3">
+            AI Suggested Reply
+          </h2>
+
+          <textarea
+            value={aiReply}
+            readOnly
+            className="w-full border rounded p-4 h-48"
+          />
+
+        </div>
+
+      )}
+
     </div>
+
   );
 }
