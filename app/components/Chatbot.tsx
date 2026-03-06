@@ -14,7 +14,6 @@ type Step =
   | "otp"
   | "done";
 
-
 type Message = {
   role: Role;
   text: string;
@@ -28,10 +27,15 @@ export default function Chatbot() {
   const [lead, setLead] = useState<any>({});
   const [voiceOn, setVoiceOn] = useState(true);
   const [listening, setListening] = useState(false);
-const [otp, setOtp] = useState("");
-const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+
+  /* 🧠 NEW — SCROLL MOVEMENT STATE */
+  const [scrollDir, setScrollDir] = useState<"left" | "right" | "idle">("idle");
+  const lastScroll = useRef(0);
 
   const bottomRef = useRef<HTMLDivElement>(null);
+
   const page =
     typeof window !== "undefined" ? window.location.pathname : "/";
 
@@ -57,6 +61,31 @@ const [otpSent, setOtpSent] = useState(false);
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open]);
 
+  /* ---------------- SCROLL DETECTION ---------------- */
+  useEffect(() => {
+    function handleScroll() {
+      const current = window.scrollY;
+
+      if (current > lastScroll.current) {
+        setScrollDir("left");
+      } else if (current < lastScroll.current) {
+        setScrollDir("right");
+      }
+
+      lastScroll.current = current;
+
+      clearTimeout((window as any).scrollTimeout);
+
+      (window as any).scrollTimeout = setTimeout(() => {
+        setScrollDir("idle");
+      }, 350);
+    }
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   /* ---------------- VOICE (TTS) ---------------- */
   function speak(text: string) {
     if (!voiceOn || typeof window === "undefined") return;
@@ -77,17 +106,20 @@ const [otpSent, setOtpSent] = useState(false);
     const SR =
       (window as any).SpeechRecognition ||
       (window as any).webkitSpeechRecognition;
+
     if (!SR) return;
 
     const rec = new SR();
     rec.lang = locale;
     rec.start();
+
     setListening(true);
 
     rec.onresult = (e: any) => {
       setInput(e.results[0][0].transcript);
       setListening(false);
     };
+
     rec.onend = () => setListening(false);
   }
 
@@ -95,228 +127,244 @@ const [otpSent, setOtpSent] = useState(false);
   function isValidEmail(email: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
   }
-/* ---------------- OTP FUNCTIONS ---------------- */
-async function sendOTP(email: string) {
-  try {
-    await fetch("/api/otp/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-    setOtpSent(true);
-  } catch (e) {
-    bot("Failed to send OTP. Please try again.");
-  }
-}
 
-async function verifyOTP(code: string) {
-  try {
-    const res = await fetch("/api/otp/verify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: lead.email, code }),
-    });
+  /* ---------------- OTP FUNCTIONS ---------------- */
+  async function sendOTP(email: string) {
+    try {
+      await fetch("/api/otp/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
 
-    const data = await res.json();
-    return data.valid;
-  } catch {
-    return false;
-  }
-}
-
- /* ---------------- LOGIC ---------------- */
-async function handleUser(text: string) {
-  const value = text.trim();
-
-  /* 1️⃣ INTEREST */
-  if (step === "interest") {
-    setLead({ interest: value, page });
-    setStep("business");
-
-    bot(
-      "Great choice. What stage is your organization currently in?",
-      ["Startup", "Growing Business", "Enterprise"]
-    );
-    return;
+      setOtpSent(true);
+    } catch (e) {
+      bot("Failed to send OTP. Please try again.");
+    }
   }
 
-  /* 2️⃣ BUSINESS */
-  if (step === "business") {
-    setLead((l: any) => ({ ...l, businessType: value }));
-    setStep("challenge");
+  async function verifyOTP(code: string) {
+    try {
+      const res = await fetch("/api/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: lead.email, code }),
+      });
 
-    bot(
-      "Now the important part.\n\nPlease describe the main challenge, bottleneck, or goal you’re dealing with right now.\n\nFeel free to be specific — the more context you share, the better solution we can design."
-    );
-    return;
+      const data = await res.json();
+
+      return data.valid;
+    } catch {
+      return false;
+    }
   }
 
-  /* 3️⃣ CHALLENGE */
-  if (step === "challenge") {
-  if (value.length < 10) {
-    bot(
-      "Please describe your challenge with a bit more detail so we can understand properly."
-    );
-    return;
-  }
+  /* ---------------- LOGIC ---------------- */
+  async function handleUser(text: string) {
+    const value = text.trim();
 
-  if (/^[^a-zA-Z0-9]+$/.test(value)) {
-    bot("Please enter a meaningful description.");
-    return;
-  }
+    if (step === "interest") {
+      setLead({ interest: value, page });
+      setStep("business");
 
-  setLead((l: any) => ({ ...l, challenge: value }));
-  setStep("name");
-
-  bot(
-    "Thank you for sharing that — this is exactly the kind of problem we help solve.\n\nMay I know your name?"
-  );
-  return;
-}
-
-
-  /* 4️⃣ NAME */
-  if (step === "name") {
-    setLead((l: any) => ({ ...l, name: value }));
-    setStep("email");
-
-    bot(
-      `Nice to meet you, ${value}.\n\nWhat’s the best work email to share insights or next steps?`
-    );
-    return;
-  }
-
-  /* 5️⃣ EMAIL → SEND OTP */
-  if (step === "email") {
-    if (!isValidEmail(value)) {
       bot(
-        "That email doesn’t look valid.\n\nPlease enter a correct work email (example: name@company.com)."
+        "Great choice. What stage is your organization currently in?",
+        ["Startup", "Growing Business", "Enterprise"]
       );
       return;
     }
 
-    setLead((l: any) => ({ ...l, email: value }));
-    setStep("otp");
+    if (step === "business") {
+      setLead((l: any) => ({ ...l, businessType: value }));
+      setStep("challenge");
 
-    await sendOTP(value);
-
-    bot(
-      "We sent a 6-digit verification code to your email.\n\nPlease enter the OTP to continue."
-    );
-    return;
-  }
-
-  /* 6️⃣ OTP VERIFY */
-  if (step === "otp") {
-    const valid = await verifyOTP(value);
-
-    if (!valid) {
-      bot("Invalid OTP. Please try again.");
+      bot(
+        "Now the important part.\n\nPlease describe the main challenge, bottleneck, or goal you’re dealing with right now.\n\nFeel free to be specific — the more context you share, the better solution we can design."
+      );
       return;
     }
 
-    const finalLead = {
-      ...lead,
-      source: "Website Chatbot",
-      timestamp: new Date().toISOString(),
-    };
+    if (step === "challenge") {
+      if (value.length < 10) {
+        bot(
+          "Please describe your challenge with a bit more detail so we can understand properly."
+        );
+        return;
+      }
 
-    await fetch("/api/contact/lead", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(finalLead),
-    });
+      if (/^[^a-zA-Z0-9]+$/.test(value)) {
+        bot("Please enter a meaningful description.");
+        return;
+      }
 
-    setStep("done");
+      setLead((l: any) => ({ ...l, challenge: value }));
+      setStep("name");
 
-    bot(
-      `Verification complete.\n\nThank you ${finalLead.name}. Our team will contact you shortly.`
-    );
-    return;
+      bot(
+        "Thank you for sharing that — this is exactly the kind of problem we help solve.\n\nMay I know your name?"
+      );
+      return;
+    }
+
+    if (step === "name") {
+      setLead((l: any) => ({ ...l, name: value }));
+      setStep("email");
+
+      bot(
+        `Nice to meet you, ${value}.\n\nWhat’s the best work email to share insights or next steps?`
+      );
+      return;
+    }
+
+    if (step === "email") {
+      if (!isValidEmail(value)) {
+        bot(
+          "That email doesn’t look valid.\n\nPlease enter a correct work email (example: name@company.com)."
+        );
+        return;
+      }
+
+      setLead((l: any) => ({ ...l, email: value }));
+      setStep("otp");
+
+      await sendOTP(value);
+
+      bot(
+        "We sent a 6-digit verification code to your email.\n\nPlease enter the OTP to continue."
+      );
+      return;
+    }
+
+    if (step === "otp") {
+      const valid = await verifyOTP(value);
+
+      if (!valid) {
+        bot("Invalid OTP. Please try again.");
+        return;
+      }
+
+      const finalLead = {
+        ...lead,
+        source: "Website Chatbot",
+        timestamp: new Date().toISOString(),
+      };
+
+      await fetch("/api/contact/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(finalLead),
+      });
+
+      setStep("done");
+
+      bot(
+        `Verification complete.\n\nThank you ${finalLead.name}. Our team will contact you shortly.`
+      );
+    }
   }
-}
 
-/* ---------------- SEND ---------------- */
-function send(text?: string) {
-  const value = text ?? input;
-  if (!value.trim()) return;
+  /* ---------------- SEND ---------------- */
+  function send(text?: string) {
+    const value = text ?? input;
 
-  setInput("");
-  setMessages((m) => [...m, { role: "user", text: value }]);
-  setTimeout(() => handleUser(value), 300);
-}
+    if (!value.trim()) return;
+
+    setInput("");
+
+    setMessages((m) => [...m, { role: "user", text: value }]);
+
+    setTimeout(() => handleUser(value), 300);
+  }
 
   /* ---------------- UI ---------------- */
   return (
     <>
-     {/* 🔵 NEO PULSE CHAT BUBBLE — WORKING FIX */}
-{/* 🔵 NEO N HEARTBEAT CHAT BUBBLE */}
-{!open && (
-  <button
-    onClick={() => setOpen(true)}
-    aria-label="Open Nexxovate Concierge"
-    className="fixed bottom-6 right-6 z-[9999]
-w-16 h-16 rounded-full
-flex items-center justify-center
+      {!open && (
+        <button
+          onClick={() => setOpen(true)}
+          aria-label="Open Nexxovate Concierge"
+          className={`fixed bottom-6 right-6 z-[9999]
+          w-16 h-16 rounded-full
+          flex items-center justify-center
+          overflow-hidden
+          transition-all duration-500
 
-    overflow-hidden
-    hover:scale-110 transition-transform duration-300"
-  >
-    {/* 🌊 OUTER HEARTBEAT PULSE */}
-    <span
-      className="absolute inset-0
-      bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600
-      opacity-40
-      animate-ping"
-    />
+          ${
+            scrollDir === "left"
+              ? "-translate-x-6 rotate-[-6deg]"
+              : ""
+          }
 
-    {/* 🔄 ROTATING NEO GRADIENT */}
-    <span
-      className="absolute inset-0
-      bg-[conic-gradient(from_0deg,#22d3ee,#6366f1,#a855f7,#22d3ee)]
-      opacity-90"
-      style={{
-        animation: "spin 6s linear infinite",
-      }}
-    />
+          ${
+            scrollDir === "right"
+              ? "translate-x-6 rotate-[6deg]"
+              : ""
+          }
 
-    {/* 💎 GLASS CORE — CIRCLE PREMIUM */}
-<span
-  className="relative z-10 w-12 h-12 rounded-full
-  bg-white/20 backdrop-blur-2xl
-  border border-white/30
-  flex items-center justify-center
-  shadow-[0_0_25px_rgba(99,102,241,0.7)]"
->
+          ${
+            scrollDir === "idle"
+              ? "animate-bounce"
+              : ""
+          }
 
-      {/* ❤️ N LETTER HEARTBEAT */}
-      <span
-        className="text-white font-black text-xl
-        animate-pulse
-        drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"
-      >
-        N
-      </span>
-    </span>
-  </button>
-)}
+          hover:scale-110`}
+        >
+          <span
+            className="absolute inset-0
+            bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600
+            opacity-40 animate-ping"
+          />
 
+          <span
+            className="absolute inset-0
+            bg-[conic-gradient(from_0deg,#22d3ee,#6366f1,#a855f7,#22d3ee)]
+            opacity-90"
+            style={{ animation: "spin 6s linear infinite" }}
+          />
+
+          <span
+            className="relative z-10 w-12 h-12 rounded-full
+            bg-white/20 backdrop-blur-2xl
+            border border-white/30
+            flex items-center justify-center
+            shadow-[0_0_25px_rgba(99,102,241,0.7)]"
+          >
+            <span
+              className="text-white font-black text-xl
+              animate-pulse
+              drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+            >
+              N
+            </span>
+          </span>
+        </button>
+      )}
+
+      {/* CHAT WINDOW — UNCHANGED */}
       {open && (
         <div className="fixed inset-0 z-[9998] bg-black/40">
-          <div className="fixed bottom-0 right-0 sm:bottom-6 sm:right-6
+          <div
+            className="fixed bottom-0 right-0 sm:bottom-6 sm:right-6
           w-full sm:w-[400px] h-[80vh] sm:h-[600px]
-          bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col">
-
+          bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col"
+          >
             {/* HEADER */}
             <div className="flex items-center gap-3 px-4 py-3 border-b">
               <img src="/logo.png" className="h-7" />
+
               <div className="flex-1">
-                <p className="text-sm font-semibold">Nexxovate Concierge</p>
-                <p className="text-xs text-gray-500">Enterprise Growth Advisor</p>
+                <p className="text-sm font-semibold">
+                  Nexxovate Concierge
+                </p>
+                <p className="text-xs text-gray-500">
+                  Enterprise Growth Advisor
+                </p>
               </div>
+
               <button onClick={() => setVoiceOn(!voiceOn)}>
                 {voiceOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
               </button>
+
               <button onClick={() => setOpen(false)}>
                 <X size={18} />
               </button>
@@ -326,12 +374,20 @@ flex items-center justify-center
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
               {messages.map((m, i) => (
                 <div key={i}>
-                  <div className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                  <div
+                    className={`flex ${
+                      m.role === "user"
+                        ? "justify-end"
+                        : "justify-start"
+                    }`}
+                  >
                     <div
                       className={`px-4 py-3 rounded-2xl text-sm max-w-[75%]
-                      ${m.role === "user"
-                        ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-                        : "bg-white text-gray-900 shadow"}`}
+                      ${
+                        m.role === "user"
+                          ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+                          : "bg-white text-gray-900 shadow"
+                      }`}
                     >
                       {m.text}
                     </div>
@@ -353,6 +409,7 @@ flex items-center justify-center
                   )}
                 </div>
               ))}
+
               <div ref={bottomRef} />
             </div>
 
@@ -365,6 +422,7 @@ flex items-center justify-center
               >
                 <Mic size={16} />
               </button>
+
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -372,6 +430,7 @@ flex items-center justify-center
                 placeholder="Type or speak…"
                 className="flex-1 border rounded-full px-4 py-2 text-sm"
               />
+
               <button
                 onClick={() => send()}
                 className="w-10 h-10 rounded-full
