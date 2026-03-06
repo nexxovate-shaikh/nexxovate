@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { X, Send, Mic, Volume2, VolumeX } from "lucide-react";
+import AIConciergeOrb from "./AIConciergeOrb";
 
 /* ---------------- TYPES ---------------- */
 type Role = "bot" | "user";
@@ -30,10 +31,6 @@ export default function Chatbot() {
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
 
-  /* 🧠 NEW — SCROLL MOVEMENT STATE */
-  const [scrollDir, setScrollDir] = useState<"left" | "right" | "idle">("idle");
-  const lastScroll = useRef(0);
-
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const page =
@@ -60,31 +57,6 @@ export default function Chatbot() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open]);
-
-  /* ---------------- SCROLL DETECTION ---------------- */
-  useEffect(() => {
-    function handleScroll() {
-      const current = window.scrollY;
-
-      if (current > lastScroll.current) {
-        setScrollDir("left");
-      } else if (current < lastScroll.current) {
-        setScrollDir("right");
-      }
-
-      lastScroll.current = current;
-
-      clearTimeout((window as any).scrollTimeout);
-
-      (window as any).scrollTimeout = setTimeout(() => {
-        setScrollDir("idle");
-      }, 350);
-    }
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   /* ---------------- VOICE (TTS) ---------------- */
   function speak(text: string) {
@@ -279,66 +251,8 @@ export default function Chatbot() {
   /* ---------------- UI ---------------- */
   return (
     <>
-      {!open && (
-        <button
-          onClick={() => setOpen(true)}
-          aria-label="Open Nexxovate Concierge"
-          className={`fixed bottom-6 right-6 z-[9999]
-          w-16 h-16 rounded-full
-          flex items-center justify-center
-          overflow-hidden
-          transition-all duration-500
-
-          ${
-            scrollDir === "left"
-              ? "-translate-x-6 rotate-[-6deg]"
-              : ""
-          }
-
-          ${
-            scrollDir === "right"
-              ? "translate-x-6 rotate-[6deg]"
-              : ""
-          }
-
-          ${
-            scrollDir === "idle"
-              ? "animate-bounce"
-              : ""
-          }
-
-          hover:scale-110`}
-        >
-          <span
-            className="absolute inset-0
-            bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600
-            opacity-40 animate-ping"
-          />
-
-          <span
-            className="absolute inset-0
-            bg-[conic-gradient(from_0deg,#22d3ee,#6366f1,#a855f7,#22d3ee)]
-            opacity-90"
-            style={{ animation: "spin 6s linear infinite" }}
-          />
-
-          <span
-            className="relative z-10 w-12 h-12 rounded-full
-            bg-white/20 backdrop-blur-2xl
-            border border-white/30
-            flex items-center justify-center
-            shadow-[0_0_25px_rgba(99,102,241,0.7)]"
-          >
-            <span
-              className="text-white font-black text-xl
-              animate-pulse
-              drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"
-            >
-              N
-            </span>
-          </span>
-        </button>
-      )}
+      {/* ULTRA PREMIUM AI ORB */}
+      {!open && <AIConciergeOrb onOpen={() => setOpen(true)} />}
 
       {/* CHAT WINDOW — UNCHANGED */}
       {open && (
