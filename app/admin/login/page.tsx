@@ -7,56 +7,47 @@ export default function LoginPage() {
 
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [email,setEmail]=useState("");
+  const [password,setPassword]=useState("");
+  const [loading,setLoading]=useState(false);
 
-  async function login() {
+  async function login(){
 
-    setLoading(true);
+    setLoading(true)
 
-    const res = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
+    const res=await fetch("/api/admin/login",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json"},
+      credentials:"include",
+      body:JSON.stringify({email,password})
+    })
 
-    const data = await res.json();
+    const data=await res.json()
 
-    if (!res.ok) {
-      alert(data.error);
-      setLoading(false);
-      return;
+    if(!res.ok){
+      alert(data.error)
+      setLoading(false)
+      return
     }
 
-  router.push("/admin/dashboard");
+    router.push("/admin/dashboard")
 
   }
 
-  return (
+  return(
 
     <div
       className="h-screen w-full bg-cover bg-top relative"
-      style={{
-        backgroundImage: "url('/images/nexxovate-login-bg.png')"
-      }}
+      style={{backgroundImage:"url('/images/nexxovate-login-bg.png')"}}
     >
 
-      {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/50"></div>
 
-      {/* Login container positioned bottom right */}
-      <div className="absolute bottom-16 right-16">
+      <div className="absolute bottom-8 left-4 right-4 md:left-auto md:right-16">
 
-        <div className="bg-white/10 backdrop-blur-lg border border-white/20 p-8 rounded-xl shadow-2xl w-96 text-white">
+        <div className="bg-white/10 backdrop-blur-lg border border-white/20 p-6 md:p-8 rounded-xl shadow-2xl w-full md:w-96 text-white">
 
-          <h1 className="text-2xl font-bold mb-6 text-center">
+          <h1 className="text-xl md:text-2xl font-bold mb-6 text-center">
             Nexxovate CRM Login
           </h1>
 
@@ -101,6 +92,6 @@ export default function LoginPage() {
 
     </div>
 
-  );
+  )
 
 }
