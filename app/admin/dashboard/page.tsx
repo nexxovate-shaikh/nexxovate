@@ -142,7 +142,7 @@ export default function AdminDashboard() {
 
     <div className="space-y-10">
 
-      <div className="flex justify-between items-center flex-wrap gap-4">
+      <div className="flex justify-between items-center">
 
         <h1 className="text-3xl font-bold text-gray-800">
           Dashboard
@@ -168,7 +168,6 @@ export default function AdminDashboard() {
 
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         <div className="bg-white p-6 rounded-xl shadow">
@@ -200,93 +199,89 @@ export default function AdminDashboard() {
 
       </div>
 
-      {/* Leads Table */}
       <div className="bg-white rounded-xl shadow p-6 space-y-4">
 
-        <div className="overflow-x-auto">
+        
 
-          <table className="min-w-[800px] w-full text-sm">
+        <table className="w-full text-sm">
 
-            <thead className="text-left text-gray-500">
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Interest</th>
-                <th>Status</th>
-                <th>Score</th>
-                <th>Follow-up</th>
-                <th>Actions</th>
+          <thead className="text-left text-gray-500">
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Interest</th>
+              <th>Status</th>
+              <th>Score</th>
+              <th>Follow-up</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            {filtered.map((lead, i) => (
+
+              <tr key={lead.Email || i} className="border-t">
+
+                <td>{lead.Name}</td>
+                <td>{lead.Email}</td>
+                <td>{lead.Interest}</td>
+
+                <td>
+                  <select
+                    value={lead.status}
+                    onChange={e =>
+                      updateStatus(i, e.target.value as Lead["status"])
+                    }
+                  >
+                    <option value="New">New</option>
+                    <option value="Contacted">Contacted</option>
+                    <option value="Closed">Closed</option>
+                  </select>
+                </td>
+
+                <td className="text-purple-600 font-bold">
+                  {lead.score}
+                </td>
+
+                <td>
+                  <input
+                    type="date"
+                    value={lead.followUp || ""}
+                    onChange={e =>
+                      setReminder(i, e.target.value)
+                    }
+                  />
+                </td>
+
+                <td className="flex gap-2">
+
+                  <button
+                    onClick={() => generateReply(lead)}
+                    className="bg-purple-600 text-white px-3 py-1 rounded"
+                  >
+                    AI Reply
+                  </button>
+
+                  <a
+                    href={`mailto:${lead.Email}`}
+                    className="bg-blue-500 text-white px-3 py-1 rounded"
+                  >
+                    Email
+                  </a>
+
+                </td>
+
               </tr>
-            </thead>
 
-            <tbody>
+            ))}
 
-              {filtered.map((lead, i) => (
+          </tbody>
 
-                <tr key={lead.Email || i} className="border-t">
-
-                  <td>{lead.Name}</td>
-                  <td>{lead.Email}</td>
-                  <td>{lead.Interest}</td>
-
-                  <td>
-                    <select
-                      value={lead.status}
-                      onChange={e =>
-                        updateStatus(i, e.target.value as Lead["status"])
-                      }
-                    >
-                      <option value="New">New</option>
-                      <option value="Contacted">Contacted</option>
-                      <option value="Closed">Closed</option>
-                    </select>
-                  </td>
-
-                  <td className="text-purple-600 font-bold">
-                    {lead.score}
-                  </td>
-
-                  <td>
-                    <input
-                      type="date"
-                      value={lead.followUp || ""}
-                      onChange={e =>
-                        setReminder(i, e.target.value)
-                      }
-                    />
-                  </td>
-
-                  <td className="flex gap-2">
-
-                    <button
-                      onClick={() => generateReply(lead)}
-                      className="bg-purple-600 text-white px-3 py-1 rounded"
-                    >
-                      AI Reply
-                    </button>
-
-                    <a
-                      href={`mailto:${lead.Email}`}
-                      className="bg-blue-500 text-white px-3 py-1 rounded"
-                    >
-                      Email
-                    </a>
-
-                  </td>
-
-                </tr>
-
-              ))}
-
-            </tbody>
-
-          </table>
-
-        </div>
+        </table>
 
       </div>
 
-      {/* AI Reply Box */}
       {aiReply && (
 
         <div className="bg-white p-6 rounded-xl shadow">
