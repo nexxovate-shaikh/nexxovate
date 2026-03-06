@@ -36,13 +36,17 @@ export default function LoginPage() {
     }
 
     router.push("/admin");
-
   }
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-100">
+    <div
+      className="h-screen flex items-center justify-center bg-cover bg-center"
+      style={{
+        backgroundImage: "url('/images/nexxovate-login-bg.png')",
+      }}
+    >
 
-      <div className="bg-white p-8 rounded-xl shadow w-96">
+      <div className="bg-white/90 backdrop-blur-md p-8 rounded-xl shadow-xl w-96">
 
         <h1 className="text-xl font-bold mb-6 text-center">
           Nexxovate CRM Login
@@ -65,14 +69,12 @@ export default function LoginPage() {
         />
 
         <div className="text-right mb-4">
-
           <button
             onClick={()=>router.push("/admin/forgot")}
             className="text-sm text-blue-600 hover:underline"
           >
             Forgot password?
           </button>
-
         </div>
 
         <button
@@ -87,5 +89,4 @@ export default function LoginPage() {
 
     </div>
   );
-
 }
