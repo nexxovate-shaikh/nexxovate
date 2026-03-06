@@ -42,11 +42,11 @@ export default function LoginPage() {
   return (
 
     <div
-      className="h-screen flex items-center justify-center bg-cover bg-center relative"
-      style={{
-        backgroundImage: "url('/images/nexxovate-login-bg.png')"
-      }}
-    >
+  className="h-screen flex items-center justify-center bg-cover bg-top relative"
+  style={{
+    backgroundImage: "url('/images/nexxovate-login-bg.png')"
+  }}
+>
 
       {/* Dark overlay for better visibility */}
       <div className="absolute inset-0 bg-black/50"></div>
