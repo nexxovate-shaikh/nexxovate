@@ -18,15 +18,10 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-100 relative">
+    <div className="flex min-h-screen bg-gray-100">
 
       {/* Sidebar */}
-      <aside className={`
-fixed md:static z-40 top-0 left-0 h-full w-64
-bg-gradient-to-b from-violet-700 via-purple-700 to-indigo-900 text-white flex flex-col
-transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-md:translate-x-0 transition-transform duration-300
-`}>
+      <aside className="w-72 bg-gradient-to-b from-violet-700 via-purple-700 to-indigo-900 text-white flex flex-col">
 
         {/* Logo */}
         <div className="p-6 border-b border-purple-500 flex items-center gap-3">
