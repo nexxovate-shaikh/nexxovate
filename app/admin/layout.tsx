@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -7,19 +9,28 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  async function logout() {
+    await fetch("/api/admin/logout", { method: "POST" });
+    window.location.href = "/admin/login";
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-100">
 
       {/* Sidebar */}
       <aside className="w-72 bg-gradient-to-b from-violet-700 via-purple-700 to-indigo-900 text-white flex flex-col">
 
+        {/* Logo */}
         <div className="p-6 border-b border-purple-500 flex items-center gap-3">
 
           <Image
             src="/logo.png"
             alt="Nexxovate"
-            width={70}
-            height={70}
+            width={60}
+            height={60}
             className="drop-shadow-lg"
           />
 
@@ -30,26 +41,40 @@ export default function AdminLayout({
 
         </div>
 
+        {/* Navigation */}
         <nav className="flex-1 p-6 space-y-2 text-sm">
 
-          <Link href="/admin" className="block px-4 py-3 rounded-lg hover:bg-white/10">
+          <Link
+            href="/admin"
+            className="block px-4 py-3 rounded-lg hover:bg-white/10 transition"
+          >
             Dashboard
           </Link>
 
-          <Link href="/admin/pipeline" className="block px-4 py-3 rounded-lg hover:bg-white/10">
+          <Link
+            href="/admin/pipeline"
+            className="block px-4 py-3 rounded-lg hover:bg-white/10 transition"
+          >
             Sales Pipeline
           </Link>
 
-          <Link href="/admin/analytics" className="block px-4 py-3 rounded-lg hover:bg-white/10">
+          <Link
+            href="/admin/analytics"
+            className="block px-4 py-3 rounded-lg hover:bg-white/10 transition"
+          >
             Analytics
           </Link>
 
-          <Link href="/admin/settings" className="block px-4 py-3 rounded-lg hover:bg-white/10">
+          <Link
+            href="/admin/settings"
+            className="block px-4 py-3 rounded-lg hover:bg-white/10 transition"
+          >
             Settings
           </Link>
 
         </nav>
 
+        {/* Footer */}
         <div className="p-6 border-t border-purple-500 text-xs text-purple-200">
           © 2026 Nexxovate Technologies
         </div>
@@ -66,7 +91,7 @@ export default function AdminLayout({
           <div className="w-96">
             <input
               placeholder="Search leads, companies..."
-              className="w-full border rounded-lg px-4 py-2 text-sm"
+              className="w-full border rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
 
@@ -84,17 +109,39 @@ export default function AdminLayout({
 
             </button>
 
-            {/* Profile */}
-            <div className="flex items-center gap-2">
+            {/* Profile Dropdown */}
+            <div className="relative">
 
-              <div className="w-9 h-9 bg-purple-600 text-white flex items-center justify-center rounded-full">
-                A
-              </div>
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="flex items-center gap-2"
+              >
 
-              <div className="text-sm">
-                <p className="font-medium">Admin</p>
-                <p className="text-xs text-gray-500">Owner</p>
-              </div>
+                <div className="w-9 h-9 bg-purple-600 text-white flex items-center justify-center rounded-full">
+                  A
+                </div>
+
+                <div className="text-sm text-left">
+                  <p className="font-medium text-gray-800">Admin</p>
+                  <p className="text-xs text-gray-500">Owner</p>
+                </div>
+
+              </button>
+
+              {menuOpen && (
+
+                <div className="absolute right-0 mt-3 w-40 bg-white shadow-lg rounded-lg border z-50">
+
+                  <button
+                    onClick={logout}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+
+                </div>
+
+              )}
 
             </div>
 
