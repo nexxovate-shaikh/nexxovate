@@ -44,33 +44,21 @@ export default function AdminLayout({
         {/* Navigation */}
         <nav className="flex-1 p-6 space-y-2 text-sm">
 
-          <Link
-            href="/admin"
-            className="block px-4 py-3 rounded-lg hover:bg-white/10 transition"
-          >
-            Dashboard
-          </Link>
+          <Link href="/admin/dashboard" className="block px-4 py-3 rounded-lg hover:bg-white/10">
+  Dashboard
+</Link>
 
-          <Link
-            href="/admin/pipeline"
-            className="block px-4 py-3 rounded-lg hover:bg-white/10 transition"
-          >
-            Sales Pipeline
-          </Link>
+<Link href="/admin/dashboard/pipeline" className="block px-4 py-3 rounded-lg hover:bg-white/10">
+  Sales Pipeline
+</Link>
 
-          <Link
-            href="/admin/analytics"
-            className="block px-4 py-3 rounded-lg hover:bg-white/10 transition"
-          >
-            Analytics
-          </Link>
+<Link href="/admin/dashboard/analytics" className="block px-4 py-3 rounded-lg hover:bg-white/10">
+  Analytics
+</Link>
 
-          <Link
-            href="/admin/settings"
-            className="block px-4 py-3 rounded-lg hover:bg-white/10 transition"
-          >
-            Settings
-          </Link>
+<Link href="/admin/dashboard/settings" className="block px-4 py-3 rounded-lg hover:bg-white/10">
+  Settings
+</Link>
 
         </nav>
 
