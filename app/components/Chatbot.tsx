@@ -248,19 +248,19 @@ export default function Chatbot() {
     setTimeout(() => handleUser(value), 300);
   }
 
-  /* ---------------- UI ---------------- */
+    /* ---------------- UI ---------------- */
   return (
     <>
       {/* ULTRA PREMIUM AI ORB */}
       {!open && <AIConciergeOrb onOpen={() => setOpen(true)} />}
 
-      {/* CHAT WINDOW — UNCHANGED */}
+      {/* CHAT WINDOW */}
       {open && (
         <div className="fixed inset-0 z-[9998] bg-black/40">
           <div
             className="fixed bottom-0 right-0 sm:bottom-6 sm:right-6
-          w-full sm:w-[400px] h-[80vh] sm:h-[600px]
-          bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col"
+            w-full sm:w-[400px] h-[80vh] sm:h-[600px]
+            bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col"
           >
             {/* HEADER */}
             <div className="flex items-center gap-3 px-4 py-3 border-b">
@@ -360,3 +360,5 @@ export default function Chatbot() {
     </>
   );
 }
+
+           

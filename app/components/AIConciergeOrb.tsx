@@ -33,13 +33,13 @@ export default function AIConciergeOrb({ onOpen }: { onOpen: () => void }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  /* ---------------- CURSOR TRACKING ---------------- */
+  /* ---------------- CURSOR REACTION ---------------- */
   useEffect(() => {
     function move(e: MouseEvent) {
       if (!orbRef.current) return;
 
-      const x = (e.clientX / window.innerWidth - 0.5) * 12;
-      const y = (e.clientY / window.innerHeight - 0.5) * 12;
+      const x = (e.clientX / window.innerWidth - 0.5) * 10;
+      const y = (e.clientY / window.innerHeight - 0.5) * 10;
 
       orbRef.current.style.transform = `translate(${x}px, ${y}px)`;
     }
@@ -52,6 +52,7 @@ export default function AIConciergeOrb({ onOpen }: { onOpen: () => void }) {
   return (
     <button
       onClick={onOpen}
+      aria-label="Open Nexxovate AI Concierge"
       className={`fixed bottom-6 right-6 z-[9999]
       w-20 h-20 rounded-full
       flex items-center justify-center
@@ -61,6 +62,7 @@ export default function AIConciergeOrb({ onOpen }: { onOpen: () => void }) {
       ${scrollDir === "left" ? "-translate-x-8 rotate-[-8deg]" : ""}
       ${scrollDir === "right" ? "translate-x-8 rotate-[8deg]" : ""}
       ${scrollDir === "idle" ? "animate-pulse" : ""}
+
       hover:scale-110`}
     >
       {/* ENERGY FIELD */}
@@ -70,14 +72,14 @@ export default function AIConciergeOrb({ onOpen }: { onOpen: () => void }) {
         opacity-30 blur-xl animate-ping"
       />
 
-      {/* ROTATING AI CORE */}
+      {/* ROTATING CORE */}
       <span
         className="absolute inset-0 rounded-full
         bg-[conic-gradient(from_0deg,#22d3ee,#6366f1,#a855f7,#22d3ee)]
         animate-[spin_8s_linear_infinite]"
       />
 
-      {/* GLASS CENTER */}
+      {/* GLASS CORE */}
       <div
         ref={orbRef}
         className="relative z-10 w-14 h-14 rounded-full
