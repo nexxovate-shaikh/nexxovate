@@ -5,7 +5,9 @@ import { X, Send, Mic, Volume2, VolumeX } from "lucide-react";
 import AIConciergeOrb from "./AIConciergeOrb";
 
 /* ---------------- TYPES ---------------- */
+
 type Role = "bot" | "user";
+
 type Step =
   | "interest"
   | "business"
@@ -28,8 +30,6 @@ export default function Chatbot() {
   const [lead, setLead] = useState<any>({});
   const [voiceOn, setVoiceOn] = useState(true);
   const [listening, setListening] = useState(false);
-  const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -43,7 +43,7 @@ export default function Chatbot() {
     {
       role: "bot",
       text:
-        "Welcome to Nexxovate.\n\nWe help startups and enterprises solve complex IT, AI, cybersecurity, digital growth, and staffing challenges.\n\nWhat would you like to improve today?",
+        "Welcome to Nexxovate.\n\nI'm your AI concierge.\n\nI can help you explore AI solutions, discuss your business challenges, and connect you with our experts.\n\nWhat would you like to improve today?",
       options: [
         "Digital Marketing",
         "AI & Automation",
@@ -54,26 +54,33 @@ export default function Chatbot() {
   ]);
 
   /* ---------------- AUTO SCROLL ---------------- */
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open]);
 
-  /* ---------------- VOICE (TTS) ---------------- */
+  /* ---------------- VOICE ---------------- */
+
   function speak(text: string) {
     if (!voiceOn || typeof window === "undefined") return;
+
     const u = new SpeechSynthesisUtterance(text);
     u.lang = locale;
     u.rate = 0.95;
+
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
   }
 
   function bot(text: string, options?: string[]) {
-    setMessages((m) => [...m, { role: "bot", text, options }]);
-    speak(text);
+    setTimeout(() => {
+      setMessages((m) => [...m, { role: "bot", text, options }]);
+      speak(text);
+    }, 600);
   }
 
   /* ---------------- SPEECH INPUT ---------------- */
+
   function startListening() {
     const SR =
       (window as any).SpeechRecognition ||
@@ -96,44 +103,45 @@ export default function Chatbot() {
   }
 
   /* ---------------- HELPERS ---------------- */
+
   function isValidEmail(email: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
   }
 
-  /* ---------------- OTP FUNCTIONS ---------------- */
-  async function sendOTP(email: string) {
-    try {
-      await fetch("/api/otp/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+  /* ---------------- OTP ---------------- */
 
-      setOtpSent(true);
-    } catch (e) {
-      bot("Failed to send OTP. Please try again.");
-    }
+  async function sendOTP(email: string) {
+    await fetch("/api/otp/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
   }
 
   async function verifyOTP(code: string) {
-    try {
-      const res = await fetch("/api/otp/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: lead.email, code }),
-      });
+    const res = await fetch("/api/otp/verify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: lead.email,
+        code,
+      }),
+    });
 
-      const data = await res.json();
-
-      return data.valid;
-    } catch {
-      return false;
-    }
+    const data = await res.json();
+    return data.valid;
   }
 
-  /* ---------------- LOGIC ---------------- */
+  /* ---------------- MAIN LOGIC ---------------- */
+
   async function handleUser(text: string) {
     const value = text.trim();
+
+    /* INTEREST */
 
     if (step === "interest") {
       setLead({ interest: value, page });
@@ -146,15 +154,19 @@ export default function Chatbot() {
       return;
     }
 
+    /* BUSINESS */
+
     if (step === "business") {
       setLead((l: any) => ({ ...l, businessType: value }));
       setStep("challenge");
 
       bot(
-        "Now the important part.\n\nPlease describe the main challenge, bottleneck, or goal you’re dealing with right now.\n\nFeel free to be specific — the more context you share, the better solution we can design."
+        "Please describe the main challenge or goal you're currently dealing with."
       );
       return;
     }
+
+    /* CHALLENGE */
 
     if (step === "challenge") {
       if (value.length < 10) {
@@ -164,35 +176,30 @@ export default function Chatbot() {
         return;
       }
 
-      if (/^[^a-zA-Z0-9]+$/.test(value)) {
-        bot("Please enter a meaningful description.");
-        return;
-      }
-
       setLead((l: any) => ({ ...l, challenge: value }));
       setStep("name");
 
-      bot(
-        "Thank you for sharing that — this is exactly the kind of problem we help solve.\n\nMay I know your name?"
-      );
+      bot("May I know your name?");
       return;
     }
+
+    /* NAME */
 
     if (step === "name") {
       setLead((l: any) => ({ ...l, name: value }));
       setStep("email");
 
       bot(
-        `Nice to meet you, ${value}.\n\nWhat’s the best work email to share insights or next steps?`
+        `Nice to meet you ${value}. What’s the best work email to share insights or next steps?`
       );
       return;
     }
 
+    /* EMAIL */
+
     if (step === "email") {
       if (!isValidEmail(value)) {
-        bot(
-          "That email doesn’t look valid.\n\nPlease enter a correct work email (example: name@company.com)."
-        );
+        bot("Please enter a valid work email.");
         return;
       }
 
@@ -202,10 +209,13 @@ export default function Chatbot() {
       await sendOTP(value);
 
       bot(
-        "We sent a 6-digit verification code to your email.\n\nPlease enter the OTP to continue."
+        "We sent a 6 digit verification code to your email. Please enter the OTP."
       );
+
       return;
     }
+
+    /* OTP */
 
     if (step === "otp") {
       const valid = await verifyOTP(value);
@@ -223,19 +233,66 @@ export default function Chatbot() {
 
       await fetch("/api/contact/lead", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(finalLead),
       });
 
+      setLead(finalLead);
       setStep("done");
 
       bot(
-        `Verification complete.\n\nThank you ${finalLead.name}. Our team will contact you shortly.`
+        `Verification complete.\n\nThank you ${finalLead.name}. Would you like to schedule a consultation with our AI strategist?`,
+        ["Schedule Call", "Later"]
       );
+
+      return;
+    }
+
+    /* DONE / MEETING */
+
+    if (step === "done") {
+      if (value === "Schedule Call") {
+        bot(
+          "Please choose a time slot.",
+          ["Today 11:30 AM", "Today 2:00 PM", "Tomorrow"]
+        );
+        return;
+      }
+
+      if (
+        value === "Today 11:30 AM" ||
+        value === "Today 2:00 PM" ||
+        value === "Tomorrow"
+      ) {
+        await fetch("/api/contact/meeting", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...lead,
+            meetingSlot: value,
+          }),
+        });
+
+        bot(
+          `Perfect. Your consultation has been scheduled for ${value}.`
+        );
+
+        return;
+      }
+
+      if (value === "Later") {
+        bot("No problem. Our team will reach out shortly.");
+        return;
+      }
     }
   }
 
   /* ---------------- SEND ---------------- */
+
   function send(text?: string) {
     const value = text ?? input;
 
@@ -248,13 +305,12 @@ export default function Chatbot() {
     setTimeout(() => handleUser(value), 300);
   }
 
-    /* ---------------- UI ---------------- */
+  /* ---------------- UI ---------------- */
+
   return (
     <>
-      {/* ULTRA PREMIUM AI ORB */}
       {!open && <AIConciergeOrb onOpen={() => setOpen(true)} />}
 
-      {/* CHAT WINDOW */}
       {open && (
         <div className="fixed inset-0 z-[9998] bg-black/40">
           <div
@@ -263,7 +319,9 @@ export default function Chatbot() {
             bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col"
           >
             {/* HEADER */}
+
             <div className="flex items-center gap-3 px-4 py-3 border-b">
+
               <img src="/logo.png" className="h-7" />
 
               <div className="flex-1">
@@ -285,9 +343,13 @@ export default function Chatbot() {
             </div>
 
             {/* MESSAGES */}
+
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+
               {messages.map((m, i) => (
+
                 <div key={i}>
+
                   <div
                     className={`flex ${
                       m.role === "user"
@@ -321,14 +383,18 @@ export default function Chatbot() {
                       ))}
                     </div>
                   )}
+
                 </div>
               ))}
 
               <div ref={bottomRef} />
+
             </div>
 
             {/* INPUT */}
+
             <div className="p-3 border-t flex gap-2">
+
               <button
                 onClick={startListening}
                 className={`w-10 h-10 rounded-full flex items-center justify-center
@@ -353,12 +419,12 @@ export default function Chatbot() {
               >
                 <Send size={16} />
               </button>
+
             </div>
+
           </div>
         </div>
       )}
     </>
   );
 }
-
-           
