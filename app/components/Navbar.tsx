@@ -135,3 +135,11 @@ function NavLink({
     </Link>
   );
 }
+<Link
+  href="/ai-consultation"
+  className="ml-4 bg-gradient-to-r from-pink-500 to-purple-600 
+  text-white px-5 py-2 rounded-full text-sm font-medium 
+  hover:scale-105 transition"
+>
+  Book AI Consultation
+</Link>

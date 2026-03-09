@@ -101,6 +101,50 @@ export default function AboutPage() {
           ))}
         </div>
       </section>
+      {/* VALUES */}
+<section className="py-28">
+  <div className="max-w-7xl mx-auto px-6">
+
+    <div className="text-center max-w-3xl mx-auto">
+      <h2 className="text-4xl font-bold">
+        Our Core Principles
+      </h2>
+
+      <p className="mt-6 text-lg text-gray-600">
+        The values guiding how Nexxovate builds technology and partnerships.
+      </p>
+    </div>
+
+    <div className="grid md:grid-cols-3 gap-12 mt-16">
+
+      <div className="bg-gray-50 rounded-3xl p-10">
+        <h3 className="text-xl font-semibold">Execution Excellence</h3>
+        <p className="mt-4 text-gray-600">
+          We prioritize reliable delivery, engineering discipline
+          and measurable outcomes.
+        </p>
+      </div>
+
+      <div className="bg-gray-50 rounded-3xl p-10">
+        <h3 className="text-xl font-semibold">Intelligent Innovation</h3>
+        <p className="mt-4 text-gray-600">
+          Leveraging AI, automation and modern platforms
+          to build future-ready systems.
+        </p>
+      </div>
+
+      <div className="bg-gray-50 rounded-3xl p-10">
+        <h3 className="text-xl font-semibold">Long-Term Partnerships</h3>
+        <p className="mt-4 text-gray-600">
+          We focus on lasting relationships and
+          sustainable enterprise transformation.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
 
       {/* LEADERSHIP & TEAM (NEW) */}
       <section className="py-28">
