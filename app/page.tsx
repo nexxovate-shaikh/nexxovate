@@ -3,10 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import AIParticles from "./components/AIParticles";
-import AISolutionFinder from "./components/AISolutionFinder";
+import AIToolsSection from "./components/AIToolsSection";
 import AIGlowBackground from "./components/AIGlowBackground";
-import AISolutionPlayground from "./components/AISolutionPlayground";
-import AIWebsiteAnalyzer from "./components/AIWebsiteAnalyzer";
+import AIDemoModal from "./components/AIDemoModal";
+import AIStats from "./components/AIStats";
+import AICoreBackground from "./components/AICoreBackground";
+import AIAuditTool from "./components/AIAuditTool";
 export const metadata = {
   title: "Home | Nexxovate",
   description:
@@ -22,7 +24,7 @@ export default function HomePage() {
 
   {/* AI Glow */}
   <AIGlowBackground />
-
+<AICoreBackground />
   {/* Particles */}
   <div className="absolute inset-0 z-0">
     <AIParticles />
@@ -61,31 +63,37 @@ export default function HomePage() {
         operational efficiency and accelerate business growth.
       </p>
 
-      <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-        <Link
-          href="/contact"
-          className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-full font-medium hover:scale-105 transition"
-        >
-          Book AI Consultation
-        </Link>
+     <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
 
-        <Link
-          href="/services"
-          className="border border-white/40 px-8 py-4 rounded-full font-medium hover:bg-white/10 transition"
-        >
-          Explore Solutions
-        </Link>
-      </div>
+<Link
+  href="/contact"
+  className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-full font-medium hover:scale-105 transition"
+>
+  Book AI Consultation
+</Link>
 
-    </div>
-  </div>
+<Link
+  href="/services"
+  className="border border-white/40 px-8 py-4 rounded-full font-medium hover:bg-white/10 transition"
+>
+  Explore Solutions
+</Link>
+<p className="text-purple-300 text-xs tracking-widest uppercase mt-4">
+AI SYSTEM ACTIVE
+</p>
+<AIDemoModal />
 
+</div>
+
+</div>
+</div>
 </section>
-<AISolutionFinder />
+<AIStats />
+<AIToolsSection />
 
-<AISolutionPlayground />
-<AISolutionFinder />
-<AIWebsiteAnalyzer />
+<p className="mt-4 text-purple-300 text-sm tracking-widest uppercase">
+AI SYSTEM INITIALIZED
+</p>
       {/* WHAT NEXXOVATE DELIVERS */}
       <section className="py-16 md:py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -569,6 +577,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <AIAuditTool />
 
       {/* CTA */}
       <section className="bg-gradient-to-r from-purple-900 via-pink-900 to-red-900 text-white py-20 md:py-28">

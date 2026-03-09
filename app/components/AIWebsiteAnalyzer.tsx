@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Reveal from "./Reveal";
-
+import TypingText from "./TypingText";
 export default function AIWebsiteAnalyzer() {
   const [url, setUrl] = useState("");
   const [analysis, setAnalysis] = useState("");
@@ -58,10 +58,10 @@ export default function AIWebsiteAnalyzer() {
           </div>
 
           {loading && (
-            <p className="mt-6 text-gray-500">
-              AI analyzing your website...
-            </p>
-          )}
+  <p className="mt-6 text-purple-600 font-medium animate-pulse">
+    🤖 Nexxovate AI is analyzing your request...
+  </p>
+)}
 
           {analysis && (
             <div className="mt-10 bg-white shadow-xl rounded-2xl p-8 text-left">
@@ -69,9 +69,7 @@ export default function AIWebsiteAnalyzer() {
                 AI Analysis Results
               </h3>
 
-              <p className="text-gray-700 leading-relaxed">
-                {analysis}
-              </p>
+              <TypingText text={analysis} />
 
               <a
                 href="/ai-consultation"

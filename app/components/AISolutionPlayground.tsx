@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Reveal from "./Reveal";
-
+import TypingText from "./TypingText";
 export default function AISolutionPlayground() {
   const [problem, setProblem] = useState("");
   const [result, setResult] = useState("");
@@ -68,7 +68,7 @@ export default function AISolutionPlayground() {
                 Suggested AI Solution
               </h3>
 
-              <p className="text-gray-700 leading-relaxed">{result}</p>
+              <TypingText text={result} />
 
               <a
                 href="/ai-consultation"
