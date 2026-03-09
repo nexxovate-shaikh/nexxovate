@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-
+import AIParticles from "./components/AIParticles";
 export const metadata = {
   title: "Home | Nexxovate",
   description:
@@ -14,58 +14,71 @@ export default function HomePage() {
     <div className="bg-white overflow-x-hidden">
 
       {/* HERO */}
-      <section className="relative min-h-[75svh] md:min-h-[100svh] flex items-center text-white">
-        <Image
-          src="/images/hero-tech.jpg"
-          alt="Enterprise Technology"
-          fill
-          priority
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-purple-900/75 to-pink-900/60" />
+<section className="relative min-h-[75svh] md:min-h-[100svh] flex items-center text-white overflow-hidden">
 
-        <div className="relative z-10 w-full">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-28 md:pt-36 pb-14 md:pb-24 text-center md:text-left">
+  {/* AI PARTICLES BACKGROUND */}
+  <div className="absolute inset-0 z-0">
+    <AIParticles />
+  </div>
 
-            <p className="uppercase tracking-[0.25em] text-pink-300 text-[11px] sm:text-sm mb-4">
-              AI • Cloud • Cybersecurity • Enterprise Platforms
-            </p>
+  {/* HERO IMAGE */}
+  <Image
+    src="/images/hero-tech.jpg"
+    alt="Enterprise Technology"
+    fill
+    priority
+    className="object-cover"
+  />
 
-            <h1 className="text-[2rem] sm:text-4xl md:text-6xl font-bold leading-tight max-w-4xl mx-auto md:mx-0">
-              AI Solutions That Automate Work
-              <span className="block mt-3 bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-300 bg-clip-text text-transparent">
-                and scale modern enterprises
-              </span>
-            </h1>
+  {/* DARK OVERLAY */}
+  <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-purple-900/75 to-pink-900/60" />
 
-            <p className="mt-6 text-sm sm:text-lg text-gray-200 max-w-2xl mx-auto md:mx-0 leading-relaxed">
-              Nexxovate helps organizations implement AI automation, modern cloud
-              infrastructure, and secure digital platforms that improve
-              operational efficiency and accelerate business growth.
-            </p>
+  {/* CONTENT */}
+  <div className="relative z-10 w-full">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-28 md:pt-36 pb-14 md:pb-24 text-center md:text-left">
 
-            <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-              <Link
-                href="/contact"
-                className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-full font-medium hover:scale-105 transition"
-              >
-                Book AI Consultation
-              </Link>
+      <p className="uppercase tracking-[0.25em] text-pink-300 text-[11px] sm:text-sm mb-4">
+        AI • Cloud • Cybersecurity • Enterprise Platforms
+      </p>
 
-              <Link
-                href="/services"
-                className="border border-white/40 px-8 py-4 rounded-full font-medium hover:bg-white/10 transition"
-              >
-                Explore Solutions
-              </Link>
-            </div>
+      <h1 className="text-[2rem] sm:text-4xl md:text-6xl font-bold leading-tight max-w-4xl mx-auto md:mx-0">
+        AI Solutions That Automate Work
+        <span className="block mt-3 bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-300 bg-clip-text text-transparent">
+          and scale modern enterprises
+        </span>
+      </h1>
 
-            <p className="mt-6 text-xs sm:text-sm text-gray-300">
-              Ask our AI advisor in chat about automation, security, or cloud modernization.
-            </p>
-          </div>
-        </div>
-      </section>
+      <p className="mt-6 text-sm sm:text-lg text-gray-200 max-w-2xl mx-auto md:mx-0 leading-relaxed">
+        Nexxovate helps organizations implement AI automation, modern cloud
+        infrastructure, and secure digital platforms that improve
+        operational efficiency and accelerate business growth.
+      </p>
+
+      <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+        <Link
+          href="/contact"
+          className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-full font-medium hover:scale-105 transition"
+        >
+          Book AI Consultation
+        </Link>
+
+        <Link
+          href="/services"
+          className="border border-white/40 px-8 py-4 rounded-full font-medium hover:bg-white/10 transition"
+        >
+          Explore Solutions
+        </Link>
+      </div>
+
+      <p className="mt-6 text-xs sm:text-sm text-gray-300">
+        Ask our AI advisor in chat about automation, security, or cloud modernization.
+      </p>
+
+    </div>
+  </div>
+
+</section>
+
 
       {/* WHAT NEXXOVATE DELIVERS */}
       <section className="py-16 md:py-24 bg-gray-50">
