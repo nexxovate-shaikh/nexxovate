@@ -217,6 +217,88 @@ export default function HomePage() {
 
   </div>
 </section>
+{/* AI PLATFORMS */}
+<section className="py-20 md:py-32 bg-gradient-to-br from-gray-50 via-white to-purple-50/40">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6">
+
+    <div className="text-center max-w-3xl mx-auto">
+      <h2 className="text-2xl md:text-4xl font-bold">
+        Nexxovate AI Platforms
+      </h2>
+
+      <p className="mt-4 md:mt-6 text-sm md:text-lg text-gray-600">
+        Intelligent platforms designed to help organizations automate operations,
+        unlock insights, and scale digital capabilities.
+      </p>
+    </div>
+
+    <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-8">
+
+      {/* PLATFORM 1 */}
+      <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition p-8">
+        <div className="h-12 w-12 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 flex items-center justify-center text-white text-xl font-bold">
+          AI
+        </div>
+
+        <h3 className="mt-6 text-xl font-semibold">
+          Nexxovate AI Agent
+        </h3>
+
+        <p className="mt-3 text-sm text-gray-600 leading-relaxed">
+          Enterprise knowledge assistant that understands company documents,
+          policies, and internal systems to provide instant answers for teams.
+        </p>
+
+        <p className="mt-4 text-xs text-gray-500">
+          AI Knowledge • Internal Assistants • Enterprise Search
+        </p>
+      </div>
+
+      {/* PLATFORM 2 */}
+      <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition p-8">
+        <div className="h-12 w-12 rounded-xl bg-gradient-to-r from-pink-500 to-yellow-400 flex items-center justify-center text-white text-xl font-bold">
+          ⚡
+        </div>
+
+        <h3 className="mt-6 text-xl font-semibold">
+          Automation Engine
+        </h3>
+
+        <p className="mt-3 text-sm text-gray-600 leading-relaxed">
+          Intelligent workflow automation platform that connects systems,
+          processes documents, and eliminates repetitive operational work.
+        </p>
+
+        <p className="mt-4 text-xs text-gray-500">
+          Workflow Automation • Process Intelligence • AI Operations
+        </p>
+      </div>
+
+      {/* PLATFORM 3 */}
+      <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition p-8">
+        <div className="h-12 w-12 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xl font-bold">
+          📊
+        </div>
+
+        <h3 className="mt-6 text-xl font-semibold">
+          Intelligence Dashboard
+        </h3>
+
+        <p className="mt-3 text-sm text-gray-600 leading-relaxed">
+          AI-powered analytics platform that transforms operational data into
+          insights, predictions, and strategic recommendations.
+        </p>
+
+        <p className="mt-4 text-xs text-gray-500">
+          Data Intelligence • Predictive Analytics • AI Insights
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
       {/* SERVICES */}
 <section className="py-20 md:py-32 bg-white">
   <div className="max-w-7xl mx-auto px-4 sm:px-6">
