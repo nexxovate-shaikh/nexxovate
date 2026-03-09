@@ -14,14 +14,15 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
-  // Create admin automatically if it doesn't exist
+  // Ensure admin exists
   await ensureAdminExists();
 
   return (
     <html lang="en" className="scroll-smooth">
       <body className="bg-white text-gray-900 antialiased overflow-x-hidden">
-        <LayoutClient>{children}</LayoutClient>
+        <LayoutClient>
+          {children}
+        </LayoutClient>
       </body>
     </html>
   );
