@@ -1,8 +1,79 @@
 "use client";
 
+import { useState } from "react";
 import { Sparkles, Bot, Search } from "lucide-react";
 
 export default function AIToolsSection() {
+
+  const [inputs, setInputs] = useState(["", "", ""]);
+  const [results, setResults] = useState(["", "", ""]);
+  const [loading, setLoading] = useState([false, false, false]);
+
+  function handleInput(index: number, value: string) {
+    const copy = [...inputs];
+    copy[index] = value;
+    setInputs(copy);
+  }
+
+  function runAI(index: number) {
+
+    const text = inputs[index].toLowerCase();
+
+    const loadingCopy = [...loading];
+    loadingCopy[index] = true;
+    setLoading(loadingCopy);
+
+    setTimeout(() => {
+
+      let response = "";
+
+      if (index === 0) {
+        if (text.includes("support") || text.includes("customer")) {
+          response =
+            "AI Opportunity Found:\nDeploy an AI Customer Support Assistant to automate responses and reduce support workload by up to 60%.";
+        } else if (text.includes("onboarding")) {
+          response =
+            "AI Opportunity Found:\nAutomate onboarding workflows using AI document processing and workflow orchestration.";
+        } else {
+          response =
+            "AI Opportunity Found:\nYour business could benefit from workflow automation and AI-powered operational assistants.";
+        }
+      }
+
+      if (index === 1) {
+        if (text.includes("invoice")) {
+          response =
+            "Recommended Architecture:\nAI document extraction + workflow automation + ERP integration for automated invoice processing.";
+        } else if (text.includes("data")) {
+          response =
+            "Recommended Architecture:\nAI analytics pipeline with data warehouse + predictive insight dashboard.";
+        } else {
+          response =
+            "Recommended Architecture:\nEnterprise AI assistant integrated with internal systems and knowledge bases.";
+        }
+      }
+
+      if (index === 2) {
+        if (!text.includes(".")) {
+          response = "Please enter a valid website URL.";
+        } else {
+          response =
+            "Website AI Analysis:\nPotential improvements detected — AI chatbot, automation workflows and analytics intelligence could significantly enhance performance.";
+        }
+      }
+
+      const resultCopy = [...results];
+      resultCopy[index] = response;
+      setResults(resultCopy);
+
+      const loadingDone = [...loading];
+      loadingDone[index] = false;
+      setLoading(loadingDone);
+
+    }, 1200);
+
+  }
+
   const tools = [
     {
       icon: <Sparkles className="w-6 h-6" />,
@@ -30,12 +101,10 @@ export default function AIToolsSection() {
   return (
     <section className="relative py-28 bg-gradient-to-b from-white via-purple-50/40 to-white overflow-hidden">
 
-      {/* subtle background glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[900px] bg-purple-400/10 blur-[140px] rounded-full"></div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
 
-        {/* Header */}
         <div className="text-center max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100 text-purple-700 text-xs font-medium tracking-wide">
             AI PRODUCTIVITY TOOLS
@@ -55,7 +124,6 @@ export default function AIToolsSection() {
           </p>
         </div>
 
-        {/* Cards */}
         <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-10">
 
           {tools.map((tool, i) => (
@@ -64,39 +132,39 @@ export default function AIToolsSection() {
               className="relative group rounded-2xl border border-gray-100 bg-white/80 backdrop-blur-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500"
             >
 
-              {/* gradient glow */}
-              <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-orange-400/10"></div>
-
               <div className="relative z-10">
 
-                {/* icon */}
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600 to-pink-500 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600 to-pink-500 text-white flex items-center justify-center shadow-md">
                   {tool.icon}
                 </div>
 
-                {/* title */}
                 <h3 className="mt-6 text-xl font-semibold tracking-tight">
                   {tool.title}
                 </h3>
 
-                {/* description */}
                 <p className="mt-3 text-gray-600 text-sm leading-relaxed">
                   {tool.desc}
                 </p>
 
-                {/* input */}
                 <input
-                  type="text"
+                  value={inputs[i]}
+                  onChange={(e) => handleInput(i, e.target.value)}
                   placeholder={tool.placeholder}
-                  className="mt-6 w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none text-sm bg-white/80 backdrop-blur"
+                  className="mt-6 w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none text-sm"
                 />
 
-                {/* button */}
                 <button
+                  onClick={() => runAI(i)}
                   className="mt-5 w-full py-3 rounded-xl font-medium text-white bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 hover:scale-[1.02] transition shadow-md"
                 >
-                  {tool.button}
+                  {loading[i] ? "Analyzing..." : tool.button}
                 </button>
+
+                {results[i] && (
+                  <div className="mt-6 bg-purple-50 border border-purple-100 p-4 rounded-xl text-sm text-gray-700 whitespace-pre-line">
+                    {results[i]}
+                  </div>
+                )}
 
               </div>
             </div>
