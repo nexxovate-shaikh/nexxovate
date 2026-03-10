@@ -11,6 +11,7 @@ import AIDemoModal from "./components/AIDemoModal";
 import AIStats from "./components/AIStats";
 import AICoreBackground from "./components/AICoreBackground";
 import AIAuditTool from "./components/AIAuditTool";
+import AIReportGenerator from "./components/AIReportGenerator";
 
 export default function HomePage() {
 
@@ -662,7 +663,7 @@ desc:"Optimize systems and expand capabilities for long-term growth."
         </div>
       </section>
       <AIAuditTool />
-
+<AIReportGenerator />
 {/* CTA */}
 <section className="bg-gradient-to-r from-purple-900 via-pink-900 to-red-900 text-white py-20">
 
