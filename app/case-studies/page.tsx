@@ -12,17 +12,17 @@ const cases = [
   {
     title: "AI Customer Support Assistant",
     result: "Reduced support workload by 45%",
-    desc: "An AI-powered assistant deployed to automate customer support interactions and improve response times.",
+    desc: "An AI-powered assistant deployed to automate customer support interactions, improve response times and enhance service quality.",
   },
   {
     title: "Business Workflow Automation Platform",
     result: "Saved 20+ hours per week",
-    desc: "Automated document processing and data extraction workflows for enterprise operations.",
+    desc: "Automated document processing and operational workflows using intelligent automation and AI-driven data extraction.",
   },
   {
     title: "AI Analytics Dashboard",
     result: "Improved operational insights",
-    desc: "Centralized analytics platform transforming operational data into real-time insights.",
+    desc: "Centralized analytics platform transforming operational data into real-time insights and predictive intelligence.",
   },
 ];
 
@@ -31,57 +31,86 @@ export default function CaseStudiesPage() {
     <div className="bg-white overflow-x-hidden">
 
       {/* HERO */}
-      <section className="bg-gradient-to-br from-slate-950 via-indigo-950 to-purple-900 text-white">
-        <div className="max-w-7xl mx-auto px-6 py-32">
+      <section className="relative bg-gradient-to-br from-slate-950 via-indigo-950 to-purple-900 text-white overflow-hidden">
 
-          <p className="uppercase tracking-widest text-pink-400 text-sm mb-6">
-            Case Studies
-          </p>
+        {/* background glow */}
+        <div className="absolute left-1/2 -translate-x-1/2 top-0 w-[1000px] h-[1000px] bg-purple-500/20 blur-[160px] rounded-full"></div>
 
-          <h1 className="text-5xl md:text-6xl font-bold max-w-4xl">
+        <div className="relative max-w-7xl mx-auto px-6 py-32">
+
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 text-pink-300 text-xs font-semibold tracking-wide">
+            REAL CLIENT TRANSFORMATIONS
+          </div>
+
+          <h1 className="mt-8 text-5xl md:text-6xl font-bold max-w-4xl leading-tight">
             Real transformation stories
             <span className="block bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-300 bg-clip-text text-transparent">
               powered by Nexxovate
             </span>
           </h1>
 
-          <p className="mt-8 text-lg text-gray-300 max-w-3xl">
-            Explore how organizations leverage Nexxovate expertise to modernize
-            systems, automate operations and unlock intelligent insights.
+          <p className="mt-8 text-lg text-gray-300 max-w-3xl leading-relaxed">
+            Explore how organizations partner with Nexxovate to modernize
+            platforms, automate complex workflows and unlock intelligent
+            insights that accelerate business growth.
           </p>
 
         </div>
       </section>
 
       {/* CASE GRID */}
-      <section className="max-w-7xl mx-auto px-6 py-24">
+      <section className="relative max-w-7xl mx-auto px-6 py-28">
 
-        <div className="grid md:grid-cols-3 gap-12">
+        <div className="text-center max-w-3xl mx-auto mb-20">
+
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+            Technology transformations
+            <span className="block bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 bg-clip-text text-transparent">
+              delivered by Nexxovate
+            </span>
+          </h2>
+
+          <p className="mt-6 text-lg text-gray-600">
+            A selection of intelligent automation and enterprise platform
+            implementations designed to deliver measurable business impact.
+          </p>
+
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-10">
 
           {cases.map((item) => (
             <div
               key={item.title}
-              className="border rounded-3xl p-10 hover:shadow-2xl transition"
+              className="group relative rounded-3xl border border-gray-100 bg-white/80 backdrop-blur-xl p-10 shadow-lg hover:shadow-2xl transition-all duration-500"
             >
 
-              <h3 className="text-2xl font-semibold">
-                {item.title}
-              </h3>
+              {/* hover glow */}
+              <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-orange-400/10"></div>
 
-              <p className="mt-4 text-purple-600 font-medium">
-                {item.result}
-              </p>
+              <div className="relative z-10">
 
-              <p className="mt-6 text-gray-600">
-                {item.desc}
-              </p>
+                <h3 className="text-2xl font-semibold tracking-tight">
+                  {item.title}
+                </h3>
 
-              <Link
-                href="/contact"
-                className="inline-block mt-8 text-sm font-medium text-indigo-600 hover:underline"
-              >
-                Discuss a similar project →
-              </Link>
+                {/* result badge */}
+                <div className="mt-4 inline-flex px-4 py-2 rounded-full bg-purple-100 text-purple-700 text-sm font-medium">
+                  {item.result}
+                </div>
+
+                <p className="mt-6 text-gray-600 leading-relaxed">
+                  {item.desc}
+                </p>
+
+                <Link
+                  href="/contact"
+                  className="inline-block mt-8 font-medium text-indigo-600 hover:text-indigo-800 transition"
+                >
+                  Discuss a similar project →
+                </Link>
+
+              </div>
 
             </div>
           ))}
@@ -91,16 +120,23 @@ export default function CaseStudiesPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-r from-purple-900 via-pink-900 to-red-900 text-white py-24">
-        <div className="max-w-6xl mx-auto px-6 text-center">
+      <section className="relative bg-gradient-to-r from-purple-900 via-pink-900 to-red-900 text-white py-28 overflow-hidden">
 
-          <h2 className="text-4xl font-bold">
-            Let’s build your success story
+        <div className="absolute left-1/2 -translate-x-1/2 top-0 w-[900px] h-[900px] bg-pink-500/20 blur-[150px] rounded-full"></div>
+
+        <div className="relative max-w-6xl mx-auto px-6 text-center">
+
+          <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+            Let’s build your
+            <span className="block bg-gradient-to-r from-pink-300 via-yellow-300 to-orange-300 bg-clip-text text-transparent">
+              next success story
+            </span>
           </h2>
 
-          <p className="mt-6 text-lg text-gray-200">
-            Partner with Nexxovate to design and implement intelligent
-            technology solutions for your organization.
+          <p className="mt-6 text-lg text-gray-200 max-w-2xl mx-auto">
+            Partner with Nexxovate to design and implement AI-driven
+            platforms, intelligent automation systems and secure
+            enterprise technology solutions.
           </p>
 
           <Link
@@ -111,6 +147,7 @@ export default function CaseStudiesPage() {
           </Link>
 
         </div>
+
       </section>
 
     </div>

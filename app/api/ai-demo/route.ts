@@ -2,20 +2,18 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
 
-  const body = await req.json();
-  const prompt = body.prompt;
+  const { question } = await req.json();
 
   const answer = `
-Based on your request: "${prompt}"
+AI could improve your business in several ways:
 
-Possible AI solution:
+• Automating repetitive workflows
+• AI-powered customer support
+• Predictive analytics for sales
+• Intelligent document processing
+• AI copilots for employees
 
-• Deploy an AI assistant to automate repetitive workflows
-• Integrate intelligent document processing
-• Use AI analytics dashboards to extract insights
-• Automate customer interactions using conversational AI
-
-Nexxovate can design and deploy this solution tailored to your organization.
+Nexxovate can design a tailored AI automation strategy for your organization.
 `;
 
   return NextResponse.json({ answer });

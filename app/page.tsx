@@ -1,7 +1,9 @@
+"use client";
 
-
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+
 import AIParticles from "./components/AIParticles";
 import AIToolsSection from "./components/AIToolsSection";
 import AIGlowBackground from "./components/AIGlowBackground";
@@ -9,510 +11,592 @@ import AIDemoModal from "./components/AIDemoModal";
 import AIStats from "./components/AIStats";
 import AICoreBackground from "./components/AICoreBackground";
 import AIAuditTool from "./components/AIAuditTool";
-export const metadata = {
-  title: "Home | Nexxovate",
-  description:
-    "Nexxovate builds AI automation systems, secure cloud infrastructure and enterprise technology solutions that help modern businesses scale intelligently.",
-};
 
 export default function HomePage() {
+
+  const [showDemo, setShowDemo] = useState(false);
+
   return (
-    <div className="bg-white overflow-x-hidden">
+    <main className="bg-white overflow-x-hidden">
 
 {/* HERO */}
-<section className="relative min-h-[75svh] md:min-h-[100svh] flex items-center text-white overflow-hidden">
+<section className="relative min-h-[90svh] flex items-center text-white overflow-hidden">
 
-  {/* AI Glow */}
-  <AIGlowBackground />
+<AIGlowBackground />
 <AICoreBackground />
-  {/* Particles */}
-  <div className="absolute inset-0 z-0">
-    <AIParticles />
-  </div>
 
-  {/* Hero Image */}
-  <Image
-    src="/images/hero-tech.jpg"
-    alt="Enterprise Technology"
-    fill
-    priority
-    className="object-cover z-0"
-  />
+<div className="absolute inset-0 z-0">
+<AIParticles />
+</div>
 
-  {/* Dark Overlay */}
-  <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-purple-900/75 to-pink-900/60" />
+<Image
+src="/images/hero-tech.jpg"
+alt="Enterprise Technology"
+fill
+priority
+className="object-cover"
+/>
 
-  {/* Content */}
-  <div className="relative z-10 w-full">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-28 md:pt-36 pb-14 md:pb-24 text-center md:text-left">
+<div className="absolute inset-0 bg-gradient-to-br from-black/90 via-purple-900/70 to-pink-900/60" />
 
-      <p className="uppercase tracking-[0.25em] text-pink-300 text-[11px] sm:text-sm mb-4">
-        AI • Cloud • Cybersecurity • Enterprise Platforms
-      </p>
+<div className="relative z-10 w-full">
+<div className="max-w-7xl mx-auto px-6 pt-32 pb-20">
 
-      <h1 className="text-[2rem] sm:text-4xl md:text-6xl font-bold leading-tight max-w-4xl mx-auto md:mx-0">
-        AI Solutions That Automate Work
-        <span className="block mt-3 bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-300 bg-clip-text text-transparent">
-          and scale modern enterprises
-        </span>
-      </h1>
-
-      <p className="mt-6 text-sm sm:text-lg text-gray-200 max-w-2xl mx-auto md:mx-0 leading-relaxed">
-        Nexxovate helps organizations implement AI automation, modern cloud
-        infrastructure, and secure digital platforms that improve
-        operational efficiency and accelerate business growth.
-      </p>
-
-     <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-
-<Link
-  href="/contact"
-  className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-full font-medium hover:scale-105 transition"
->
-  Book AI Consultation
-</Link>
-
-<Link
-  href="/services"
-  className="border border-white/40 px-8 py-4 rounded-full font-medium hover:bg-white/10 transition"
->
-  Explore Solutions
-</Link>
-<p className="text-purple-300 text-xs tracking-widest uppercase mt-4">
-AI SYSTEM ACTIVE
+<p className="uppercase tracking-[0.25em] text-pink-300 text-sm mb-6">
+AI • Cloud • Cybersecurity • Enterprise Platforms
 </p>
-<AIDemoModal />
+
+<h1 className="text-4xl md:text-6xl font-bold leading-tight max-w-4xl">
+AI Solutions That Automate Work
+<span className="block mt-3 bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-300 bg-clip-text text-transparent">
+and scale modern enterprises
+</span>
+</h1>
+
+<p className="mt-6 text-lg text-gray-200 max-w-2xl leading-relaxed">
+Nexxovate helps organizations implement AI automation, modern cloud infrastructure and secure digital platforms that improve operational efficiency and accelerate business growth.
+</p>
+
+<div className="mt-10 flex flex-wrap gap-4">
+
+<Link
+href="/contact"
+className="bg-gradient-to-r from-pink-500 to-purple-600 px-8 py-4 rounded-full font-medium hover:scale-105 transition"
+>
+Book AI Consultation
+</Link>
+
+<Link
+href="/services"
+className="border border-white/40 px-8 py-4 rounded-full hover:bg-white/10 transition"
+>
+Explore Solutions
+</Link>
+
+<button
+onClick={() => setShowDemo(true)}
+className="bg-gradient-to-r from-pink-500 to-purple-600 px-8 py-4 rounded-full font-medium hover:scale-105 transition"
+>
+Try AI Demo
+</button>
 
 </div>
 
 </div>
 </div>
+
 </section>
+
+{/* AI DEMO MODAL */}
+{showDemo && (
+<AIDemoModal onClose={() => setShowDemo(false)} />
+)}
+
 <AIStats />
 <AIToolsSection />
 
-<p className="mt-4 text-purple-300 text-sm tracking-widest uppercase">
-AI SYSTEM INITIALIZED
+
+  
+{/* WHAT NEXXOVATE DELIVERS */}
+<section className="relative py-28 bg-gradient-to-b from-white via-purple-50/40 to-white overflow-hidden">
+
+{/* subtle background glow */}
+<div className="absolute left-1/2 -translate-x-1/2 top-0 w-[900px] h-[900px] bg-purple-400/10 blur-[140px] rounded-full"></div>
+
+<div className="max-w-7xl mx-auto px-6 relative z-10">
+
+{/* Header */}
+<div className="text-center max-w-3xl mx-auto">
+
+<div className="inline-flex items-center px-4 py-2 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold tracking-wide">
+ENTERPRISE AI CAPABILITIES
+</div>
+
+<h2 className="mt-6 text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+What Nexxovate
+<span className="block bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 bg-clip-text text-transparent">
+Delivers
+</span>
+</h2>
+
+<p className="mt-6 text-lg text-gray-600 leading-relaxed">
+Enterprise-grade AI platforms, intelligent automation systems and secure
+cloud architecture designed to improve efficiency, scalability and
+operational performance.
 </p>
-      {/* WHAT NEXXOVATE DELIVERS */}
-      <section className="py-16 md:py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
 
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-2xl md:text-4xl font-bold">
-              What Nexxovate Delivers
-            </h2>
+</div>
 
-            <p className="mt-4 md:mt-6 text-sm md:text-lg text-gray-600">
-              Intelligent systems and enterprise platforms that improve efficiency,
-              security, and scalability for modern businesses.
-            </p>
-          </div>
+{/* Cards */}
+<div className="grid md:grid-cols-4 gap-8 mt-20">
 
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+{[
+{
+title:"AI Automation",
+desc:"Automate repetitive workflows and streamline operations with intelligent AI systems that improve efficiency and reduce manual work."
+},
+{
+title:"AI Assistants",
+desc:"Deploy conversational AI assistants that support customers and internal teams 24/7 with accurate information and task automation."
+},
+{
+title:"Cloud Platforms",
+desc:"Design and implement secure, scalable cloud platforms optimized for enterprise reliability and high-performance workloads."
+},
+{
+title:"Custom AI Products",
+desc:"Build intelligent SaaS platforms and AI-driven products tailored to unique business challenges and innovation initiatives."
+}
+].map((item,i)=>(
 
-            <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-              <h3 className="font-semibold text-lg">AI Automation</h3>
-              <p className="text-sm text-gray-600 mt-2">
-                Automate repetitive workflows and increase operational efficiency using AI systems.
-              </p>
-            </div>
+<div
+key={i}
+className="group relative rounded-2xl border border-gray-100 bg-white/80 backdrop-blur-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500"
+>
 
-            <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-              <h3 className="font-semibold text-lg">AI Assistants</h3>
-              <p className="text-sm text-gray-600 mt-2">
-                Intelligent chatbots and assistants that support customers and teams 24/7.
-              </p>
-            </div>
+{/* gradient glow */}
+<div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-orange-400/10"></div>
 
-            <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-              <h3 className="font-semibold text-lg">Cloud Platforms</h3>
-              <p className="text-sm text-gray-600 mt-2">
-                Secure and scalable cloud infrastructure built for performance and reliability.
-              </p>
-            </div>
+<div className="relative z-10">
 
-            <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-              <h3 className="font-semibold text-lg">Custom AI Products</h3>
-              <p className="text-sm text-gray-600 mt-2">
-                Build intelligent SaaS platforms and AI-driven digital products.
-              </p>
-            </div>
+{/* top accent line */}
+<div className="h-1 w-12 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full"></div>
 
-          </div>
-        </div>
-      </section>
-{/* CASE STUDIES / SOLUTIONS BUILT */}
-<section className="py-16 md:py-28 bg-white">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6">
+<h3 className="mt-6 text-xl font-semibold tracking-tight">
+{item.title}
+</h3>
 
-    <div className="text-center max-w-3xl mx-auto">
-      <h2 className="text-2xl md:text-4xl font-bold">
-        Solutions We’ve Built
-      </h2>
+<p className="mt-3 text-gray-600 text-sm leading-relaxed">
+{item.desc}
+</p>
 
-      <p className="mt-4 md:mt-6 text-sm md:text-lg text-gray-600">
-        Examples of intelligent platforms and enterprise solutions designed
-        to improve efficiency, automation, and scalability.
-      </p>
-    </div>
+</div>
 
-    <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+</div>
 
-      {/* CASE 1 */}
-      <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition">
-        <div className="relative h-[200px]">
-          <Image
-            src="/images/ai-assistant.jpg"
-            alt="AI Assistant"
-            fill
-            className="object-cover"
-          />
-        </div>
+))}
 
-        <div className="p-6">
-          <h3 className="text-xl font-semibold">
-            AI Customer Support Assistant
-          </h3>
+</div>
 
-          <p className="mt-3 text-sm text-gray-600">
-            Intelligent chatbot designed to automate customer support,
-            answer product questions, and reduce support workload.
-          </p>
-
-          <p className="mt-3 text-xs text-gray-500">
-            Technologies: AI APIs, Next.js, Cloud Infrastructure
-          </p>
-        </div>
-      </div>
-
-      {/* CASE 2 */}
-      <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition">
-        <div className="relative h-[200px]">
-          <Image
-            src="/images/automation.jpg"
-            alt="Automation System"
-            fill
-            className="object-cover"
-          />
-        </div>
-
-        <div className="p-6">
-          <h3 className="text-xl font-semibold">
-            Business Workflow Automation
-          </h3>
-
-          <p className="mt-3 text-sm text-gray-600">
-            AI-powered automation platform that processes documents,
-            extracts data, and updates enterprise systems automatically.
-          </p>
-
-          <p className="mt-3 text-xs text-gray-500">
-            Technologies: Python, AI Models, Cloud Services
-          </p>
-        </div>
-      </div>
-
-      {/* CASE 3 */}
-      <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition">
-        <div className="relative h-[200px]">
-          <Image
-            src="/images/dashboard.jpg"
-            alt="AI Dashboard"
-            fill
-            className="object-cover"
-          />
-        </div>
-
-        <div className="p-6">
-          <h3 className="text-xl font-semibold">
-            AI Analytics Dashboard
-          </h3>
-
-          <p className="mt-3 text-sm text-gray-600">
-            Intelligent analytics platform that transforms raw business
-            data into insights, forecasts, and operational recommendations.
-          </p>
-
-          <p className="mt-3 text-xs text-gray-500">
-            Technologies: React, AI Analytics, Data Visualization
-          </p>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
+</div>
 </section>
+{/* CASE STUDIES */}
+<section className="relative py-28 bg-gradient-to-b from-white via-purple-50/30 to-white overflow-hidden">
+
+{/* subtle glow */}
+<div className="absolute left-1/2 -translate-x-1/2 top-0 w-[900px] h-[900px] bg-purple-400/10 blur-[140px] rounded-full"></div>
+
+<div className="max-w-7xl mx-auto px-6 relative z-10">
+
+<div className="text-center max-w-3xl mx-auto">
+
+<div className="inline-flex items-center px-4 py-2 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold tracking-wide">
+INTELLIGENT PLATFORMS
+</div>
+
+<h2 className="mt-6 text-4xl md:text-5xl font-bold tracking-tight">
+Solutions
+<span className="block bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 bg-clip-text text-transparent">
+We've Built
+</span>
+</h2>
+
+<p className="mt-6 text-lg text-gray-600 leading-relaxed">
+Examples of intelligent platforms and automation systems designed to
+improve operational efficiency, accelerate insights and transform
+enterprise workflows.
+</p>
+
+</div>
+
+<div className="grid md:grid-cols-3 gap-10 mt-20">
+
+{[
+{
+title:"AI Customer Support Assistant",
+img:"/images/ai-assistant.jpg",
+desc:"Conversational AI assistant automating customer support requests and reducing response times across digital channels."
+},
+{
+title:"Business Workflow Automation",
+img:"/images/automation.jpg",
+desc:"Enterprise automation platform processing documents, extracting data and orchestrating operational workflows."
+},
+{
+title:"AI Analytics Dashboard",
+img:"/images/dashboard.jpg",
+desc:"AI-powered analytics platform transforming operational data into predictive insights and intelligent decisions."
+}
+].map((item,i)=>(
+
+<div
+key={i}
+className="group relative rounded-3xl border border-gray-100 bg-white/80 backdrop-blur-xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden"
+>
+
+{/* hover glow */}
+<div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-orange-400/10"></div>
+
+{/* image */}
+<div className="relative h-[220px] overflow-hidden">
+<Image
+src={item.img}
+alt={item.title}
+fill
+className="object-cover group-hover:scale-105 transition duration-500"
+/>
+
+{/* image gradient overlay */}
+<div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+
+</div>
+
+{/* content */}
+<div className="relative z-10 p-8">
+
+<div className="h-1 w-12 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full"></div>
+
+<h3 className="mt-6 text-xl font-semibold tracking-tight">
+{item.title}
+</h3>
+
+<p className="mt-3 text-gray-600 text-sm leading-relaxed">
+{item.desc}
+</p>
+
+</div>
+
+</div>
+
+))}
+
+</div>
+
+</div>
+
+</section>
+
 {/* AI PLATFORMS */}
-<section className="py-20 md:py-32 bg-gradient-to-br from-gray-50 via-white to-purple-50/40">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6">
+<section className="relative py-28 bg-gradient-to-b from-white via-purple-50/40 to-white overflow-hidden">
 
-    <div className="text-center max-w-3xl mx-auto">
-      <h2 className="text-2xl md:text-4xl font-bold">
-        Nexxovate AI Platforms
-      </h2>
+{/* background glow */}
+<div className="absolute left-1/2 -translate-x-1/2 top-0 w-[900px] h-[900px] bg-purple-400/10 blur-[140px] rounded-full"></div>
 
-      <p className="mt-4 md:mt-6 text-sm md:text-lg text-gray-600">
-        Intelligent platforms designed to help organizations automate operations,
-        unlock insights, and scale digital capabilities.
-      </p>
-    </div>
+<div className="max-w-7xl mx-auto px-6 relative z-10">
 
-    <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-8">
+<div className="text-center max-w-3xl mx-auto">
 
-      {/* PLATFORM 1 */}
-      <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition p-8">
-        <div className="h-12 w-12 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 flex items-center justify-center text-white text-xl font-bold">
-          AI
-        </div>
+<div className="inline-flex items-center px-4 py-2 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold tracking-wide">
+AI PRODUCT PLATFORM
+</div>
 
-        <h3 className="mt-6 text-xl font-semibold">
-          Nexxovate AI Agent
-        </h3>
+<h2 className="mt-6 text-4xl md:text-5xl font-bold tracking-tight">
+Nexxovate
+<span className="block bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 bg-clip-text text-transparent">
+AI Platforms
+</span>
+</h2>
 
-        <p className="mt-3 text-sm text-gray-600 leading-relaxed">
-          Enterprise knowledge assistant that understands company documents,
-          policies, and internal systems to provide instant answers for teams.
-        </p>
+<p className="mt-6 text-lg text-gray-600 leading-relaxed">
+A suite of intelligent platforms designed to automate enterprise
+operations, accelerate decision-making and unlock powerful insights
+from organizational data.
+</p>
 
-        <p className="mt-4 text-xs text-gray-500">
-          AI Knowledge • Internal Assistants • Enterprise Search
-        </p>
-      </div>
+</div>
 
-      {/* PLATFORM 2 */}
-      <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition p-8">
-        <div className="h-12 w-12 rounded-xl bg-gradient-to-r from-pink-500 to-yellow-400 flex items-center justify-center text-white text-xl font-bold">
-          ⚡
-        </div>
+<div className="grid md:grid-cols-3 gap-10 mt-20">
 
-        <h3 className="mt-6 text-xl font-semibold">
-          Automation Engine
-        </h3>
+{[
+{
+title:"Nexxovate AI Agent",
+desc:"Enterprise knowledge assistant capable of understanding company documents, systems and operational workflows to provide instant intelligence."
+},
+{
+title:"Automation Engine",
+desc:"Advanced workflow automation platform connecting enterprise systems and orchestrating complex processes without manual intervention."
+},
+{
+title:"Intelligence Dashboard",
+desc:"AI-powered analytics platform transforming operational data into predictive insights and strategic decision intelligence."
+}
+].map((item,i)=>(
 
-        <p className="mt-3 text-sm text-gray-600 leading-relaxed">
-          Intelligent workflow automation platform that connects systems,
-          processes documents, and eliminates repetitive operational work.
-        </p>
+<div
+key={i}
+className="group relative rounded-3xl border border-gray-100 bg-white/80 backdrop-blur-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500"
+>
 
-        <p className="mt-4 text-xs text-gray-500">
-          Workflow Automation • Process Intelligence • AI Operations
-        </p>
-      </div>
+{/* hover glow */}
+<div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 rounded-3xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-orange-400/10"></div>
 
-      {/* PLATFORM 3 */}
-      <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition p-8">
-        <div className="h-12 w-12 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xl font-bold">
-          📊
-        </div>
+<div className="relative z-10">
 
-        <h3 className="mt-6 text-xl font-semibold">
-          Intelligence Dashboard
-        </h3>
+{/* accent indicator */}
+<div className="h-1 w-12 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full"></div>
 
-        <p className="mt-3 text-sm text-gray-600 leading-relaxed">
-          AI-powered analytics platform that transforms operational data into
-          insights, predictions, and strategic recommendations.
-        </p>
+<h3 className="mt-6 text-xl font-semibold tracking-tight">
+{item.title}
+</h3>
 
-        <p className="mt-4 text-xs text-gray-500">
-          Data Intelligence • Predictive Analytics • AI Insights
-        </p>
-      </div>
+<p className="mt-3 text-gray-600 text-sm leading-relaxed">
+{item.desc}
+</p>
 
-    </div>
+</div>
 
-  </div>
+</div>
+
+))}
+
+</div>
+
+</div>
+
 </section>
 {/* WHY NEXXOVATE */}
-<section className="py-24 bg-gray-50">
-  <div className="max-w-7xl mx-auto px-6">
+<section className="relative py-28 bg-gradient-to-b from-white via-purple-50/40 to-white overflow-hidden">
 
-    <div className="text-center max-w-3xl mx-auto">
-      <h2 className="text-4xl font-bold">
-        Why organizations choose Nexxovate
-      </h2>
+{/* background glow */}
+<div className="absolute left-1/2 -translate-x-1/2 top-0 w-[900px] h-[900px] bg-purple-400/10 blur-[140px] rounded-full"></div>
 
-      <p className="mt-6 text-lg text-gray-600">
-        We combine enterprise technology expertise, intelligent automation
-        and delivery excellence to help organizations build resilient,
-        future-ready systems.
-      </p>
-    </div>
+<div className="max-w-7xl mx-auto px-6 relative z-10">
 
-    <div className="grid md:grid-cols-3 gap-12 mt-16">
+<div className="text-center max-w-3xl mx-auto">
 
-      <div className="bg-white rounded-3xl p-10 shadow hover:shadow-xl transition">
-        <h3 className="text-xl font-semibold">
-          Enterprise-first mindset
-        </h3>
-        <p className="mt-4 text-gray-600">
-          Every solution is designed with scalability, security and
-          operational resilience at its core.
-        </p>
-      </div>
+<div className="inline-flex items-center px-4 py-2 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold tracking-wide">
+TRUSTED TECHNOLOGY PARTNER
+</div>
 
-      <div className="bg-white rounded-3xl p-10 shadow hover:shadow-xl transition">
-        <h3 className="text-xl font-semibold">
-          AI-driven innovation
-        </h3>
-        <p className="mt-4 text-gray-600">
-          We integrate artificial intelligence, automation and modern
-          cloud platforms to deliver intelligent business systems.
-        </p>
-      </div>
+<h2 className="mt-6 text-4xl md:text-5xl font-bold tracking-tight">
+Why organizations
+<span className="block bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 bg-clip-text text-transparent">
+choose Nexxovate
+</span>
+</h2>
 
-      <div className="bg-white rounded-3xl p-10 shadow hover:shadow-xl transition">
-        <h3 className="text-xl font-semibold">
-          Long-term partnership
-        </h3>
-        <p className="mt-4 text-gray-600">
-          Nexxovate works as a strategic partner helping organizations
-          evolve, scale and continuously improve their technology landscape.
-        </p>
-      </div>
+<p className="mt-6 text-lg text-gray-600 leading-relaxed">
+Nexxovate combines enterprise technology expertise, intelligent
+automation and modern engineering practices to deliver scalable,
+secure and high-impact digital solutions.
+</p>
 
-    </div>
+</div>
 
-  </div>
+<div className="grid md:grid-cols-3 gap-10 mt-20">
+
+{[
+{
+title:"Enterprise-First Architecture",
+desc:"Every solution is engineered for scalability, reliability and security to meet the demands of modern enterprise environments."
+},
+{
+title:"AI-Driven Innovation",
+desc:"We design intelligent automation platforms and AI-powered systems that transform operational workflows and decision-making."
+},
+{
+title:"Strategic Technology Partnership",
+desc:"Beyond implementation, Nexxovate partners with organizations long-term to continuously scale capabilities and innovation."
+}
+].map((item,i)=>(
+
+<div
+key={i}
+className="group relative rounded-3xl border border-gray-100 bg-white/80 backdrop-blur-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500"
+>
+
+{/* hover glow */}
+<div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 rounded-3xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-orange-400/10"></div>
+
+<div className="relative z-10">
+
+{/* accent line */}
+<div className="h-1 w-12 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full"></div>
+
+<h3 className="mt-6 text-xl font-semibold tracking-tight">
+{item.title}
+</h3>
+
+<p className="mt-3 text-gray-600 text-sm leading-relaxed">
+{item.desc}
+</p>
+
+</div>
+
+</div>
+
+))}
+
+</div>
+
+</div>
+
 </section>
-      {/* SERVICES */}
-<section className="py-20 md:py-32 bg-white">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6">
+{/* SERVICES */}
+<section className="relative py-28 bg-gradient-to-b from-white via-purple-50/30 to-white overflow-hidden">
 
-    <div className="max-w-3xl mb-14 md:mb-20">
-      <h2 className="text-2xl md:text-4xl font-bold">
-        Technology capabilities that power modern organizations
-      </h2>
+{/* background glow */}
+<div className="absolute left-1/2 -translate-x-1/2 top-0 w-[900px] h-[900px] bg-purple-400/10 blur-[140px] rounded-full"></div>
 
-      <p className="mt-4 md:mt-6 text-sm md:text-lg text-gray-600 leading-relaxed">
-        Nexxovate combines AI innovation, cloud architecture, cybersecurity,
-        and digital transformation expertise to help companies operate faster,
-        smarter, and more securely.
-      </p>
+<div className="max-w-7xl mx-auto px-6 relative z-10">
+
+  <div className="max-w-3xl mb-16 md:mb-24">
+
+    <div className="inline-flex items-center px-4 py-2 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold tracking-wide">
+      ENTERPRISE TECHNOLOGY SERVICES
     </div>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-10">
-      {[
-        {
-          title: "IT & Managed Infrastructure",
-          img: "/images/cloud.jpg",
-          desc: "Modern cloud infrastructure, platform reliability, and scalable technology operations."
-        },
-        {
-          title: "AI & Intelligent Automation",
-          img: "/images/ai.jpg",
-          desc: "AI assistants, workflow automation, and intelligent systems that reduce manual work."
-        },
-        {
-          title: "Cybersecurity & Risk Protection",
-          img: "/images/cyber.jpg",
-          desc: "Advanced threat protection, governance frameworks, and resilient security architecture."
-        },
-        {
-          title: "Digital Transformation",
-          img: "/images/office.jpg",
-          desc: "Modernizing business platforms and operations with cloud-native technologies."
-        },
-        {
-          title: "Technology Talent Solutions",
-          img: "/images/team.jpg",
-          desc: "High-impact engineering talent and specialized technical teams for critical initiatives."
-        },
-        {
-          title: "Training & Capability Development",
-          img: "/images/training.jpg",
-          desc: "Upskilling teams with modern technology, AI, and cloud engineering practices."
-        },
-      ].map((item, i) => (
-        <div
-          key={i}
-          className="relative min-h-[260px] rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition"
-        >
-          <Image src={item.img} alt={item.title} fill className="object-cover" />
+    <h2 className="mt-6 text-3xl md:text-5xl font-bold tracking-tight leading-tight">
+      Technology capabilities that power
+      <span className="block bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 bg-clip-text text-transparent">
+        modern organizations
+      </span>
+    </h2>
 
-          <div className="absolute inset-0 bg-black/60" />
+    <p className="mt-6 text-lg text-gray-600 leading-relaxed">
+      Nexxovate combines AI innovation, cloud architecture, cybersecurity
+      expertise and digital transformation capabilities to help organizations
+      operate faster, smarter and more securely.
+    </p>
 
-          <div className="absolute bottom-0 p-6 text-white">
-            <h3 className="text-lg md:text-xl font-semibold">
-              {item.title}
-            </h3>
-
-            <p className="mt-2 text-xs md:text-sm text-gray-200 leading-relaxed">
-              {item.desc}
-            </p>
-          </div>
-        </div>
-      ))}
-    </div>
   </div>
+
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
+
+    {[
+      {
+        title: "IT & Managed Infrastructure",
+        img: "/images/cloud.jpg",
+        desc: "Modern cloud infrastructure, platform reliability and scalable technology operations."
+      },
+      {
+        title: "AI & Intelligent Automation",
+        img: "/images/ai.jpg",
+        desc: "AI assistants, workflow automation and intelligent systems that eliminate manual work."
+      },
+      {
+        title: "Cybersecurity & Risk Protection",
+        img: "/images/cyber.jpg",
+        desc: "Advanced threat protection, governance frameworks and resilient security architecture."
+      },
+      {
+        title: "Digital Transformation",
+        img: "/images/office.jpg",
+        desc: "Modernizing business platforms and operations using cloud-native technologies."
+      },
+      {
+        title: "Technology Talent Solutions",
+        img: "/images/team.jpg",
+        desc: "High-impact engineering talent and specialized technical teams for critical initiatives."
+      },
+      {
+        title: "Training & Capability Development",
+        img: "/images/training.jpg",
+        desc: "Upskilling teams with modern technology, AI and cloud engineering practices."
+      },
+    ].map((item, i) => (
+      <div
+        key={i}
+        className="group relative min-h-[280px] rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500"
+      >
+
+        {/* image */}
+        <Image
+          src={item.img}
+          alt={item.title}
+          fill
+          className="object-cover group-hover:scale-105 transition duration-500"
+        />
+
+        {/* dark cinematic overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+
+        {/* hover glow */}
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-orange-400/20"></div>
+
+        {/* content */}
+        <div className="absolute bottom-0 p-7 text-white">
+
+          <div className="h-1 w-12 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"></div>
+
+          <h3 className="mt-5 text-xl md:text-2xl font-semibold">
+            {item.title}
+          </h3>
+
+          <p className="mt-2 text-sm text-gray-200 leading-relaxed">
+            {item.desc}
+          </p>
+
+        </div>
+
+      </div>
+    ))}
+
+  </div>
+
+</div>
 </section>
 {/* HOW NEXXOVATE WORKS */}
-<section className="py-16 md:py-20 bg-gray-50">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6">
+<section className="py-24 bg-gray-50">
 
-    <div className="text-center max-w-3xl mx-auto">
-      <h2 className="text-2xl md:text-4xl font-bold">
-        How Nexxovate Works
-      </h2>
+<div className="max-w-7xl mx-auto px-6">
 
-      <p className="mt-4 md:mt-6 text-sm md:text-lg text-gray-600">
-        Our structured approach ensures every transformation initiative
-        delivers measurable business impact.
-      </p>
-    </div>
+<div className="text-center max-w-3xl mx-auto">
 
-    <div className="mt-16 grid grid-cols-1 md:grid-cols-4 gap-8">
+<h2 className="text-3xl md:text-4xl font-bold">
+How Nexxovate Works
+</h2>
 
-      <div className="text-center">
-        <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white flex items-center justify-center font-semibold">
-          1
-        </div>
-        <h3 className="mt-4 text-lg font-semibold">Discover</h3>
-        <p className="mt-2 text-sm text-gray-600">
-          Understand business goals, systems, workflows and
-          operational challenges.
-        </p>
-      </div>
+<p className="mt-4 text-gray-600">
+Our structured approach ensures every transformation initiative
+delivers measurable business impact.
+</p>
 
-      <div className="text-center">
-        <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white flex items-center justify-center font-semibold">
-          2
-        </div>
-        <h3 className="mt-4 text-lg font-semibold">Design</h3>
-        <p className="mt-2 text-sm text-gray-600">
-          Architect AI systems, cloud platforms and automation
-          strategies tailored to your organization.
-        </p>
-      </div>
+</div>
 
-      <div className="text-center">
-        <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white flex items-center justify-center font-semibold">
-          3
-        </div>
-        <h3 className="mt-4 text-lg font-semibold">Build</h3>
-        <p className="mt-2 text-sm text-gray-600">
-          Develop, integrate and deploy intelligent solutions
-          using modern engineering practices.
-        </p>
-      </div>
+<div className="grid md:grid-cols-4 gap-12 mt-16 relative">
 
-      <div className="text-center">
-        <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white flex items-center justify-center font-semibold">
-          4
-        </div>
-        <h3 className="mt-4 text-lg font-semibold">Scale</h3>
-        <p className="mt-2 text-sm text-gray-600">
-          Optimize systems, expand capabilities and support
-          long-term growth and innovation.
-        </p>
-      </div>
+{[
+{
+title:"Discover",
+desc:"Understand business goals, systems, workflows and operational challenges."
+},
+{
+title:"Design",
+desc:"Architect AI systems, cloud platforms and automation strategies."
+},
+{
+title:"Build",
+desc:"Develop, integrate and deploy intelligent solutions using modern engineering."
+},
+{
+title:"Scale",
+desc:"Optimize systems and expand capabilities for long-term growth."
+}
+].map((step,i)=>(
+<div key={i} className="text-center group">
 
-    </div>
-  </div>
+<div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white flex items-center justify-center font-bold text-lg shadow group-hover:scale-110 transition">
+{i+1}
+</div>
+
+<h3 className="mt-4 font-semibold text-lg">
+{step.title}
+</h3>
+
+<p className="mt-2 text-gray-600 text-sm">
+{step.desc}
+</p>
+
+</div>
+))}
+
+</div>
+
+</div>
 </section>
-      {/* EXPERTISE */}
+
+ {/* EXPERTISE */}
       <section className="py-16 md:py-28 bg-gradient-to-br from-white via-purple-50/60 to-pink-50/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center max-w-3xl mx-auto">
@@ -579,27 +663,30 @@ AI SYSTEM INITIALIZED
       </section>
       <AIAuditTool />
 
-      {/* CTA */}
-      <section className="bg-gradient-to-r from-purple-900 via-pink-900 to-red-900 text-white py-20 md:py-28">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-2xl md:text-4xl font-bold">
-            Ready to implement AI in your organization?
-          </h2>
+{/* CTA */}
+<section className="bg-gradient-to-r from-purple-900 via-pink-900 to-red-900 text-white py-20">
 
-          <p className="mt-4 md:mt-6 text-sm md:text-lg text-gray-200">
-            Let’s design a roadmap for AI automation, cloud infrastructure,
-            and secure enterprise platforms.
-          </p>
+<div className="max-w-6xl mx-auto px-6 text-center">
 
-          <Link
-            href="/contact"
-            className="inline-block mt-8 md:mt-12 bg-white text-black px-9 py-4 rounded-full font-medium hover:scale-105 transition"
-          >
-            Schedule a Consultation
-          </Link>
-        </div>
-      </section>
+<h2 className="text-4xl font-bold">
+Ready to implement AI in your organization?
+</h2>
 
-    </div>
-  );
+<p className="mt-4 text-gray-200">
+Let's design a roadmap for AI automation and enterprise platforms.
+</p>
+
+<Link
+href="/contact"
+className="inline-block mt-8 bg-white text-black px-10 py-4 rounded-full hover:scale-105 transition"
+>
+Schedule a Consultation
+</Link>
+
+</div>
+
+</section>
+
+</main>
+);
 }

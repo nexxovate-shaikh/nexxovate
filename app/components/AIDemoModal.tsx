@@ -1,26 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import { X } from "lucide-react";
-import TypingText from "./TypingText";
 
-export default function AIDemoModal() {
-  const [open, setOpen] = useState(false);
-  const [input, setInput] = useState("");
+export default function AIDemoModal({ onClose }: { onClose: () => void }) {
+
+  const [question, setQuestion] = useState("");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function runDemo() {
-    if (!input.trim()) return;
+  async function askAI() {
+
+    if (!question) return;
 
     setLoading(true);
+    setResponse("");
 
     const res = await fetch("/api/ai-demo", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ prompt: input }),
+      body: JSON.stringify({ question }),
     });
 
     const data = await res.json();
@@ -30,71 +30,53 @@ export default function AIDemoModal() {
   }
 
   return (
-    <>
-      {/* BUTTON */}
-      <button
-        onClick={() => setOpen(true)}
-        className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 py-3 rounded-full font-medium hover:scale-105 transition"
-      >
-        Try AI Demo
-      </button>
+    <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
 
-      {/* MODAL */}
-      {open && (
-        <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 w-[500px] max-w-[90%] relative">
 
-          <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full p-8 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-4 text-gray-500 hover:text-black"
+        >
+          ✕
+        </button>
 
-            <button
-              onClick={() => setOpen(false)}
-              className="absolute top-4 right-4"
-            >
-              <X size={20} />
-            </button>
+        <h3 className="text-xl font-semibold mb-4">
+          Ask Nexxovate AI
+        </h3>
 
-            <h2 className="text-2xl font-bold">
-              Nexxovate AI Demo
-            </h2>
+        <input
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          placeholder="Ask how AI could improve your business..."
+          className="w-full px-6 py-4 border rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
 
-            <p className="text-gray-600 mt-2">
-              Ask how AI could improve your business.
-            </p>
+        <div className="mt-4 flex justify-end">
 
-            {/* INPUT */}
-            <div className="mt-6 flex gap-3">
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Example: automate customer support"
-                className="flex-1 border rounded-full px-5 py-3 text-sm"
-              />
-
-              <button
-                onClick={runDemo}
-                className="bg-black text-white px-6 py-3 rounded-full text-sm"
-              >
-                Ask AI
-              </button>
-            </div>
-
-            {/* LOADING */}
-            {loading && (
-              <p className="mt-6 text-purple-600 animate-pulse">
-                AI analyzing your request...
-              </p>
-            )}
-
-            {/* RESPONSE */}
-            {response && (
-              <div className="mt-6 bg-gray-50 rounded-xl p-5">
-                <TypingText text={response} />
-              </div>
-            )}
-
-          </div>
+          <button
+            onClick={askAI}
+            className="bg-black text-white px-6 py-3 rounded-full hover:scale-105 transition"
+          >
+            Ask AI
+          </button>
 
         </div>
-      )}
-    </>
+
+        {loading && (
+          <p className="mt-4 text-gray-500">
+            AI is thinking...
+          </p>
+        )}
+
+        {response && (
+          <div className="mt-6 bg-gray-100 p-6 rounded-xl">
+            <p className="text-gray-800">{response}</p>
+          </div>
+        )}
+
+      </div>
+
+    </div>
   );
 }

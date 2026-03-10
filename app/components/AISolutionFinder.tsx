@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Sparkles } from "lucide-react";
 
 export default function AISolutionFinder() {
 
@@ -38,37 +39,69 @@ export default function AISolutionFinder() {
   }
 
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="relative py-28 bg-gradient-to-b from-white via-purple-50/40 to-white overflow-hidden">
 
-      <div className="max-w-4xl mx-auto px-6 text-center">
+      {/* background glow */}
+      <div className="absolute left-1/2 -translate-x-1/2 top-0 w-[900px] h-[900px] bg-purple-400/10 blur-[140px] rounded-full"></div>
 
-        <h2 className="text-3xl md:text-4xl font-bold">
-          Explore AI opportunities for your business
-        </h2>
+      <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
 
-        <p className="mt-4 text-gray-600">
-          Describe your challenge and Nexxovate AI will suggest a potential solution.
-        </p>
-
-        <div className="mt-10 flex gap-3">
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Example: automate customer support"
-            className="flex-1 border rounded-xl px-5 py-4"
-          />
-
-          <button
-            onClick={analyzeProblem}
-            className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 rounded-xl"
-          >
-            Analyze
-          </button>
+        {/* Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold tracking-wide">
+          <Sparkles className="w-4 h-4" />
+          AI OPPORTUNITY FINDER
         </div>
 
+        {/* Title */}
+        <h2 className="mt-6 text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+          Discover AI Solutions
+          <span className="block bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 bg-clip-text text-transparent">
+            for Your Business
+          </span>
+        </h2>
+
+        {/* Description */}
+        <p className="mt-6 text-lg text-gray-600 leading-relaxed">
+          Describe your operational challenge and Nexxovate AI will recommend
+          potential automation strategies and intelligent solutions.
+        </p>
+
+        {/* Input Panel */}
+        <div className="mt-12 bg-white/80 backdrop-blur-xl border border-gray-100 rounded-2xl shadow-xl p-6 md:p-8">
+
+          <div className="flex flex-col md:flex-row gap-4">
+
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Example: automate customer support"
+              className="flex-1 px-5 py-4 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none text-sm"
+            />
+
+            <button
+              onClick={analyzeProblem}
+              className="px-8 py-4 rounded-xl font-medium text-white bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 hover:scale-[1.02] transition shadow-md"
+            >
+              Analyze Opportunity
+            </button>
+
+          </div>
+
+        </div>
+
+        {/* Result Panel */}
         {result && (
-          <div className="mt-8 bg-white border rounded-2xl p-6 text-left shadow">
-            <p className="whitespace-pre-line text-gray-700">{result}</p>
+          <div className="mt-10 text-left bg-white/90 backdrop-blur-xl border border-gray-100 rounded-2xl p-8 shadow-xl">
+
+            <div className="flex items-center gap-2 text-purple-600 font-semibold text-sm mb-4">
+              <Sparkles className="w-4 h-4" />
+              Nexxovate AI Recommendation
+            </div>
+
+            <p className="whitespace-pre-line text-gray-700 leading-relaxed">
+              {result}
+            </p>
+
           </div>
         )}
 
