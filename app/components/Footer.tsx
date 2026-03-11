@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
+import { Linkedin, Facebook, Instagram, Youtube, Download } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -23,9 +23,9 @@ export default function Footer() {
             />
 
             <p className="text-gray-600 leading-relaxed max-w-md">
-              Powering intelligent IT operations, cybersecurity, digital
-              transformation, staffing and enterprise innovation through
-              execution excellence.
+              Nexxovate empowers organizations with AI automation, cloud
+              infrastructure, cybersecurity, and digital transformation
+              solutions designed for modern enterprises.
             </p>
 
             {/* SOCIAL */}
@@ -51,6 +51,17 @@ export default function Footer() {
             <Link href="/about">About</Link>
             <Link href="/insights">Insights</Link>
             <Link href="/contact">Contact</Link>
+
+            {/* COMPANY PROFILE DOWNLOAD */}
+            <a
+              href="/nexxovate-company-profile.pdf"
+              target="_blank"
+              download
+              className="flex items-center gap-2 text-purple-600 hover:text-purple-800 font-medium"
+            >
+              <Download size={14} />
+              Company Profile
+            </a>
           </Column>
 
           {/* NEWSLETTER */}
@@ -58,7 +69,7 @@ export default function Footer() {
             <h4 className="font-medium text-gray-900">Stay Connected</h4>
 
             <p className="text-gray-600 leading-relaxed">
-              Get insights on IT, AI, security and enterprise innovation.
+              Get insights on AI, cybersecurity, cloud and enterprise innovation.
             </p>
 
             <form className="flex bg-gray-50 border rounded-xl overflow-hidden focus-within:ring-2 ring-purple-500">
@@ -80,7 +91,7 @@ export default function Footer() {
 
         {/* DIVIDER */}
         <div className="border-t mt-12 pt-6 text-center text-xs text-gray-400">
-          © {new Date().getFullYear()} Nexxovate. Crafted for intelligent enterprises.
+          © {new Date().getFullYear()} Nexxovate. Powering Intelligent IT Operations.
         </div>
 
       </div>

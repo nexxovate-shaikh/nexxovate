@@ -243,9 +243,9 @@ export default function Chatbot() {
       setStep("done");
 
       bot(
-        `Verification complete.\n\nThank you ${finalLead.name}. Would you like to schedule a consultation with our AI strategist?`,
-        ["Schedule Call", "Later"]
-      );
+  `Verification complete.\n\nThank you ${finalLead.name}. Our team will reach out shortly.\n\nMeanwhile, you can explore our company profile or schedule a consultation.`,
+  ["Download Company Profile", "Schedule Call", "Later"]
+);
 
       return;
     }
