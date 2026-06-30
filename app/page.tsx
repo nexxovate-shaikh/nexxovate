@@ -3,11 +3,6 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Hero from "./components/Hero";
-import NeuralBackground from "./components/NeuralBackground";
-import AIOrb from "./components/AIOrb";
-import FloatingCards from "./components/FloatingCards";
-import CursorGlow from "./components/CursorGlow";
 import {
   motion,
   useMotionValue,
@@ -198,6 +193,55 @@ function Magnetic({
   );
 }
 
+/**
+ * Tilt — subtle 3D perspective tilt that follows the cursor within a
+ * card. Adds tactile, premium depth to hover states without being a
+ * gimmick: rotation is capped low (±5deg) and springs back smoothly.
+ */
+function Tilt({
+  children,
+  className = "",
+  max = 5,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  max?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const rx = useMotionValue(0);
+  const ry = useMotionValue(0);
+  const srx = useSpring(rx, { stiffness: 220, damping: 20, mass: 0.4 });
+  const sry = useSpring(ry, { stiffness: 220, damping: 20, mass: 0.4 });
+
+  function handleMove(e: React.MouseEvent<HTMLDivElement>) {
+    if (reduce) return;
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    ry.set(px * max * 2);
+    rx.set(-py * max * 2);
+  }
+
+  function handleLeave() {
+    rx.set(0);
+    ry.set(0);
+  }
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+      style={{ rotateX: srx, rotateY: sry, transformPerspective: 900 }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 function CursorGlow() {
   const reduce = useReducedMotion();
   const x = useMotionValue(0);
@@ -223,6 +267,64 @@ function CursorGlow() {
         className="pointer-events-none absolute h-[460px] w-[460px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,_#FF5FA8_0%,_transparent_70%)] opacity-25 blur-3xl"
       />
     </div>
+  );
+}
+
+/**
+ * SiteCursor — a small dual-ring custom cursor (dot + lagging outer
+ * ring) that tracks the viewport. Desktop only, respects reduced
+ * motion, and never blocks clicks. Premium sites almost always
+ * replace the default cursor with something this understated.
+ */
+function SiteCursor() {
+  const reduce = useReducedMotion();
+  const x = useMotionValue(-100);
+  const y = useMotionValue(-100);
+  const ringX = useSpring(x, { stiffness: 220, damping: 22, mass: 0.4 });
+  const ringY = useSpring(y, { stiffness: 220, damping: 22, mass: 0.4 });
+
+  React.useEffect(() => {
+    if (reduce) return;
+    function handleMove(e: MouseEvent) {
+      x.set(e.clientX);
+      y.set(e.clientY);
+    }
+    window.addEventListener("mousemove", handleMove);
+    return () => window.removeEventListener("mousemove", handleMove);
+  }, [reduce, x, y]);
+
+  if (reduce) return null;
+
+  return (
+    <div className="pointer-events-none fixed inset-0 z-[80] hidden md:block">
+      <motion.div
+        style={{ left: x, top: y }}
+        className="absolute h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#E0289C]"
+      />
+      <motion.div
+        style={{ left: ringX, top: ringY }}
+        className="absolute h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#7C3AED]/40"
+      />
+    </div>
+  );
+}
+
+/**
+ * Grain — a faint animated film-grain texture laid over the whole
+ * page at very low opacity. This single layer is what separates a
+ * "clean website" from something that feels tactile and premium;
+ * pure CSS, no image asset.
+ */
+function Grain() {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-[55] opacity-[0.025] mix-blend-multiply"
+      style={{
+        backgroundImage:
+          "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+      }}
+    />
   );
 }
 
@@ -461,9 +563,11 @@ export default function HomePage() {
 
   return (
     <main
-      className={`${sora.variable} ${inter.variable} ${mono.variable} relative overflow-x-hidden bg-white text-[#140B22] [font-family:var(--font-body)]`}
+      className={`${sora.variable} ${inter.variable} ${mono.variable} relative overflow-x-hidden bg-white text-[#140B22] [font-family:var(--font-body)] selection:bg-[#7C3AED]/20 selection:text-[#2B0B4E]`}
     >
       <ScrollProgress />
+      <SiteCursor />
+      <Grain />
 
       {/* HERO */}
       <section className="relative min-h-[94svh] flex items-center text-white overflow-hidden">
@@ -483,6 +587,8 @@ export default function HomePage() {
         />
 
         <div className="absolute inset-0 bg-gradient-to-br from-[#2B0B4E]/92 via-[#7C2D9A]/78 to-[#E0289C]/55" />
+        {/* fine vignette for cinematic depth at the edges */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.35)_100%)]" />
 
         <CursorGlow />
 
@@ -495,7 +601,7 @@ export default function HomePage() {
 
               <motion.h1
                 variants={fadeUp}
-                className="mt-10 max-w-5xl text-5xl sm:text-6xl md:text-7xl lg:text-[5.25rem] font-bold leading-[0.98] tracking-tight [font-family:var(--font-display)]"
+                className="mt-10 max-w-5xl text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold leading-[0.97] tracking-tight [font-family:var(--font-display)]"
               >
                 AI Solutions That Automate Work
                 <GradientWord className="block mt-2">
@@ -519,9 +625,10 @@ export default function HomePage() {
                 <Magnetic>
                   <Link
                     href="/contact"
-                    className="inline-flex items-center rounded-full bg-gradient-to-r from-[#7C3AED] to-[#E0289C] px-8 py-4 font-medium text-white shadow-[0_8px_30px_-8px_rgba(224,40,156,0.6)] transition-shadow hover:shadow-[0_8px_40px_-6px_rgba(224,40,156,0.85)]"
+                    className="group relative inline-flex items-center overflow-hidden rounded-full bg-gradient-to-r from-[#7C3AED] to-[#E0289C] px-8 py-4 font-medium text-white shadow-[0_8px_30px_-8px_rgba(224,40,156,0.6)] transition-shadow hover:shadow-[0_12px_45px_-6px_rgba(224,40,156,0.85)]"
                   >
-                    Book AI Consultation
+                    <span className="absolute inset-0 -translate-x-full bg-white/20 transition-transform duration-700 ease-out group-hover:translate-x-full" />
+                    <span className="relative">Book AI Consultation</span>
                   </Link>
                 </Magnetic>
 
@@ -596,7 +703,7 @@ export default function HomePage() {
                     </p>
                   </div>
 
-                  <span className="hidden md:inline-flex h-12 w-12 items-center justify-center rounded-full border border-gray-200 text-gray-400 transition-all duration-300 group-hover:border-transparent group-hover:bg-gradient-to-r group-hover:from-[#7C3AED] group-hover:to-[#E0289C] group-hover:text-white">
+                  <span className="hidden md:inline-flex h-12 w-12 items-center justify-center rounded-full border border-gray-200 text-gray-400 transition-all duration-300 group-hover:border-transparent group-hover:bg-gradient-to-r group-hover:from-[#7C3AED] group-hover:to-[#E0289C] group-hover:text-white group-hover:shadow-[0_8px_24px_-6px_rgba(124,58,237,0.55)]">
                     →
                   </span>
                 </motion.div>
@@ -629,33 +736,37 @@ export default function HomePage() {
                 key={i}
                 className={i === 0 ? "md:col-span-2 md:row-span-2" : ""}
               >
-                <motion.div
-                  whileHover={{ scale: 1.01 }}
-                  transition={{ duration: 0.4, ease: EASE }}
-                  className="group relative h-full min-h-[320px] overflow-hidden rounded-2xl"
-                >
-                  <Image
-                    src={item.img}
-                    alt={item.title}
-                    fill
-                    className="object-cover transition duration-700 group-hover:scale-110"
-                  />
+                <Tilt max={3} className="h-full">
+                  <motion.div
+                    whileHover={{ scale: 1.01 }}
+                    transition={{ duration: 0.4, ease: EASE }}
+                    className="group relative h-full min-h-[320px] overflow-hidden rounded-2xl shadow-[0_1px_2px_rgba(20,11,34,0.06)] transition-shadow duration-500 hover:shadow-[0_30px_70px_-20px_rgba(124,58,237,0.45)]"
+                  >
+                    <Image
+                      src={item.img}
+                      alt={item.title}
+                      fill
+                      className="object-cover transition duration-700 group-hover:scale-110"
+                    />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#140B22]/90 via-[#140B22]/25 to-transparent" />
-                  <div className="absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100 bg-gradient-to-br from-[#7C3AED]/25 to-[#E0289C]/25" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#140B22]/90 via-[#140B22]/25 to-transparent" />
+                    <div className="absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100 bg-gradient-to-br from-[#7C3AED]/25 to-[#E0289C]/25" />
+                    {/* inner border glow on hover for premium polish */}
+                    <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/0 transition duration-500 group-hover:ring-white/15" />
 
-                  <div className="absolute inset-0 flex flex-col justify-end p-8">
-                    <span className="text-[11px] uppercase tracking-[0.25em] text-white/70 [font-family:var(--font-mono)]">
-                      Case study
-                    </span>
-                    <h3 className="mt-3 max-w-sm text-2xl md:text-3xl font-semibold text-white [font-family:var(--font-display)]">
-                      {item.title}
-                    </h3>
-                    <p className="mt-3 max-w-sm text-sm leading-relaxed text-white/80 opacity-0 transition duration-500 group-hover:opacity-100">
-                      {item.desc}
-                    </p>
-                  </div>
-                </motion.div>
+                    <div className="absolute inset-0 flex flex-col justify-end p-8">
+                      <span className="text-[11px] uppercase tracking-[0.25em] text-white/70 [font-family:var(--font-mono)]">
+                        Case study
+                      </span>
+                      <h3 className="mt-3 max-w-sm text-2xl md:text-3xl font-semibold text-white [font-family:var(--font-display)]">
+                        {item.title}
+                      </h3>
+                      <p className="mt-3 max-w-sm text-sm leading-relaxed text-white/80 opacity-0 transition duration-500 group-hover:opacity-100">
+                        {item.desc}
+                      </p>
+                    </div>
+                  </motion.div>
+                </Tilt>
               </StaggerItem>
             ))}
           </StaggerGrid>
@@ -775,33 +886,36 @@ export default function HomePage() {
                 key={i}
                 className={i === 0 ? "sm:col-span-2 md:col-span-2" : ""}
               >
-                <motion.div
-                  whileHover={{ y: -8 }}
-                  transition={{ duration: 0.4, ease: EASE }}
-                  className={`group relative overflow-hidden rounded-2xl ${
-                    i === 0 ? "min-h-[340px] md:min-h-[420px]" : "min-h-[280px]"
-                  }`}
-                >
-                  <Image
-                    src={item.img}
-                    alt={item.title}
-                    fill
-                    className="object-cover transition duration-700 group-hover:scale-110"
-                  />
+                <Tilt max={3}>
+                  <motion.div
+                    whileHover={{ y: -8 }}
+                    transition={{ duration: 0.4, ease: EASE }}
+                    className={`group relative overflow-hidden rounded-2xl shadow-[0_1px_2px_rgba(20,11,34,0.06)] transition-shadow duration-500 hover:shadow-[0_30px_70px_-20px_rgba(124,58,237,0.45)] ${
+                      i === 0 ? "min-h-[340px] md:min-h-[420px]" : "min-h-[280px]"
+                    }`}
+                  >
+                    <Image
+                      src={item.img}
+                      alt={item.title}
+                      fill
+                      className="object-cover transition duration-700 group-hover:scale-110"
+                    />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#2B0B4E]/85 via-[#2B0B4E]/30 to-transparent" />
-                  <div className="absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100 bg-gradient-to-br from-[#7C3AED]/25 via-transparent to-[#E0289C]/25" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#2B0B4E]/85 via-[#2B0B4E]/30 to-transparent" />
+                    <div className="absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100 bg-gradient-to-br from-[#7C3AED]/25 via-transparent to-[#E0289C]/25" />
+                    <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/0 transition duration-500 group-hover:ring-white/15" />
 
-                  <div className="absolute bottom-0 p-7 text-white">
-                    <div className="h-1 w-12 rounded-full bg-gradient-to-r from-[#C084FC] to-[#FF8AC4]" />
-                    <h3 className="mt-5 text-xl md:text-2xl font-semibold [font-family:var(--font-display)]">
-                      {item.title}
-                    </h3>
-                    <p className="mt-2 max-w-sm text-sm leading-relaxed text-gray-200">
-                      {item.desc}
-                    </p>
-                  </div>
-                </motion.div>
+                    <div className="absolute bottom-0 p-7 text-white">
+                      <div className="h-1 w-12 rounded-full bg-gradient-to-r from-[#C084FC] to-[#FF8AC4]" />
+                      <h3 className="mt-5 text-xl md:text-2xl font-semibold [font-family:var(--font-display)]">
+                        {item.title}
+                      </h3>
+                      <p className="mt-2 max-w-sm text-sm leading-relaxed text-gray-200">
+                        {item.desc}
+                      </p>
+                    </div>
+                  </motion.div>
+                </Tilt>
               </StaggerItem>
             ))}
           </StaggerGrid>
@@ -842,7 +956,7 @@ export default function HomePage() {
                   <motion.div
                     whileHover={{ scale: 1.1 }}
                     transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                    className="relative mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-gray-300 bg-white text-lg font-bold transition-colors duration-300 group-hover:border-transparent group-hover:bg-gradient-to-r group-hover:from-[#7C3AED] group-hover:to-[#E0289C] group-hover:text-white [font-family:var(--font-display)]"
+                    className="relative mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-gray-300 bg-white text-lg font-bold transition-colors duration-300 group-hover:border-transparent group-hover:bg-gradient-to-r group-hover:from-[#7C3AED] group-hover:to-[#E0289C] group-hover:text-white group-hover:shadow-[0_10px_30px_-6px_rgba(124,58,237,0.6)] [font-family:var(--font-display)]"
                   >
                     {i + 1}
                   </motion.div>
@@ -930,6 +1044,8 @@ export default function HomePage() {
             transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
           />
         </div>
+        {/* vignette for cinematic depth, matching the hero */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.3)_100%)] pointer-events-none" />
 
         <Reveal className="max-w-4xl mx-auto px-6 text-center relative z-10">
           <h2 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.02] [font-family:var(--font-display)]">
@@ -945,9 +1061,10 @@ export default function HomePage() {
             <Magnetic>
               <Link
                 href="/contact"
-                className="inline-block bg-white text-[#2B0B4E] px-10 py-4 rounded-full font-medium hover:scale-105 transition-transform"
+                className="group relative inline-flex items-center overflow-hidden rounded-full bg-white px-10 py-4 font-medium text-[#2B0B4E] shadow-[0_15px_45px_-10px_rgba(0,0,0,0.5)] transition-shadow hover:shadow-[0_20px_60px_-8px_rgba(0,0,0,0.6)]"
               >
-                Schedule a Consultation
+                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-[#7C3AED]/10 to-[#E0289C]/10 transition-transform duration-700 ease-out group-hover:translate-x-full" />
+                <span className="relative">Schedule a Consultation</span>
               </Link>
             </Magnetic>
           </div>
