@@ -1,78 +1,42 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import SparkleField from "./SparkleField";
+import CircuitLines from "./CircuitLines";
 
-function Counter({ value }: { value: number }) {
-  const [count, setCount] = useState(0);
+const stats=[
+["250+","Enterprise Projects"],
+["98%","Client Satisfaction"],
+["35","Countries Served"],
+["24/7","AI Operations"],
+];
 
-  useEffect(() => {
-    let start = 0;
-    const duration = 1500;
-    const increment = value / (duration / 16);
-
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= value) {
-        start = value;
-        clearInterval(timer);
-      }
-      setCount(Math.floor(start));
-    }, 16);
-
-    return () => clearInterval(timer);
-  }, [value]);
-
-  return <span>{count}</span>;
-}
-
-export default function AIStats() {
-  const stats = [
-    {
-      number: 500,
-      suffix: "+",
-      label: "AI Workflows Automated",
-    },
-    {
-      number: 120,
-      suffix: "+",
-      label: "Enterprise Projects Delivered",
-    },
-    {
-      number: 40,
-      suffix: "%",
-      label: "Operational Cost Reduction",
-    },
-    {
-      number: 24,
-      suffix: "/7",
-      label: "AI Systems Monitoring",
-    },
-  ];
-
-  return (
-    <section className="py-20 bg-gradient-to-r from-purple-900 via-indigo-900 to-purple-800 text-white">
-      <div className="max-w-7xl mx-auto px-6">
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 text-center">
-
-          {stats.map((item, index) => (
-            <div key={index} className="space-y-3">
-
-              <h3 className="text-4xl md:text-5xl font-bold">
-                <Counter value={item.number} />
-                {item.suffix}
-              </h3>
-
-              <p className="text-sm md:text-base text-purple-200">
-                {item.label}
-              </p>
-
-            </div>
-          ))}
-
-        </div>
-
-      </div>
-    </section>
-  );
-}
+export default function AIStats(){
+return(
+<section className="relative overflow-hidden bg-[#050508] py-24 text-white">
+<div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(124,58,237,.12),transparent_60%)]"/>
+<CircuitLines opacity={0.05} pulses={1} />
+<SparkleField count={10} />
+<div className="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-4">
+{stats.map(([v,l],i)=>(
+<motion.div
+key={l}
+initial={{opacity:0,y:24}}
+whileInView={{opacity:1,y:0}}
+viewport={{once:true}}
+transition={{delay:i*0.08}}
+whileHover={{y:-8}}
+className="relative rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-2xl">
+<motion.div
+className="text-5xl font-black bg-gradient-to-r from-violet-400 via-fuchsia-400 to-amber-300 bg-clip-text text-transparent"
+animate={{opacity:[.8,1,.8]}}
+transition={{duration:2,repeat:Infinity}}>
+{v}
+</motion.div>
+<div className="mt-4 h-px w-16 bg-gradient-to-r from-violet-500 to-amber-300"/>
+<p className="mt-5 text-zinc-300">{l}</p>
+</motion.div>
+))}
+</div>
+</section>
+)}

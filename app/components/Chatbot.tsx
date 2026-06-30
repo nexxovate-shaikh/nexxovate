@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { X, Send, Mic, Volume2, VolumeX } from "lucide-react";
 import AIConciergeOrb from "./AIConciergeOrb";
 
@@ -23,6 +24,43 @@ type Message = {
   options?: string[];
 };
 
+/* ---------------- HEADER AVATAR ---------------- */
+
+function HeaderAvatar({ talking }: { talking: boolean }) {
+  return (
+    <motion.div
+      className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-white/15 bg-[#0a0a12]/60 p-0.5"
+      animate={{ scale: talking ? [1, 1.06, 1] : 1 }}
+      transition={{ duration: 0.7, repeat: talking ? Infinity : 0, ease: "easeInOut" }}
+    >
+      <svg viewBox="0 0 120 130" className="h-full w-full">
+        <defs>
+          <linearGradient id="hdrBodyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#f5f3ff" />
+            <stop offset="100%" stopColor="#ddd6fe" />
+          </linearGradient>
+          <linearGradient id="hdrVisorGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#7c3aed" />
+            <stop offset="50%" stopColor="#d946ef" />
+            <stop offset="100%" stopColor="#fbbf24" />
+          </linearGradient>
+        </defs>
+        <rect x="30" y="22" width="60" height="46" rx="23" fill="url(#hdrBodyGrad)" stroke="#a78bfa" strokeWidth="2" />
+        <rect x="40" y="36" width="40" height="20" rx="10" fill="#1e1033" />
+        <motion.g
+          animate={{ scaleY: talking ? [1, 0.3, 1, 0.3, 1] : [1, 1, 0.1, 1, 1] }}
+          transition={{ duration: talking ? 0.8 : 4.5, repeat: Infinity }}
+          style={{ transformOrigin: "60px 46px" }}
+        >
+          <circle cx="50" cy="46" r="4.2" fill="url(#hdrVisorGrad)" />
+          <circle cx="70" cy="46" r="4.2" fill="url(#hdrVisorGrad)" />
+        </motion.g>
+        <rect x="35" y="68" width="50" height="42" rx="18" fill="url(#hdrBodyGrad)" stroke="#a78bfa" strokeWidth="2" />
+      </svg>
+    </motion.div>
+  );
+}
+
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
@@ -30,6 +68,7 @@ export default function Chatbot() {
   const [lead, setLead] = useState<any>({});
   const [voiceOn, setVoiceOn] = useState(true);
   const [listening, setListening] = useState(false);
+  const [botTyping, setBotTyping] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -57,7 +96,7 @@ export default function Chatbot() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, open]);
+  }, [messages, open, botTyping]);
 
   /* ---------------- VOICE ---------------- */
 
@@ -73,7 +112,9 @@ export default function Chatbot() {
   }
 
   function bot(text: string, options?: string[]) {
+    setBotTyping(true);
     setTimeout(() => {
+      setBotTyping(false);
       setMessages((m) => [...m, { role: "bot", text, options }]);
       speak(text);
     }, 600);
@@ -243,9 +284,9 @@ export default function Chatbot() {
       setStep("done");
 
       bot(
-  `Verification complete.\n\nThank you ${finalLead.name}. Our team will reach out shortly.\n\nMeanwhile, you can explore our company profile or schedule a consultation.`,
-  ["Download Company Profile", "Schedule Call", "Later"]
-);
+        `Verification complete.\n\nThank you ${finalLead.name}. Our team will reach out shortly.\n\nMeanwhile, you can explore our company profile or schedule a consultation.`,
+        ["Download Company Profile", "Schedule Call", "Later"]
+      );
 
       return;
     }
@@ -311,120 +352,148 @@ export default function Chatbot() {
     <>
       {!open && <AIConciergeOrb onOpen={() => setOpen(true)} />}
 
-      {open && (
-        <div className="fixed inset-0 z-[9998] bg-black/40">
-          <div
-            className="fixed bottom-0 right-0 sm:bottom-6 sm:right-6
-            w-full sm:w-[400px] h-[80vh] sm:h-[600px]
-            bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col"
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm"
           >
-            {/* HEADER */}
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 16, scale: 0.97 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed bottom-0 right-0 sm:bottom-6 sm:right-6
+              w-full sm:w-[400px] h-[80vh] sm:h-[600px]
+              flex flex-col overflow-hidden rounded-t-3xl sm:rounded-[28px]
+              border border-white/10 bg-[#0a0a12]/95 backdrop-blur-2xl
+              shadow-[0_30px_80px_rgba(124,58,237,.4)]"
+            >
+              {/* ambient glow */}
+              <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-fuchsia-500/20 blur-[90px]" />
+              <div className="pointer-events-none absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-violet-600/20 blur-[90px]" />
 
-            <div className="flex items-center gap-3 px-4 py-3 border-b">
+              {/* HEADER */}
+              <div className="relative flex items-center gap-3 border-b border-white/10 bg-white/5 px-4 py-3.5">
+                <HeaderAvatar talking={botTyping} />
 
-              <img src="/logo.png" className="h-7" />
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-white">
+                    Nexxovate Concierge
+                  </p>
+                  <p className="flex items-center gap-1.5 text-xs text-emerald-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Enterprise Growth Advisor
+                  </p>
+                </div>
 
-              <div className="flex-1">
-                <p className="text-sm font-semibold">
-                  Nexxovate Concierge
-                </p>
-                <p className="text-xs text-gray-500">
-                  Enterprise Growth Advisor
-                </p>
+                <button
+                  onClick={() => setVoiceOn(!voiceOn)}
+                  className="text-zinc-400 transition hover:text-white"
+                  aria-label="Toggle voice"
+                >
+                  {voiceOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
+                </button>
+
+                <button
+                  onClick={() => setOpen(false)}
+                  className="text-zinc-400 transition hover:text-white"
+                  aria-label="Close chat"
+                >
+                  <X size={18} />
+                </button>
               </div>
 
-              <button onClick={() => setVoiceOn(!voiceOn)}>
-                {voiceOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
-              </button>
-
-              <button onClick={() => setOpen(false)}>
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* MESSAGES */}
-
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-
-              {messages.map((m, i) => (
-
-                <div key={i}>
-
-                  <div
-                    className={`flex ${
-                      m.role === "user"
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
-                  >
+              {/* MESSAGES */}
+              <div className="relative flex-1 space-y-4 overflow-y-auto px-4 py-5">
+                {messages.map((m, i) => (
+                  <div key={i}>
                     <div
-                      className={`px-4 py-3 rounded-2xl text-sm max-w-[75%]
-                      ${
-                        m.role === "user"
-                          ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-                          : "bg-white text-gray-900 shadow"
+                      className={`flex ${
+                        m.role === "user" ? "justify-end" : "justify-start"
                       }`}
                     >
-                      {m.text}
+                      <div
+                        className={`whitespace-pre-line px-4 py-3 rounded-2xl text-sm leading-relaxed max-w-[80%] ${
+                          m.role === "user"
+                            ? "bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white"
+                            : "border border-white/10 bg-white/[0.06] text-zinc-200"
+                        }`}
+                      >
+                        {m.text}
+                      </div>
                     </div>
+
+                    {m.options && (
+                      <div className="mt-2.5 flex flex-wrap gap-2">
+                        {m.options.map((o) => (
+                          <motion.button
+                            key={o}
+                            whileHover={{ scale: 1.04 }}
+                            whileTap={{ scale: 0.96 }}
+                            onClick={() => send(o)}
+                            className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3.5 py-1.5 text-xs font-medium text-white shadow-[0_0_20px_rgba(168,85,247,.35)]"
+                          >
+                            {o}
+                          </motion.button>
+                        ))}
+                      </div>
+                    )}
                   </div>
+                ))}
 
-                  {m.options && (
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {m.options.map((o) => (
-                        <button
-                          key={o}
-                          onClick={() => send(o)}
-                          className="px-3 py-1.5 rounded-full text-xs
-                          bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-                        >
-                          {o}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                {botTyping && (
+                  <div className="flex w-fit items-center gap-1 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3">
+                    {[0, 1, 2].map((i) => (
+                      <motion.span
+                        key={i}
+                        className="h-1.5 w-1.5 rounded-full bg-zinc-300"
+                        animate={{ y: [0, -4, 0] }}
+                        transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15 }}
+                      />
+                    ))}
+                  </div>
+                )}
 
-                </div>
-              ))}
+                <div ref={bottomRef} />
+              </div>
 
-              <div ref={bottomRef} />
+              {/* INPUT */}
+              <div className="relative flex items-center gap-2 border-t border-white/10 p-3">
+                <button
+                  onClick={startListening}
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition ${
+                    listening
+                      ? "bg-red-500 text-white"
+                      : "border border-white/10 bg-white/5 text-zinc-300 hover:text-white"
+                  }`}
+                  aria-label="Speak"
+                >
+                  <Mic size={16} />
+                </button>
 
-            </div>
+                <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && send()}
+                  placeholder="Type or speak…"
+                  className="flex-1 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-zinc-500 outline-none focus:border-violet-400"
+                />
 
-            {/* INPUT */}
-
-            <div className="p-3 border-t flex gap-2">
-
-              <button
-                onClick={startListening}
-                className={`w-10 h-10 rounded-full flex items-center justify-center
-                ${listening ? "bg-red-500" : "bg-gray-200"}`}
-              >
-                <Mic size={16} />
-              </button>
-
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && send()}
-                placeholder="Type or speak…"
-                className="flex-1 border rounded-full px-4 py-2 text-sm"
-              />
-
-              <button
-                onClick={() => send()}
-                className="w-10 h-10 rounded-full
-                bg-gradient-to-r from-blue-600 to-purple-600
-                text-white flex items-center justify-center"
-              >
-                <Send size={16} />
-              </button>
-
-            </div>
-
-          </div>
-        </div>
-      )}
+                <button
+                  onClick={() => send()}
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white transition hover:scale-105"
+                  aria-label="Send message"
+                >
+                  <Send size={16} />
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

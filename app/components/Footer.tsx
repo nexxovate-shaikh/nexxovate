@@ -2,124 +2,90 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Linkedin, Facebook, Instagram, Youtube, Download } from "lucide-react";
+import { motion } from "framer-motion";
+import CircuitLines from "./CircuitLines";
+
+const links = [
+  {
+    title: "Company",
+    items: ["About", "Services", "Careers", "Contact"],
+  },
+  {
+    title: "Solutions",
+    items: ["Enterprise AI", "Cloud", "Cybersecurity", "Automation"],
+  },
+  {
+    title: "Resources",
+    items: ["Insights", "Case Studies", "Privacy", "Terms"],
+  },
+];
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t">
-      <div className="max-w-7xl mx-auto px-6 py-14">
+    <footer className="relative overflow-hidden border-t border-white/10 bg-[#030307] text-white">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(124,58,237,.15),transparent_60%)]" />
+      <CircuitLines opacity={0.04} pulses={1} />
 
-        {/* GRID */}
-        <div className="grid gap-12 md:grid-cols-5 text-sm">
+      <div className="relative mx-auto max-w-7xl px-6 py-20">
+        <div className="grid gap-14 lg:grid-cols-[1.3fr_2fr]">
+          <div>
+            <div className="flex items-center gap-4">
+              <Image
+                src="/logo.png"
+                alt="Nexxovate"
+                width={64}
+                height={64}
+              />
+              <div>
+                <h2 className="text-3xl font-black">Nexxovate</h2>
+                <p className="mt-1 text-zinc-400">
+                  Building the Future of Enterprise AI
+                </p>
+              </div>
+            </div>
 
-          {/* BRAND */}
-          <div className="md:col-span-2 space-y-5">
-            <Image
-              src="/logo.png"
-              alt="Nexxovate"
-              width={160}
-              height={50}
-              className="w-auto"
-            />
-
-            <p className="text-gray-600 leading-relaxed max-w-md">
-              Nexxovate empowers organizations with AI automation, cloud
-              infrastructure, cybersecurity, and digital transformation
-              solutions designed for modern enterprises.
+            <p className="mt-8 max-w-md leading-8 text-zinc-400">
+              Intelligent enterprise platforms, AI automation, cloud engineering
+              and cybersecurity for modern global organizations.
             </p>
 
-            {/* SOCIAL */}
-            <div className="flex gap-4 pt-2">
-              <Social href="#"><Linkedin size={18} /></Social>
-              <Social href="#"><Facebook size={18} /></Social>
-              <Social href="#"><Instagram size={18} /></Social>
-              <Social href="#"><Youtube size={18} /></Social>
+            <div className="mt-10 flex gap-4">
+              {["X","in","GH"].map((i)=>(
+                <motion.div
+                  whileHover={{y:-5}}
+                  key={i}
+                  className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-xl">
+                  {i}
+                </motion.div>
+              ))}
             </div>
           </div>
 
-          {/* SERVICES */}
-          <Column title="Services">
-            <span>IT & Managed Services</span>
-            <span>AI & Automation</span>
-            <span>Cybersecurity</span>
-            <span>Digital Transformation</span>
-            <span>Consulting</span>
-          </Column>
+          <div className="grid gap-10 sm:grid-cols-3">
+            {links.map((group)=>(
+              <div key={group.title}>
+                <h3 className="mb-5 text-lg font-bold">{group.title}</h3>
 
-          {/* COMPANY */}
-          <Column title="Company">
-            <Link href="/about">About</Link>
-            <Link href="/insights">Insights</Link>
-            <Link href="/contact">Contact</Link>
-
-            {/* COMPANY PROFILE DOWNLOAD */}
-            <a
-              href="/nexxovate-company-profile.pdf"
-              target="_blank"
-              download
-              className="flex items-center gap-2 text-purple-600 hover:text-purple-800 font-medium"
-            >
-              <Download size={14} />
-              Company Profile
-            </a>
-          </Column>
-
-          {/* NEWSLETTER */}
-          <div className="space-y-4">
-            <h4 className="font-medium text-gray-900">Stay Connected</h4>
-
-            <p className="text-gray-600 leading-relaxed">
-              Get insights on AI, cybersecurity, cloud and enterprise innovation.
-            </p>
-
-            <form className="flex bg-gray-50 border rounded-xl overflow-hidden focus-within:ring-2 ring-purple-500">
-              <input
-                type="email"
-                placeholder="Your email"
-                className="flex-1 bg-transparent px-4 py-3 outline-none text-sm"
-              />
-              <button
-                type="button"
-                className="bg-black text-white px-5 text-sm font-medium hover:bg-gray-900 transition"
-              >
-                Join
-              </button>
-            </form>
+                <div className="space-y-4">
+                  {group.items.map(item=>(
+                    <Link
+                      key={item}
+                      href="#"
+                      className="block text-zinc-400 transition hover:text-white">
+                      {item}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
-
         </div>
 
-        {/* DIVIDER */}
-        <div className="border-t mt-12 pt-6 text-center text-xs text-gray-400">
-          © {new Date().getFullYear()} Nexxovate. Powering Intelligent IT Operations.
+        <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-sm text-zinc-500 md:flex-row">
+          <p>© 2026 Nexxovate. All Rights Reserved.</p>
+          <p>Designed for the Future of AI.</p>
         </div>
-
       </div>
     </footer>
-  );
-}
-
-/* ------------------ HELPERS ------------------ */
-
-function Social({ href, children }: any) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      className="w-9 h-9 rounded-full border flex items-center justify-center text-gray-500 hover:text-black hover:border-black transition"
-    >
-      {children}
-    </a>
-  );
-}
-
-function Column({ title, children }: any) {
-  return (
-    <div className="space-y-4">
-      <h4 className="font-medium text-gray-900">{title}</h4>
-      <div className="flex flex-col gap-3 text-gray-600">
-        {children}
-      </div>
-    </div>
   );
 }

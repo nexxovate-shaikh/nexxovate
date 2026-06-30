@@ -1,145 +1,148 @@
+// Production-ready Navbar.tsx template
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
+
+const NAV_LINKS = [
+  { label: "Services", href: "/services" },
+  { label: "Solutions", href: "/solutions" },
+  { label: "About", href: "/about" },
+  { label: "Careers", href: "/careers" },
+  { label: "Contact", href: "/contact" },
+];
 
 export default function Navbar() {
   const pathname = usePathname();
-  const isHome = pathname === "/";
-
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 120);
-    window.addEventListener("scroll", onScroll);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 30);
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(h > 0 ? (y / h) * 100 : 0);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  return (
-    <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500
-        ${
-          isHome
-            ? scrolled
-              ? "bg-white/95 backdrop-blur-xl shadow-lg"
-              : "bg-transparent"
-            : "bg-white/95 backdrop-blur-xl shadow-md"
-        }
-      `}
-    >
-      <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-
-        {/* LOGO */}
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/logo.png"
-            alt="Nexxovate"
-            width={220}
-            height={100}
-            priority
-            className={`transition-all duration-500 ${
-              scrolled || !isHome ? "h-8" : "h-9"
-            } w-auto`}
-          />
-        </Link>
-
-        {/* DESKTOP MENU */}
-        <nav className="hidden md:flex gap-10 text-sm font-medium items-center tracking-wide">
-          {[
-            { name: "Home", path: "/" },
-            { name: "Services", path: "/services" },
-            { name: "Staffing", path: "/staffing" },
-            { name: "Training", path: "/training" },
-            { name: "Insights", path: "/insights" },
-            { name: "About", path: "/about" },
-            { name: "Contact", path: "/contact" },
-          ].map((item) => (
-            <NavLink
-              key={item.name}
-              href={item.path}
-              label={item.name}
-              pathname={pathname}
-              light={isHome && !scrolled}
-            />
-          ))}
-        </nav>
-
-        {/* MOBILE */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className={`md:hidden text-2xl transition ${
-            isHome && !scrolled ? "text-white" : "text-gray-800"
-          }`}
-        >
-          ☰
-        </button>
-      </div>
-
-      {/* MOBILE MENU */}
-      {menuOpen && (
-        <div className="md:hidden bg-white shadow-xl border-t">
-          <nav className="flex flex-col px-6 py-6 space-y-4 text-sm font-medium">
-            {["Home","Services","Staffing","Training","Insights","About","Contact"].map((item) => (
-              <Link
-                key={item}
-                href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                onClick={() => setMenuOpen(false)}
-                className="text-gray-700 hover:text-indigo-600 transition"
-              >
-                {item}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      )}
-    </header>
-  );
-}
-
-function NavLink({
-  href,
-  label,
-  pathname,
-  light,
-}: {
-  href: string;
-  label: string;
-  pathname: string;
-  light: boolean;
-}) {
-  const active = pathname === href;
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
 
   return (
-    <Link
-      href={href}
-      className={`relative transition-colors duration-300 ${
-        light
-          ? active
-            ? "text-indigo-300"
-            : "text-white hover:text-indigo-300"
-          : active
-          ? "text-indigo-600"
-          : "text-gray-700 hover:text-indigo-600"
-      }`}
-    >
-      {label}
-
-      <span
-        className={`absolute left-0 -bottom-2 h-[2px] bg-gradient-to-r from-pink-500 to-purple-600 transition-all duration-500 ${
-          active ? "w-full" : "w-0 hover:w-full"
-        }`}
+    <>
+      <motion.div
+        className="fixed left-0 top-0 z-[60] h-[2px] bg-gradient-to-r from-violet-500 via-fuchsia-400 to-amber-300"
+        animate={{ width: `${progress}%` }}
       />
-    </Link>
+      <motion.header
+        initial={{ y: -30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="fixed inset-x-0 top-0 z-50 transition-all duration-500"
+        style={{
+          background: scrolled ? "rgba(6,6,10,.82)" : "transparent",
+          backdropFilter: scrolled ? "blur(20px)" : "none",
+          borderBottom: scrolled ? "1px solid rgba(139,92,246,.18)" : "none",
+        }}
+      >
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
+          <Link href="/" className="flex items-center gap-3">
+            <Image
+  src="/logo.png"
+  alt="Nexxovate"
+  width={200}
+  height={100}
+  priority
+  className="object-contain transition-transform duration-500 group-hover:scale-110"
+/>
+            <div>
+              
+            </div>
+          </Link>
+
+          <nav className="hidden items-center gap-8 md:flex">
+            {NAV_LINKS.map((item) => {
+              const active = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="relative py-2 text-sm font-medium transition"
+                >
+                  <span className={active ? "text-white" : "text-zinc-400 hover:text-white"}>
+                    {item.label}
+                  </span>
+                  {active && (
+                    <motion.span
+                      layoutId="nav-active"
+                      className="absolute bottom-0 left-0 h-[2px] w-full rounded-full bg-gradient-to-r from-violet-500 to-amber-300"
+                    />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="hidden md:block">
+            <Link
+              href="/contact"
+              className="rounded-full bg-gradient-to-r from-violet-700 via-fuchsia-600 to-amber-400 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:scale-105"
+            >
+              Get Started
+            </Link>
+          </div>
+
+          <button
+            className="flex flex-col gap-1 md:hidden"
+            onClick={() => setOpen(!open)}
+            aria-label="Toggle menu"
+          >
+            <span className={`h-0.5 w-6 bg-white transition ${open ? "translate-y-2 rotate-45" : ""}`} />
+            <span className={`h-0.5 w-6 bg-white transition ${open ? "opacity-0" : ""}`} />
+            <span className={`h-0.5 w-6 bg-white transition ${open ? "-translate-y-2 -rotate-45" : ""}`} />
+          </button>
+        </div>
+
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0, y: -16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              className="md:hidden border-t border-violet-900/40 bg-[#07070d]/95 backdrop-blur-2xl"
+            >
+              <div className="flex min-h-[calc(100vh-80px)] flex-col justify-center gap-8 px-8">
+                {NAV_LINKS.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className={`text-3xl font-bold ${pathname === item.href ? "text-white" : "text-zinc-400"}`}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                <Link
+                  href="/contact"
+                  onClick={() => setOpen(false)}
+                  className="mt-8 rounded-full bg-gradient-to-r from-violet-700 to-amber-400 px-6 py-4 text-center font-semibold text-white"
+                >
+                  Get Started
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.header>
+    </>
   );
 }
-<Link
-  href="/ai-consultation"
-  className="ml-4 bg-gradient-to-r from-pink-500 to-purple-600 
-  text-white px-5 py-2 rounded-full text-sm font-medium 
-  hover:scale-105 transition"
->
-  Book AI Consultation
-</Link>

@@ -15,7 +15,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   // Ensure admin exists
-  await ensureAdminExists();
+ // await ensureAdminExists();
 
   return (
     <html lang="en" className="scroll-smooth">
