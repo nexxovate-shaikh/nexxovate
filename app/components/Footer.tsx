@@ -1,9 +1,9 @@
+
 "use client";
 
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import CircuitLines from "./CircuitLines";
 
 const links = [
   {
@@ -24,7 +24,6 @@ export default function Footer() {
   return (
     <footer className="relative overflow-hidden border-t border-white/10 bg-[#030307] text-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(124,58,237,.15),transparent_60%)]" />
-      <CircuitLines opacity={0.04} pulses={1} />
 
       <div className="relative mx-auto max-w-7xl px-6 py-20">
         <div className="grid gap-14 lg:grid-cols-[1.3fr_2fr]">
@@ -33,14 +32,11 @@ export default function Footer() {
               <Image
                 src="/logo.png"
                 alt="Nexxovate"
-                width={64}
-                height={64}
+                width={100}
+                height={90}
               />
               <div>
-                <h2 className="text-3xl font-black">Nexxovate</h2>
-                <p className="mt-1 text-zinc-400">
-                  Building the Future of Enterprise AI
-                </p>
+                
               </div>
             </div>
 
