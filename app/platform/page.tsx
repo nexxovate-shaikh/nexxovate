@@ -1,64 +1,72 @@
-import Link from "next/link";
+import type { Metadata } from "next";
 
-export default function PlatformHome() {
+import PageHero from "../components/site/PageHero";
+import CTASection from "../components/site/CTASection";
+import { IndexList, StatRow } from "../components/site/blocks";
+
+export const metadata: Metadata = {
+  title: "Agent Platform",
+  description:
+    "Deploy Nexxovate agents trained on your own knowledge estate, with the Nexyra governance model already in place.",
+  alternates: { canonical: "/platform" },
+};
+
+export default function PlatformPage() {
   return (
-    <div className="min-h-screen bg-gray-50 p-10">
+    <>
+      <PageHero
+        eyebrow="Agent platform"
+        title="Your knowledge."
+        accent="Your agents."
+        state="architecture"
+        lede="A workspace for deploying agents against your own documents, policies and operational estate — running on Nexyra OS, so authority, memory and audit lineage are inherited rather than reinvented."
+        primary={{ href: "/platform/agent", label: "Open the agent" }}
+        secondary={{ href: "/nexyra/os", label: "Explore Nexyra OS" }}
+      />
 
-      <h1 className="text-3xl font-bold">
-        Nexxovate AI Agents Platform
-      </h1>
+      <StatRow
+        items={[
+          { value: "Scoped", label: "Agent authority" },
+          { value: "Governed", label: "Durable memory" },
+          { value: "Provenance", label: "On every answer" },
+          { value: "Replayable", label: "Every execution" },
+        ]}
+      />
 
-      <p className="mt-3 text-gray-600">
-        Deploy intelligent AI assistants trained on your organization’s
-        knowledge and documents.
-      </p>
+      <IndexList
+        eyebrow="Workspace"
+        heading="Three surfaces, one governed estate."
+        intro="Knowledge intake, an agent to reason over it, and the controls that decide what it may do with what it knows."
+        rows={[
+          {
+            title: "Knowledge intake",
+            meta: "Upload",
+            body: "Add documents, policies and internal data to the estate an agent reasons over. Text formats are extracted on intake; richer formats are provisioned per engagement.",
+            href: "/platform/upload",
+          },
+          {
+            title: "Agent",
+            meta: "Ask",
+            body: "Put a question to the Nexxovate agent. Answers are grounded in published material and carry the sources they came from — when it does not know, it says so.",
+            href: "/platform/agent",
+          },
+          {
+            title: "Governance",
+            meta: "Provisioned",
+            body: "Authority boundaries, retention, redaction and connector scope are configured with your team as part of the engagement, not left as defaults.",
+            href: "/contact",
+          },
+        ]}
+        tone="ink"
+      />
 
-      <div className="grid md:grid-cols-3 gap-6 mt-10">
-
-        <Link
-          href="/platform/upload"
-          className="bg-white p-6 rounded-xl shadow hover:shadow-lg"
-        >
-          <h3 className="font-semibold text-lg">
-            Upload Knowledge
-          </h3>
-
-          <p className="text-sm text-gray-600 mt-2">
-            Add documents, policies and internal data
-            for AI training.
-          </p>
-        </Link>
-
-        <Link
-          href="/platform/agent"
-          className="bg-white p-6 rounded-xl shadow hover:shadow-lg"
-        >
-          <h3 className="font-semibold text-lg">
-            AI Agent
-          </h3>
-
-          <p className="text-sm text-gray-600 mt-2">
-            Ask questions and get instant answers
-            from company knowledge.
-          </p>
-        </Link>
-
-        <Link
-          href="/platform/settings"
-          className="bg-white p-6 rounded-xl shadow hover:shadow-lg"
-        >
-          <h3 className="font-semibold text-lg">
-            Settings
-          </h3>
-
-          <p className="text-sm text-gray-600 mt-2">
-            Configure your AI assistant
-            and integrations.
-          </p>
-        </Link>
-
-      </div>
-
-    </div>
+      <CTASection
+        eyebrow="Provisioning"
+        title="Deploy agents against your own estate."
+        body="The workspace here shows the shape. A production deployment is scoped with your team — connectors, authority boundaries and retention agreed before anything is switched on."
+        primary={{ href: "/contact", label: "Let's build the future" }}
+        secondary={{ href: "/nexyra", label: "Explore Nexyra" }}
+      />
+    </>
   );
 }

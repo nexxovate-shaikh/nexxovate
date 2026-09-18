@@ -1,232 +1,129 @@
-// app/about/page.tsx
+import type { Metadata } from "next";
 
-import Image from "next/image";
-import Link from "next/link";
+import PageHero from "../components/site/PageHero";
+import CTASection from "../components/site/CTASection";
+import {
+  IndexList,
+  Pillars,
+  QuoteBand,
+  SplitFeature,
+  StatRow,
+} from "../components/site/blocks";
 
-export const metadata = {
-  title: "About | Nexxovate",
+export const metadata: Metadata = {
+  title: "About",
   description:
-    "Learn about Nexxovate’s mission, leadership and enterprise-first approach to IT, AI, cybersecurity, staffing and digital transformation.",
+    "Nexxovate is an enterprise technology company engineering the autonomous enterprise — across intelligence, infrastructure, security, operations and talent.",
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {
   return (
-    <div className="bg-white overflow-x-hidden">
+    <>
+      <PageHero
+        eyebrow="About Nexxovate"
+        title="We build enterprises"
+        accent="that run themselves."
+        state="ecosystem"
+        lede="Nexxovate is a technology partner for organisations whose operations are too important to leave waiting on a person. We work where intelligence, infrastructure, security and talent meet — and we are judged on what the estate does when nobody is watching it."
+        primary={{ href: "/contact", label: "Let's build the future" }}
+        secondary={{ href: "/case-studies", label: "See the outcomes" }}
+      />
 
-      {/* HERO (MATCHES TRAINING STYLE) */}
-      <section className="relative min-h-[75vh] flex items-center text-white">
-        <Image
-          src="/images/about-hero.jpg"
-          alt="About Nexxovate"
-          fill
-          priority
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-purple-900/70 to-pink-900/60" />
+      <StatRow
+        items={[
+          { value: "7.6+", label: "Years of enterprise delivery" },
+          { value: "6", label: "Practices, one operating model" },
+          { value: "24/7", label: "Operational readiness" },
+          { value: "100%", label: "Decisions with audit lineage" },
+        ]}
+      />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 pt-32 pb-20">
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight max-w-5xl">
-            Building intelligent enterprises for  
-            <span className="block bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-300 bg-clip-text text-transparent">
-              the next decade
-            </span>
-          </h1>
+      <SplitFeature
+        eyebrow="Who we are"
+        heading="Engineers who have carried a pager."
+        body="Nexxovate was founded by people who have run enterprise estates, not only advised on them. That shows up in how we work: we are sceptical of autonomy without evidence, we design the escalation before the automation, and we would rather ship a smaller boundary that holds than a broad one that surprises you at 3am."
+        points={[
+          "Delivery-led, with a named owner against every commitment",
+          "Governance and measurement agreed before implementation begins",
+          "Long engagements — we are still there when the estate changes",
+          "Security treated as architecture, not as a review gate",
+        ]}
+        media={{ poster: "/images/about-team.jpg", video: "/videos/team.mp4", caption: "Delivery-led, governance-first." }}
+        accent="#4d7cff"
+        tone="ink"
+      />
 
-          <p className="mt-8 max-w-3xl text-lg text-gray-200">
-            Nexxovate is a technology and talent partner helping organizations modernize,
-            secure and scale with confidence across IT, AI, cybersecurity and workforce solutions.
-          </p>
+      <QuoteBand
+        quote="Beyond automation. Into autonomy."
+        attribution="The Nexxovate position"
+      />
 
-          <div className="mt-12">
-            <Link
-              href="/contact"
-              className="inline-block bg-gradient-to-r from-pink-500 to-purple-600 text-white px-10 py-4 rounded-full font-medium hover:scale-105 transition"
-            >
-              Partner with Nexxovate
-            </Link>
-          </div>
-        </div>
-      </section>
+      <Pillars
+        eyebrow="Principles"
+        heading="What we hold to when the pressure is on."
+        items={[
+          {
+            title: "Execution excellence",
+            body: "Reliable delivery, engineering discipline, and outcomes that were agreed before the work started rather than after it slipped.",
+          },
+          {
+            title: "Intelligent innovation",
+            body: "New capability adopted because it changes an operating cost — never because it is the thing everyone is currently talking about.",
+          },
+          {
+            title: "Evidence over assertion",
+            body: "If a decision cannot be reconstructed, it does not ship. That applies to our systems and to our recommendations.",
+          },
+          {
+            title: "Long-term partnership",
+            body: "We optimise for the estate you will have in three years, which occasionally means telling you not to buy something now.",
+          },
+        ]}
+      />
 
-      {/* WHO WE ARE */}
-      <section className="py-28">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
-          <div>
-            <h2 className="text-4xl font-bold tracking-tight">
-              Who we are
-            </h2>
-            <p className="mt-6 text-lg text-gray-600 leading-relaxed">
-              Nexxovate was founded to help organizations navigate complexity across
-              technology, security, operations and talent.
-              We combine execution excellence with strategic thinking to deliver
-              measurable, long-term outcomes.
-            </p>
-          </div>
+      <SplitFeature
+        eyebrow="Mission & vision"
+        heading="Close the distance between automated and autonomous."
+        body="Our mission is to give organisations systems that decide as well as they execute — bounded by policy, provable under audit, and improving because of what they resolved yesterday. Our vision is to be the partner enterprises trust with the operations they cannot afford to have go wrong."
+        points={[
+          "Mission — intelligent technology, strong foundations, future-ready talent",
+          "Vision — a globally trusted enterprise partner across intelligence, infrastructure and workforce",
+          "Measure — what the estate does unattended, not what the roadmap promises",
+        ]}
+        media={{ poster: "/images/about-office.jpg", video: "/videos/office.mp4", caption: "Engineering the autonomous enterprise." }}
+        flip
+        accent="#e2c188"
+      />
 
-          <div className="relative h-[420px] rounded-3xl overflow-hidden shadow-2xl">
-            <Image
-              src="/images/about-team.jpg"
-              alt="Nexxovate team"
-              fill
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </section>
+      <IndexList
+        eyebrow="Leadership"
+        heading="Who you will actually work with."
+        intro="Enterprise enquiries are reviewed by our leadership team. The people who scope the work are the people accountable for delivering it."
+        rows={[
+          {
+            title: "Shaikh Arif",
+            meta: "Founder & Managing Director",
+            body: "Leads enterprise IT operations, service delivery and digital transformation engagements across the practice.",
+          },
+          {
+            title: "Head of Engineering & AI",
+            meta: "Technology",
+            body: "Owns cloud architecture, agent design and the governance model that bounds autonomous execution.",
+          },
+          {
+            title: "Head of Delivery & Talent",
+            meta: "Operations",
+            body: "Accountable for execution across managed services and for the workforce models behind them.",
+          },
+        ]}
+      />
 
-      {/* MISSION & VISION */}
-      <section className="bg-gray-50 py-28">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12">
-          {[
-            {
-              title: "Our Mission",
-              text:
-                "To empower organizations with intelligent technology, strong operational foundations and future-ready talent that drives sustainable business value.",
-            },
-            {
-              title: "Our Vision",
-              text:
-                "To be a globally trusted enterprise partner across IT services, AI innovation, cybersecurity excellence and workforce transformation.",
-            },
-          ].map((item) => (
-            <div
-              key={item.title}
-              className="bg-white rounded-3xl p-14 shadow-xl hover:shadow-2xl transition"
-            >
-              <h3 className="text-2xl font-semibold">{item.title}</h3>
-              <p className="mt-8 text-lg text-gray-600 leading-relaxed">
-                {item.text}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-      {/* VALUES */}
-<section className="py-28">
-  <div className="max-w-7xl mx-auto px-6">
-
-    <div className="text-center max-w-3xl mx-auto">
-      <h2 className="text-4xl font-bold">
-        Our Core Principles
-      </h2>
-
-      <p className="mt-6 text-lg text-gray-600">
-        The values guiding how Nexxovate builds technology and partnerships.
-      </p>
-    </div>
-
-    <div className="grid md:grid-cols-3 gap-12 mt-16">
-
-      <div className="bg-gray-50 rounded-3xl p-10">
-        <h3 className="text-xl font-semibold">Execution Excellence</h3>
-        <p className="mt-4 text-gray-600">
-          We prioritize reliable delivery, engineering discipline
-          and measurable outcomes.
-        </p>
-      </div>
-
-      <div className="bg-gray-50 rounded-3xl p-10">
-        <h3 className="text-xl font-semibold">Intelligent Innovation</h3>
-        <p className="mt-4 text-gray-600">
-          Leveraging AI, automation and modern platforms
-          to build future-ready systems.
-        </p>
-      </div>
-
-      <div className="bg-gray-50 rounded-3xl p-10">
-        <h3 className="text-xl font-semibold">Long-Term Partnerships</h3>
-        <p className="mt-4 text-gray-600">
-          We focus on lasting relationships and
-          sustainable enterprise transformation.
-        </p>
-      </div>
-
-    </div>
-
-  </div>
-</section>
-
-      {/* LEADERSHIP & TEAM (NEW) */}
-      <section className="py-28">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-4xl font-bold tracking-tight">
-              Leadership & core team
-            </h2>
-            <p className="mt-6 text-lg text-gray-600">
-              A team of experienced technology leaders, delivery experts and
-              transformation specialists.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-12 mt-20">
-            {[
-              {
-                name: "Shaikh Arif",
-                role: "Founder & Managing Director",
-                img: "/images/team/arif.jpg",
-                bio: "Leads enterprise IT operations, service delivery and digital transformation initiatives.",
-              },
-              {
-                name: "Technology Lead",
-                role: "Head of Engineering & AI",
-                img: "/images/team/tech-lead.jpg",
-                bio: "Drives cloud architecture, AI automation and scalable engineering solutions.",
-              },
-              {
-                name: "Operations Lead",
-                role: "Head of Delivery & Staffing",
-                img: "/images/team/ops-lead.jpg",
-                bio: "Ensures execution excellence across managed services and workforce solutions.",
-              },
-            ].map((member) => (
-              <div
-                key={member.name}
-                className="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all"
-              >
-                <div className="relative h-[320px]">
-                  <Image
-                    src={member.img}
-                    alt={member.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-
-                <div className="p-8">
-                  <h3 className="text-xl font-semibold">{member.name}</h3>
-                  <p className="text-sm text-purple-600 mt-1">
-                    {member.role}
-                  </p>
-                  <p className="mt-4 text-gray-600 text-sm leading-relaxed">
-                    {member.bio}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FINAL CTA (MATCHES TRAINING CTA) */}
-      <section className="relative bg-gradient-to-r from-purple-900 via-pink-900 to-red-900 text-white py-28">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold">
-            Let’s build the future together
-          </h2>
-
-          <p className="mt-6 text-lg text-gray-200">
-            Partner with Nexxovate for intelligent technology, trusted delivery and scalable growth.
-          </p>
-
-          <Link
-            href="/contact"
-            className="inline-block mt-10 bg-white text-black px-10 py-4 rounded-full font-medium hover:scale-105 transition"
-          >
-            Start the conversation
-          </Link>
-        </div>
-      </section>
-    </div>
+      <CTASection
+        eyebrow="Work with us"
+        title="Let's build the future together."
+        body="Bring us the part of your operation that costs the most attention. We will tell you honestly whether autonomy is the right answer for it."
+      />
+    </>
   );
 }

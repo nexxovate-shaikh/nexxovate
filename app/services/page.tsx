@@ -1,176 +1,167 @@
-// app/services/page.tsx
+import type { Metadata } from "next";
 
-import Image from "next/image";
-import Link from "next/link";
+import PageHero from "../components/site/PageHero";
+import CTASection from "../components/site/CTASection";
+import {
+  IndexList,
+  Pillars,
+  QuoteBand,
+  SplitFeature,
+  StatRow,
+} from "../components/site/blocks";
 
-export const metadata = {
-  title: "Services | Nexxovate",
+export const metadata: Metadata = {
+  title: "Services",
   description:
-    "Explore Nexxovate’s enterprise IT services, AI solutions, cybersecurity, digital transformation, managed services, and consulting offerings.",
+    "Nexxovate enterprise services: AI and intelligent automation, cloud and infrastructure, cybersecurity and risk, digital transformation, managed services, talent and capability building.",
+  alternates: { canonical: "/services" },
 };
 
 export default function ServicesPage() {
   return (
-    <div className="bg-white overflow-x-hidden">
+    <>
+      <PageHero
+        eyebrow="Enterprise services"
+        title="Capability, engineered"
+        accent="for autonomy."
+        state="activation"
+        lede="Six practices that compound. Each one is useful on its own; together they are how an estate climbs from monitored to self-governing without ever taking a step it cannot reverse."
+        primary={{ href: "/contact", label: "Let's build the future" }}
+        secondary={{ href: "/ams", label: "Explore AMS" }}
+      />
 
-      {/* HERO */}
-      <section className="relative min-h-[60vh] sm:min-h-[70vh] flex items-center text-white">
-        <Image
-          src="/images/services-hero.jpg"
-          alt="Enterprise Services"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-purple-900/70 to-pink-900/60" />
+      <StatRow
+        items={[
+          { value: "7.6+", label: "Years of enterprise delivery" },
+          { value: "24/7", label: "Operational readiness" },
+          { value: "Security", label: "First by architecture" },
+          { value: "Measured", label: "At every stage" },
+        ]}
+      />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-16">
-          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold leading-tight max-w-5xl">
-            Enterprise services for the
-            <span className="block bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-300 bg-clip-text text-transparent">
-              intelligent digital era
-            </span>
-          </h1>
+      <SplitFeature
+        id="ai"
+        eyebrow="AI & Intelligent Automation"
+        heading="From copilots to closed loops."
+        body="Most AI programmes stall at the assistant — useful, but still waiting on a person. The work that changes an operating cost is the next step: giving a system the authority, the evidence and the execution path to finish the job itself."
+        points={[
+          "Reasoning agents with scoped authority and designed escalation",
+          "Governed memory and a queryable knowledge estate",
+          "Deterministic workflows agents invoke rather than improvise",
+          "Every autonomous decision attributable and replayable",
+        ]}
+        media={{ poster: "/images/ai.jpg", video: "/videos/ai.mp4", caption: "Reasoning, authority, execution — governed as one." }}
+        href={{ label: "Explore Nexyra OS", url: "/nexyra/os" }}
+        accent="#4d7cff"
+        tone="ink"
+      />
 
-          <p className="mt-6 max-w-3xl text-base sm:text-lg text-gray-200">
-            From IT modernization to AI-powered transformation, Nexxovate partners
-            with organizations to deliver scalable, secure and future-ready digital capabilities.
-          </p>
+      <SplitFeature
+        id="cloud"
+        eyebrow="Cloud & Infrastructure"
+        heading="Global estate, orchestrated as one."
+        body="Regions, providers and generations of technology, presented and operated as a single intelligent system — where placement, capacity and cost become decisions the platform makes continuously rather than decisions a change board makes quarterly."
+        points={[
+          "Every region, provider and legacy footprint mapped as one surface",
+          "Data movement placed where latency and cost actually demand",
+          "Capacity and posture tuned without waiting for a change window",
+          "Observability designed in, not retrofitted after the first outage",
+        ]}
+        media={{ poster: "/images/cloud.jpg", video: "/videos/cloud.mp4", caption: "One fabric across regions and providers." }}
+        flip
+        accent="#39d0d8"
+      />
 
-          <div className="mt-10 flex flex-col sm:flex-row gap-4 sm:gap-6">
-            <Link
-              href="/contact"
-              className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-full font-medium text-center hover:scale-105 transition"
-            >
-              Talk to an Expert
-            </Link>
+      <SplitFeature
+        id="security"
+        eyebrow="Cybersecurity & Risk"
+        heading="Contain it before it becomes an incident."
+        body="A threat surfaces. The system detects the deviation, intelligence establishes the blast radius, controls engage across identity, network and endpoint, the threat is isolated, and the environment returns to a verified good state — in seconds, not across a shift handover."
+        points={[
+          "Behavioural baselines that understand your estate, not a generic one",
+          "Blast radius and lineage established before containment decisions",
+          "Controls engaged automatically inside a declared authority boundary",
+          "Continuous assurance rather than an annual attestation",
+        ]}
+        media={{ poster: "/images/cyber.jpg", video: "/videos/security.mp4", caption: "Detect, analyse, isolate, stabilise." }}
+        accent="#b451d8"
+        tone="ink"
+      />
 
-            <Link
-              href="/about"
-              className="border border-white/40 px-8 py-4 rounded-full font-medium text-center hover:bg-white/10 transition"
-            >
-              Our Approach
-            </Link>
-          </div>
-        </div>
-      </section>
+      <SplitFeature
+        id="transformation"
+        eyebrow="Digital Transformation"
+        heading="From fragmented to self-governing."
+        body="Transformation is a sequence, not a programme launch. Fragmented systems become connected systems; connected systems become intelligent ones; intelligent systems become an enterprise that runs and governs itself. Each horizon is measured before the next begins."
+        points={[
+          "Integration first, so there is a single operational truth to reason from",
+          "Prediction and recommendation placed inside existing workflows",
+          "Bounded classes of work handed to closed-loop autonomy",
+          "Every horizon reversible, every step measured",
+        ]}
+        media={{ poster: "/images/office.jpg", video: "/videos/transformation.mp4", caption: "Fragmented → connected → intelligent → autonomous." }}
+        flip
+        accent="#e2c188"
+      />
 
-      {/* INTRO */}
-      <section className="py-16 sm:py-24">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-            Our enterprise service portfolio
-          </h2>
-          <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-600">
-            We deliver deeply integrated services across technology, security,
-            talent and transformation — built to handle enterprise-scale complexity.
-          </p>
-        </div>
-      </section>
+      <QuoteBand
+        quote="The distance between automated and autonomous is where the operating cost still lives."
+        attribution="Nexxovate"
+      />
 
-      {/* SERVICES GRID */}
-      <section className="pb-20 sm:pb-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
-          {[
-            { title: "IT & Managed Services", img: "/images/cloud.jpg" },
-            { title: "AI & Intelligent Automation", img: "/images/ai.jpg" },
-            { title: "Cybersecurity & Risk", img: "/images/cyber.jpg" },
-            { title: "Digital Transformation", img: "/images/office.jpg" },
-            { title: "Consulting Services", img: "/images/consulting.jpg" },
-            { title: "Service & Product Offerings", img: "/images/product.jpg" },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="group relative h-[240px] sm:h-[320px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition"
-            >
-              <Image
-                src={item.img}
-                alt={item.title}
-                fill
-                className="object-cover group-hover:scale-105 transition duration-500"
-              />
-              <div className="absolute inset-0 bg-black/55 group-hover:bg-black/65 transition" />
-              <div className="absolute bottom-0 p-5 sm:p-8 text-white">
-                <h3 className="text-lg sm:text-2xl font-semibold">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-sm text-gray-200">
-                  Enterprise-grade delivery models designed for scale and complexity.
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <IndexList
+        eyebrow="Also delivered"
+        heading="The practices that make the rest possible."
+        intro="Autonomous systems still need people who can govern them, and organisations that can absorb the change."
+        rows={[
+          {
+            title: "Autonomous Managed Services",
+            body: "Closed-loop operations from signal to resolution, with authority, evidence and rollback declared up front.",
+            href: "/ams",
+            meta: "Flagship",
+          },
+          {
+            title: "Talent Solutions",
+            body: "Contract, contract-to-hire, permanent and dedicated offshore teams — engineering capability at enterprise scale.",
+            href: "/staffing",
+          },
+          {
+            title: "Capability & Training",
+            body: "Structured programmes that build the engineering and operational capability to run intelligent systems responsibly.",
+            href: "/training",
+          },
+          {
+            title: "Consulting & Advisory",
+            body: "Where autonomy is safe to introduce first, what it should be measured against, and what must stay in human hands.",
+            href: "/ai-consultation",
+          },
+        ]}
+      />
 
-      {/* WHY NEXXOVATE */}
-      <section className="bg-gray-50 py-20 sm:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-2 gap-12 sm:gap-16 items-center">
+      <Pillars
+        eyebrow="How we deliver"
+        heading="Why enterprises keep us after the first programme."
+        items={[
+          {
+            title: "Governance up front",
+            body: "Authority boundaries, escalation paths and measurement are agreed before anything is automated — not documented afterwards.",
+          },
+          {
+            title: "Ownership, not resourcing",
+            body: "We take outcomes, not headcount lines. The delivery model has a name against every commitment.",
+          },
+          {
+            title: "Security by architecture",
+            body: "Access is a governed capability at the connector, never a shared credential in a runbook.",
+          },
+          {
+            title: "Reversible by default",
+            body: "Every change carries its rollback. The worst case is a reversal and an escalation, never a surprise.",
+          },
+        ]}
+      />
 
-          <div>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-              Why enterprises choose Nexxovate
-            </h2>
-
-            <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-600">
-              Our delivery philosophy blends domain expertise, structured execution,
-              governance and ownership to consistently deliver measurable outcomes.
-            </p>
-
-            <ul className="mt-8 space-y-3 text-gray-700 text-sm sm:text-base">
-              <li>✔ Enterprise-grade operating models</li>
-              <li>✔ Strong governance and accountability</li>
-              <li>✔ Security-first architecture mindset</li>
-              <li>✔ AI-driven continuous optimization</li>
-              <li>✔ Long-term strategic partnership approach</li>
-            </ul>
-          </div>
-
-          <div className="bg-white shadow-xl rounded-2xl sm:rounded-3xl p-8 sm:p-14">
-            <h3 className="text-xl sm:text-2xl font-semibold">
-              Impact delivered
-            </h3>
-
-            <div className="grid grid-cols-2 gap-8 sm:gap-12 mt-8 sm:mt-10">
-              {[
-                { value: "7.6+", label: "Years Experience" },
-                { value: "24/7", label: "Operational Readiness" },
-                { value: "100%", label: "Client-Centric Delivery" },
-                { value: "Secure", label: "by Design" },
-              ].map((item, i) => (
-                <div key={i}>
-                  <p className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                    {item.value}
-                  </p>
-                  <p className="text-gray-500 mt-1 sm:mt-2 text-sm sm:text-base">
-                    {item.label}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="relative bg-gradient-to-r from-purple-900 via-pink-900 to-red-900 text-white py-20 sm:py-28">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold">
-            Let’s design your transformation roadmap
-          </h2>
-
-          <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-200">
-            Engage with Nexxovate experts to modernize, secure and scale your organization.
-          </p>
-
-          <Link
-            href="/contact"
-            className="inline-block mt-8 sm:mt-10 bg-white text-black px-10 py-4 rounded-full font-medium hover:scale-105 transition"
-          >
-            Talk to an Expert
-          </Link>
-        </div>
-      </section>
-    </div>
+      <CTASection />
+    </>
   );
 }

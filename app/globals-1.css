@@ -1,0 +1,492 @@
+@import "tailwindcss";
+/* build stamp 1789657181 — touch to force a CSS recompile */
+
+/* ══════════════════════════════════════════════════════════════
+   NEXYRA — PLATINUM
+   Design tokens. Single source of truth for the whole site.
+
+   Steel → silver → platinum → champagne on charcoal, matched to
+   the brand sting rather than to a mood board.
+
+   The four are used as a SEQUENCE, not a set. The page warms as
+   you descend: steel through the infrastructure zone, silver
+   through AI, platinum through security, champagne at the closing
+   CTA. Scroll depth is legible as colour temperature, and gold is
+   earned rather than sprinkled.
+
+   Champagne is the rarest on purpose. Kept to the final zone and
+   to small marks — numerals, hairlines, the primary button — it
+   reads as expensive; used at the same frequency as the neutrals
+   it reads as decoration.
+
+   Three grounds, not one. See the BANDS block below: sections
+   alternate charcoal, mid-charcoal and paper, and each ground
+   re-cuts the whole ramp so that every value carries text against
+   the ground it is actually on.
+   ══════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* ── Ground and surfaces. These are the DEFAULTS; a section's
+        data-band overrides all of them for its own subtree. ──── */
+  --color-ink:        #0A0B0D;
+  --color-ink-2:      #101214;
+  --color-surface:    #16181C;
+  --color-surface-2:  #1D2025;
+  --color-surface-3:  #262A30;
+
+  /* ── Hairlines ───────────────────────────────────────────── */
+  --color-line:       #22262B;
+  --color-line-soft:  #171A1E;
+  --color-line-lit:   #31363D;
+
+  /* ── Type ────────────────────────────────────────────────── */
+  --color-text:       #F2F4F6;
+  --color-mute:       #98A0AA;
+  --color-faint:      #757E8A;
+
+  /* ── Brand ramp ──────────────────────────────────────────── */
+  --color-steel:      #7E93AC;
+  --color-silver:     #A9B3BF;
+  --color-platinum:   #C9D1DA;
+  --color-champagne:  #D9AE63;
+  --color-gilt:       #EDD9A9;
+
+  /* ── Semantic — deliberately outside the brand ramp.
+        Champagne sits close to where "warning" normally lives, so
+        semantic colour is always paired with a label or an icon,
+        never used as bare fill, and no brand colour is ever used
+        to signal state. ──────────────────────────────────────── */
+  --color-ok:         #34D399;
+  --color-warn:       #FB923C;
+  --color-crit:       #EF4444;
+
+  /* ── Type scale — fluid, eight steps ─────────────────────────
+        Calibrated against the reference site measured at 1440px:
+        hero 80/80, section heads 48, lead 20/30, all at weight 600
+        with −0.02em tracking. The previous scale topped out at 90px
+        display and 62px heads, which is why the page felt shouty
+        next to it — the type was a size and a half too large and
+        two weights too heavy for the same measure. ─────────────── */
+  --text-caption:     0.78rem;
+  --text-label:       0.82rem;
+  --text-body:        1rem;
+  --text-lead:        clamp(1.06rem, 0.42vw + 1rem, 1.25rem);   /* → 20px */
+  --text-h4:          clamp(1.12rem, 0.5vw + 1rem, 1.32rem);
+  --text-h3:          clamp(1.35rem, 0.9vw + 1.05rem, 1.75rem); /* → 28px */
+  --text-h2:          clamp(2rem, 3vw + 0.9rem, 3rem);          /* → 48px */
+  --text-display:     clamp(2.5rem, 5.4vw + 0.6rem, 5rem);      /* → 80px */
+
+  /* ── Radius — by role. Controls are pills: the reference site
+        uses a 50px radius on every button and a 24px one in the
+        nav, and that single decision does more for the "expensive"
+        read than any amount of gradient. ──────────────────────── */
+  --radius-control:   999px;
+  --radius-card:      16px;
+  --radius-panel:     24px;
+
+  /* ── Motion ──────────────────────────────────────────────── */
+  --ease-out-expo:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Zone accents — the warming progression.
+   Every accent inside a section reads --zone / --zone-2, so
+   changing a section's data-zone re-tunes everything in it.
+   ══════════════════════════════════════════════════════════════ */
+:root {
+  --zone:      var(--color-steel);
+  --zone-2:    var(--color-silver);
+}
+/* Written against the ramp tokens rather than literal hex, so that a
+   band which re-tunes the ramp re-tunes the zone accents with it.
+   data-zone and data-band sit on the same <Section>; they set
+   different properties, so neither has to outrank the other. */
+[data-zone="infrastructure"] { --zone: var(--color-steel);     --zone-2: var(--color-silver); }
+[data-zone="ai"]             { --zone: var(--color-silver);    --zone-2: var(--color-platinum); }
+[data-zone="security"]       { --zone: var(--color-platinum);  --zone-2: var(--color-champagne); }
+[data-zone="transformation"] { --zone: var(--color-champagne); --zone-2: var(--color-gilt); }
+[data-zone] { --zone-glow: color-mix(in srgb, var(--zone) 28%, transparent); }
+
+/* ══════════════════════════════════════════════════════════════
+   BANDS — the light/dark rhythm.
+
+   The reference site alternates white, #1a1a1a and black across
+   full-width bands, and that contrast is most of why it reads as
+   expensive. A page that is charcoal from top to bottom has no
+   rhythm to offer; every section arrives at the same brightness
+   and the eye stops marking transitions.
+
+   The mechanism: a band re-declares the ramp tokens themselves.
+   Tailwind compiles `text-mute` to `color: var(--color-mute)`,
+   and custom properties inherit, so redefining --color-mute on a
+   <section data-band="light"> flips every utility inside it with
+   no class changes anywhere. That is the point — a scheme that
+   needs each component to opt in is a scheme components forget to
+   opt into, and six months from now half the site is the wrong
+   colour. Here a band cannot be half-applied.
+
+   Every value below is checked against its own ground for WCAG AA
+   (see the ratios in comments); the light band cannot borrow the
+   dark band's champagne, which sits at 2:1 on white, so it gets a
+   darkened bronze instead.
+   ══════════════════════════════════════════════════════════════ */
+
+[data-band="dark"] {
+  --band-bg:         #0A0B0D;
+  --color-ink:       #0A0B0D;
+  --color-ink-2:     #101214;
+  --color-surface:   #16181C;
+  --color-surface-2: #1D2025;
+  --color-surface-3: #262A30;
+  --color-line:      #22262B;
+  --color-line-soft: #171A1E;
+  --color-line-lit:  #31363D;
+  --color-text:      #F2F4F6;   /* 17.9:1 */
+  --color-mute:      #98A0AA;   /*  7.5:1 */
+  --color-faint:     #757E8A;   /*  4.8:1 — the mono labels are 10.5px,
+                                    so this one is measured, not eyeballed */
+  --glass-bg:        rgba(255, 255, 255, 0.022);
+  --glass-border:    rgba(255, 255, 255, 0.06);
+  --glass-top:       rgba(255, 255, 255, 0.10);
+  --btn-bg:          var(--color-champagne);
+  --btn-fg:          #0A0B0D;
+}
+
+/* The mid tone. Used where two dark bands would otherwise meet and
+   the seam would vanish. */
+[data-band="deep"] {
+  --band-bg:         #16181C;
+  --color-ink:       #16181C;
+  --color-ink-2:     #1D2025;
+  --color-surface:   #22262B;
+  --color-surface-2: #262A30;
+  --color-surface-3: #31363D;
+  --color-line:      #2A2F35;
+  --color-line-soft: #1D2025;
+  --color-line-lit:  #3A4048;
+  --color-text:      #F2F4F6;   /* 16.1:1 */
+  --color-mute:      #A2AAB4;   /*  7.6:1 */
+  --color-faint:     #79828E;   /*  4.6:1 */
+  --glass-bg:        rgba(255, 255, 255, 0.03);
+  --glass-border:    rgba(255, 255, 255, 0.075);
+  --glass-top:       rgba(255, 255, 255, 0.11);
+  --btn-bg:          var(--color-champagne);
+  --btn-fg:          #0A0B0D;
+}
+
+[data-band="light"] {
+  --band-bg:         #FFFFFF;
+  --color-ink:       #FFFFFF;
+  --color-ink-2:     #F5F6F8;
+  --color-surface:   #EEF0F3;
+  --color-surface-2: #E4E7EB;
+  --color-surface-3: #D7DCE2;
+  --color-line:      #E2E6EA;
+  --color-line-soft: #F0F2F4;
+  --color-line-lit:  #C4CCD5;
+  --color-text:      #0A0B0D;   /* 19.7:1 */
+  --color-mute:      #4E5661;   /*  7.4:1 */
+  --color-faint:     #69727E;   /*  4.9:1 */
+
+  /* The ramp, re-cut for a white ground. Same four roles, same
+     order of temperature — steel through to gold — but each one
+     darkened until it carries text. Champagne at #D9AE63 is 2.0:1
+     on white and cannot be used for type; #8A6A28 is the same hue
+     at 5.4:1. */
+  --color-steel:     #4A5A6E;   /* 7.0:1 */
+  --color-silver:    #3A4553;   /* 9.6:1 */
+  --color-platinum:  #232A33;   /* 14.6:1 */
+  --color-champagne: #8A6A28;   /* 5.4:1 */
+  --color-gilt:      #6B5220;   /* 7.6:1 */
+
+  --glass-bg:        rgba(10, 11, 13, 0.02);
+  --glass-border:    rgba(10, 11, 13, 0.08);
+  --glass-top:       rgba(255, 255, 255, 0.9);
+  --btn-bg:          #0A0B0D;   /* champagne fill is 2:1 against white
+                                   and fails the 3:1 floor for a UI
+                                   component, so the light band takes
+                                   an ink button and keeps bronze for
+                                   rules, numerals and hovers */
+  --btn-fg:          #FFFFFF;
+}
+
+/* Paint the ground. One rule, so a band can never be declared and
+   then not painted. */
+[data-band] { background-color: var(--band-bg); color: var(--color-text); }
+
+/* ══════════════════════════════════════════════════════════════
+   Base
+   ══════════════════════════════════════════════════════════════ */
+* { box-sizing: border-box; }
+
+html {
+  /* Lenis drives scrolling; native smooth-scroll would fight it. */
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-text);
+  font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-champagne) 30%, transparent);
+  color: var(--color-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gilt);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Skip link — first tab stop on every page. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 12px;
+  z-index: 200;
+  padding: 12px 20px;
+  border-radius: var(--radius-control);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-line-lit);
+  color: var(--color-text);
+}
+.skip-link:focus { left: 16px; }
+
+/* ══════════════════════════════════════════════════════════════
+   Lenis
+   ══════════════════════════════════════════════════════════════ */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* ══════════════════════════════════════════════════════════════
+   Type roles
+   ══════════════════════════════════════════════════════════════ */
+.font-display {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  /* −0.02em, not −0.035em. The reference site tracks its 80px hero
+     and its 48px heads at −0.02em and never goes tighter; past that
+     a grotesk at display size starts to close up and reads as a
+     logo rather than as a sentence. */
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  font-weight: 600;
+  text-wrap: balance;
+}
+.font-mono-label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Glass — one recipe, used by nav, cards and panels
+   ══════════════════════════════════════════════════════════════ */
+/* Reads its three values from the band, so the same recipe is a
+   lit pane on charcoal and a faint tint on paper. A white-alpha
+   glass on a white band is simply invisible, which is how most
+   dark-first design systems break the first time anyone adds a
+   light section. */
+.glass {
+  background: var(--glass-bg, rgba(255, 255, 255, 0.022));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.06));
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  position: relative;
+}
+/* 1px top inner highlight — the detail that stops glass looking flat. */
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--glass-top, rgba(255, 255, 255, 0.07)) 40%,
+    var(--glass-top, rgba(255, 255, 255, 0.07)) 60%,
+    transparent
+  );
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Marquee — CSS only, no JS, no layout cost
+   ══════════════════════════════════════════════════════════════ */
+@keyframes marquee-left  { from { transform: translateX(0); }    to { transform: translateX(-50%); } }
+@keyframes marquee-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+.marquee-track { display: flex; width: max-content; will-change: transform; }
+.marquee-left  { animation: marquee-left  28s linear infinite; }
+.marquee-right { animation: marquee-right 35s linear infinite; }
+.marquee-row:hover .marquee-track { animation-play-state: paused; }
+
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Animated gradient border — the full ramp in one conic sweep
+   ══════════════════════════════════════════════════════════════ */
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes border-spin { to { --border-angle: 360deg; } }
+
+.gradient-border {
+  position: relative;
+  isolation: isolate;
+}
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.16),
+    rgba(255, 255, 255, 0.04) 45%,
+    rgba(255, 255, 255, 0.02)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  transition: background 400ms var(--ease-out-expo);
+  z-index: -1;
+}
+.gradient-border:hover::before {
+  background: linear-gradient(
+    140deg,
+    var(--color-platinum),
+    rgba(255, 255, 255, 0.10) 55%,
+    rgba(255, 255, 255, 0.04)
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Film grain — one repeated SVG turbulence tile
+   ══════════════════════════════════════════════════════════════ */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.028;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Reduced motion — the global gate.
+   Components also check this in JS via useMotionPrefs(); this
+   block is the belt-and-braces for anything CSS-driven.
+   ══════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee-track { animation: none !important; transform: none !important; flex-wrap: wrap; width: 100%; }
+  .gradient-border::before { animation: none !important; }
+  .grain { display: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Capability plates — live technical drawings.
+
+   These run as CSS animations rather than JS: four plates on
+   screen at once, each with several moving parts, is exactly the
+   workload you do not want on the main thread. The compositor
+   handles transform and opacity for free.
+   ══════════════════════════════════════════════════════════════ */
+
+/* Data travelling along a stroked path. */
+@keyframes plate-flow {
+  from { stroke-dashoffset: 220; }
+  to   { stroke-dashoffset: 0; }
+}
+.plate-flow {
+  stroke-dasharray: 10 210;
+  animation: plate-flow 3.2s linear infinite;
+}
+
+/* Response arcs expanding outward and fading. */
+@keyframes plate-emit {
+  0%   { transform: scale(0.35); opacity: 0; }
+  18%  { opacity: 0.9; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.plate-emit {
+  transform-origin: center;
+  animation: plate-emit 3.6s cubic-bezier(0.22, 0.7, 0.3, 1) infinite;
+}
+
+/* A slab breathing on its own axis. */
+@keyframes plate-lift {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+.plate-lift { animation: plate-lift 5s ease-in-out infinite; }
+
+/* The single warm element in each plate. */
+@keyframes plate-glow {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+.plate-glow { animation: plate-glow 3s ease-in-out infinite; }
+
+/* Sheen crossing the card face — metal catching a moving light. */
+@keyframes plate-sheen {
+  from { transform: translateX(-120%) skewX(-14deg); }
+  to   { transform: translateX(220%) skewX(-14deg); }
+}
+.plate-sheen { animation: plate-sheen 1.15s cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* Photographic drift — the frame breathing, at roughly the rate of a
+   locked-off shot on a long lens. Two directions so a column of four
+   plates does not move in unison; 26s so it is never the thing you
+   are looking at. Both are pure transform, so they composite. */
+@keyframes plate-drift-a {
+  0%, 100% { transform: scale(1.06) translate3d(0, 0, 0); }
+  50%      { transform: scale(1.11) translate3d(-1.2%, -0.8%, 0); }
+}
+@keyframes plate-drift-b {
+  0%, 100% { transform: scale(1.08) translate3d(0.8%, 0.4%, 0); }
+  50%      { transform: scale(1.04) translate3d(-0.6%, -0.4%, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Named here as well as via motion-safe: the animation-name is set
+     inline on the element, and inline styles outrank the utility. */
+  [style*="plate-drift"] { animation: none !important; transform: none !important; }
+
+  .plate-flow,
+  .plate-emit,
+  .plate-lift,
+  .plate-glow,
+  .plate-sheen {
+    animation: none !important;
+  }
+  .plate-emit { opacity: 0.5; transform: scale(1); }
+}

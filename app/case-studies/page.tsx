@@ -1,155 +1,132 @@
-// app/case-studies/page.tsx
+import type { Metadata } from "next";
 
-import Link from "next/link";
+import PageHero from "../components/site/PageHero";
+import CTASection from "../components/site/CTASection";
+import { QuoteBand, SplitFeature, StatRow } from "../components/site/blocks";
+import { Kicker, Reveal, Section, Shell } from "../components/site/primitives";
 
-export const metadata = {
-  title: "Case Studies | Nexxovate",
+export const metadata: Metadata = {
+  title: "Case Studies",
   description:
-    "Explore real-world technology transformation case studies delivered by Nexxovate across AI, cloud infrastructure and enterprise operations.",
+    "How organisations work with Nexxovate to automate operations, modernise platforms and introduce autonomy safely — with the outcomes measured.",
+  alternates: { canonical: "/case-studies" },
 };
 
-const cases = [
+const CASES = [
   {
-    title: "AI Customer Support Assistant",
-    result: "Reduced support workload by 45%",
-    desc: "An AI-powered assistant deployed to automate customer support interactions, improve response times and enhance service quality.",
+    id: "support",
+    eyebrow: "AI service assistant",
+    heading: "Support that answers before the queue forms",
+    body: "An AI assistant deployed across customer support to handle the repetitive tier — understanding intent, checking entitlement and acting rather than acknowledging. The team kept the work that needed judgement and stopped carrying the work that did not.",
+    points: [
+      "Repetitive tier resolved without human handling",
+      "Response times reduced across all channels",
+      "Escalations arrive with the investigation already attached",
+    ],
+    result: "Support workload reduced by 45%",
+    poster: "/images/ai-assistant.jpg",
+    video: "/videos/case-support.mp4",
+    accent: "#7a5cff",
   },
   {
-    title: "Business Workflow Automation Platform",
-    result: "Saved 20+ hours per week",
-    desc: "Automated document processing and operational workflows using intelligent automation and AI-driven data extraction.",
+    id: "workflow",
+    eyebrow: "Workflow automation",
+    heading: "Twenty hours a week returned to the operation",
+    body: "Document processing and operational workflows rebuilt around intelligent extraction and deterministic execution paths — with rollback on every step, so the automation could be trusted with work that mattered rather than only with work that was safe.",
+    points: [
+      "Intelligent extraction across unstructured document sets",
+      "Deterministic workflows with verification and rollback",
+      "Exceptions routed to people with full context, not raw payloads",
+    ],
+    result: "20+ hours saved per week",
+    poster: "/images/automation.jpg",
+    video: "/videos/case-workflow.mp4",
+    accent: "#4d7cff",
   },
   {
-    title: "AI Analytics Dashboard",
-    result: "Improved operational insights",
-    desc: "Centralized analytics platform transforming operational data into real-time insights and predictive intelligence.",
+    id: "analytics",
+    eyebrow: "Operational intelligence",
+    heading: "One picture of an estate that had four",
+    body: "A centralised analytics layer turning fragmented operational data into a single, current view — the prerequisite for autonomy, because a system cannot reason about an estate it cannot see whole.",
+    points: [
+      "Fragmented sources consolidated into one operational truth",
+      "Real-time insight replacing weekly reconciliation",
+      "Predictive signal surfaced inside existing workflows",
+    ],
+    result: "Single operational view across the estate",
+    poster: "/images/dashboard.jpg",
+    video: "/videos/case-analytics.mp4",
+    accent: "#39d0d8",
   },
 ];
 
 export default function CaseStudiesPage() {
   return (
-    <div className="bg-white overflow-x-hidden">
+    <>
+      <PageHero
+        eyebrow="Case studies"
+        title="Outcomes,"
+        accent="measured."
+        state="orchestration"
+        lede="A selection of intelligent automation and platform engagements. Each one started with a class of work the organisation understood well — and each was measured against something agreed before implementation began."
+        primary={{ href: "/contact", label: "Let's build the future" }}
+        secondary={{ href: "/ams", label: "Explore AMS" }}
+      />
 
-      {/* HERO */}
-      <section className="relative bg-gradient-to-br from-slate-950 via-indigo-950 to-purple-900 text-white overflow-hidden">
+      <StatRow
+        items={[
+          { value: "45%", label: "Support workload reduced" },
+          { value: "20+", label: "Hours returned per week" },
+          { value: "1", label: "Operational view, four sources" },
+          { value: "Measured", label: "Against agreed baselines" },
+        ]}
+      />
 
-        {/* background glow */}
-        <div className="absolute left-1/2 -translate-x-1/2 top-0 w-[1000px] h-[1000px] bg-purple-500/20 blur-[160px] rounded-full"></div>
+      {CASES.map((item, i) => (
+        <SplitFeature
+          key={item.id}
+          id={item.id}
+          eyebrow={item.eyebrow}
+          heading={item.heading}
+          body={item.body}
+          points={item.points}
+          media={{
+            poster: item.poster,
+            video: item.video,
+            label: item.eyebrow,
+            caption: item.result,
+          }}
+          flip={i % 2 === 1}
+          accent={item.accent}
+          tone={i % 2 === 1 ? "ink" : "void"}
+        />
+      ))}
 
-        <div className="relative max-w-7xl mx-auto px-6 py-32">
+      <QuoteBand
+        quote="Every engagement starts by agreeing what we will measure. That conversation is usually the valuable one."
+        attribution="Nexxovate — delivery principles"
+      />
 
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 text-pink-300 text-xs font-semibold tracking-wide">
-            REAL CLIENT TRANSFORMATIONS
-          </div>
+      <Section tone="void" className="border-t border-white/[0.06]">
+        <Shell width="wide">
+          <Reveal>
+            <Kicker tone="gold">A note on numbers</Kicker>
+            <p className="mt-7 max-w-[62ch] text-[1rem] leading-[1.78] text-mute">
+              The figures above are outcomes from specific engagements, measured
+              against baselines agreed with the client before work started. They
+              are not a promise of what your estate will do — the honest answer to
+              &ldquo;what will this save us?&rdquo; always begins with looking at
+              your own data. That is what the first engagement is for.
+            </p>
+          </Reveal>
+        </Shell>
+      </Section>
 
-          <h1 className="mt-8 text-5xl md:text-6xl font-bold max-w-4xl leading-tight">
-            Real transformation stories
-            <span className="block bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-300 bg-clip-text text-transparent">
-              powered by Nexxovate
-            </span>
-          </h1>
-
-          <p className="mt-8 text-lg text-gray-300 max-w-3xl leading-relaxed">
-            Explore how organizations partner with Nexxovate to modernize
-            platforms, automate complex workflows and unlock intelligent
-            insights that accelerate business growth.
-          </p>
-
-        </div>
-      </section>
-
-      {/* CASE GRID */}
-      <section className="relative max-w-7xl mx-auto px-6 py-28">
-
-        <div className="text-center max-w-3xl mx-auto mb-20">
-
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-            Technology transformations
-            <span className="block bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 bg-clip-text text-transparent">
-              delivered by Nexxovate
-            </span>
-          </h2>
-
-          <p className="mt-6 text-lg text-gray-600">
-            A selection of intelligent automation and enterprise platform
-            implementations designed to deliver measurable business impact.
-          </p>
-
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-10">
-
-          {cases.map((item) => (
-            <div
-              key={item.title}
-              className="group relative rounded-3xl border border-gray-100 bg-white/80 backdrop-blur-xl p-10 shadow-lg hover:shadow-2xl transition-all duration-500"
-            >
-
-              {/* hover glow */}
-              <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-orange-400/10"></div>
-
-              <div className="relative z-10">
-
-                <h3 className="text-2xl font-semibold tracking-tight">
-                  {item.title}
-                </h3>
-
-                {/* result badge */}
-                <div className="mt-4 inline-flex px-4 py-2 rounded-full bg-purple-100 text-purple-700 text-sm font-medium">
-                  {item.result}
-                </div>
-
-                <p className="mt-6 text-gray-600 leading-relaxed">
-                  {item.desc}
-                </p>
-
-                <Link
-                  href="/contact"
-                  className="inline-block mt-8 font-medium text-indigo-600 hover:text-indigo-800 transition"
-                >
-                  Discuss a similar project →
-                </Link>
-
-              </div>
-
-            </div>
-          ))}
-
-        </div>
-
-      </section>
-
-      {/* CTA */}
-      <section className="relative bg-gradient-to-r from-purple-900 via-pink-900 to-red-900 text-white py-28 overflow-hidden">
-
-        <div className="absolute left-1/2 -translate-x-1/2 top-0 w-[900px] h-[900px] bg-pink-500/20 blur-[150px] rounded-full"></div>
-
-        <div className="relative max-w-6xl mx-auto px-6 text-center">
-
-          <h2 className="text-4xl md:text-5xl font-bold leading-tight">
-            Let’s build your
-            <span className="block bg-gradient-to-r from-pink-300 via-yellow-300 to-orange-300 bg-clip-text text-transparent">
-              next success story
-            </span>
-          </h2>
-
-          <p className="mt-6 text-lg text-gray-200 max-w-2xl mx-auto">
-            Partner with Nexxovate to design and implement AI-driven
-            platforms, intelligent automation systems and secure
-            enterprise technology solutions.
-          </p>
-
-          <Link
-            href="/ai-consultation"
-            className="inline-block mt-10 bg-white text-black px-10 py-4 rounded-full font-medium hover:scale-105 transition"
-          >
-            Start your AI consultation
-          </Link>
-
-        </div>
-
-      </section>
-
-    </div>
+      <CTASection
+        eyebrow="Your estate"
+        title="What would we measure for you?"
+        body="Bring the operation that costs the most attention. We will agree the baseline first, and only then talk about what to automate."
+      />
+    </>
   );
 }

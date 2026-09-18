@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
+/**
+ * Unchanged contract: POST /api/contact { name, email, company, message }.
+ * Only the presentation has moved to the Nexxovate system.
+ */
 export default function ContactForm() {
   const [form, setForm] = useState({
     name: "",
@@ -10,7 +15,9 @@ export default function ContactForm() {
     message: "",
   });
 
-  const [status, setStatus] = useState<null | "loading" | "success" | "error">(null);
+  const [status, setStatus] = useState<null | "loading" | "success" | "error">(
+    null
+  );
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -40,63 +47,121 @@ export default function ContactForm() {
     }
   }
 
+  const field =
+    "w-full rounded-2xl border border-white/[0.09] bg-white/[0.025] px-5 py-4 text-[0.92rem] text-paper outline-none transition-colors duration-400 placeholder:text-white/25 focus:border-electric/55 focus:bg-white/[0.04]";
+
   return (
-    <div className="bg-white border rounded-3xl shadow-xl p-6 sm:p-10 md:p-12">
-      <h2 className="text-3xl font-bold">Send us a message</h2>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label htmlFor="name" className="sr-only">
+            Full name
+          </label>
+          <input
+            id="name"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            placeholder="Full name"
+            required
+            className={field}
+          />
+        </div>
 
-      <form onSubmit={handleSubmit} className="mt-10 space-y-6">
-        <input
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          placeholder="Full Name"
-          required
-          className="w-full border px-5 py-4 rounded-xl focus:ring-2 focus:ring-purple-600"
-        />
+        <div>
+          <label htmlFor="email" className="sr-only">
+            Work email
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+            placeholder="Work email"
+            required
+            className={field}
+          />
+        </div>
+      </div>
 
+      <div>
+        <label htmlFor="company" className="sr-only">
+          Organization
+        </label>
         <input
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-          placeholder="Email"
-          required
-          type="email"
-          className="w-full border px-5 py-4 rounded-xl focus:ring-2 focus:ring-purple-600"
-        />
-
-        <input
+          id="company"
           name="company"
           value={form.company}
           onChange={handleChange}
-          placeholder="Company"
-          className="w-full border px-5 py-4 rounded-xl focus:ring-2 focus:ring-purple-600"
+          placeholder="Organization"
+          className={field}
         />
+      </div>
 
+      <div>
+        <label htmlFor="message" className="sr-only">
+          What are you trying to change?
+        </label>
         <textarea
+          id="message"
           name="message"
           value={form.message}
           onChange={handleChange}
-          placeholder="Message"
-          rows={5}
+          placeholder="What are you trying to change? The more specific, the more useful our first reply will be."
+          rows={6}
           required
-          className="w-full border px-5 py-4 rounded-xl focus:ring-2 focus:ring-purple-600"
+          className={`${field} resize-none`}
         />
+      </div>
 
-        <button
-          disabled={status === "loading"}
-          className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-4 rounded-full font-semibold hover:scale-[1.02] transition"
-        >
-          {status === "loading" ? "Sending..." : "Submit Inquiry"}
-        </button>
+      <button
+        type="submit"
+        disabled={status === "loading"}
+        className="group relative w-full overflow-hidden rounded-full bg-paper px-8 py-4 text-[0.82rem] font-semibold uppercase tracking-wide text-void transition-transform duration-500 hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-60 disabled:hover:translate-y-0"
+      >
+        <span
+          className="absolute inset-0 -translate-x-full bg-[linear-gradient(100deg,transparent,rgba(255,255,255,0.8),transparent)] transition-transform duration-[900ms] group-hover:translate-x-full"
+          aria-hidden
+        />
+        <span className="relative">
+          {status === "loading" ? "Sending…" : "Send enquiry"}
+        </span>
+      </button>
 
+      <AnimatePresence mode="wait">
         {status === "success" && (
-          <p className="text-green-600 font-medium mt-4">✅ Message sent successfully!</p>
+          <motion.p
+            key="ok"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="rounded-2xl border border-electric/25 bg-electric/[0.07] px-5 py-4 text-[0.86rem] text-electric-soft"
+            role="status"
+          >
+            Received. Our leadership team reviews every enquiry — expect a reply
+            from a person, not an autoresponder.
+          </motion.p>
         )}
 
         {status === "error" && (
-          <p className="text-red-600 font-medium mt-4">❌ Something went wrong. Try again.</p>
+          <motion.p
+            key="err"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="rounded-2xl border border-magenta-core/30 bg-magenta-core/[0.07] px-5 py-4 text-[0.86rem] text-paper/85"
+            role="alert"
+          >
+            That didn&apos;t send. Please try again, or email us directly at
+            nexxovate@gmail.com.
+          </motion.p>
         )}
-      </form>
-    </div>
+      </AnimatePresence>
+
+      <p className="pt-1 text-[0.72rem] leading-relaxed text-white/25">
+        We use what you send here to respond to your enquiry. Nothing more.
+      </p>
+    </form>
   );
 }
