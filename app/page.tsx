@@ -1151,15 +1151,27 @@ function TechStrip({ first = false }: { first?: boolean }) {
                   {tech.logo && (
                     <Image
                       src={tech.logo}
-                      alt=""
-                      width={28}
-                      height={28}
+                      /* A wordmark carries the brand name itself, so
+                         it needs a real alt; an icon sitting beside
+                         the name in text is decorative and takes
+                         alt="" rather than making a screen reader
+                         say "AWS AWS". */
+                      alt={tech.wordmark ? tech.name : ""}
+                      width={tech.wordmark ? 120 : 28}
+                      height={tech.wordmark ? 72 : 28}
                       /* Contain, never cover: a cropped trademark is
                          a misused trademark, and these arrive at
-                         several different aspect ratios. alt="" and
-                         the name in text beside it — the mark is
-                         decorative once the name is already read. */
-                      className="h-[22px] w-[22px] shrink-0 object-contain lg:h-[26px] lg:w-[26px]"
+                         several different aspect ratios.
+
+                         A wordmark gets width and a height cap
+                         instead of a square box — AWS is 1.67:1, and
+                         forcing it into a 26px square would render
+                         the lettering about eight pixels tall. */
+                      className={
+                        tech.wordmark
+                          ? "h-auto max-h-[30px] w-auto max-w-[104px] object-contain lg:max-h-[36px] lg:max-w-[120px]"
+                          : "h-[22px] w-[22px] shrink-0 object-contain lg:h-[26px] lg:w-[26px]"
+                      }
                     />
                   )}
                   {/* A card with no mark yet sets its name larger, so
@@ -1169,15 +1181,20 @@ function TechStrip({ first = false }: { first?: boolean }) {
                       looks broken; two carrying a deliberate wordmark
                       does not. A brand name set in type is also the
                       one form of use no vendor restricts. */}
-                  <span
-                    className={`font-display font-semibold text-text ${
-                      tech.logo
-                        ? "text-[15px] lg:text-[17px]"
-                        : "text-[17px] tracking-[-0.01em] lg:text-[20px]"
-                    }`}
-                  >
-                    {tech.name}
-                  </span>
+                  {/* No text beside a wordmark — the mark already
+                      says "aws", and setting the name next to it
+                      reads as a mistake rather than as a label. */}
+                  {!tech.wordmark && (
+                    <span
+                      className={`font-display font-semibold text-text ${
+                        tech.logo
+                          ? "text-[15px] lg:text-[17px]"
+                          : "text-[17px] tracking-[-0.01em] lg:text-[20px]"
+                      }`}
+                    >
+                      {tech.name}
+                    </span>
+                  )}
                 </span>
 
                 {/* The credential. Small, because it is a footnote to

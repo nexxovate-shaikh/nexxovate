@@ -251,10 +251,46 @@ export const CAPABILITIES = [
 
 /* ── Nexyra products ────────────────────────────────────────── */
 
+/**
+ * A real capture of the product running.
+ *
+ * Only two of the four have one, and the two that do not show no
+ * placeholder — a greyed-out "coming soon" panel on an enterprise
+ * page reads as a product that does not exist yet. Their detail
+ * block simply runs full width instead, which looks deliberate
+ * because it is.
+ *
+ * To add one: capture at 2x if you can (a 2560-wide window, or
+ * Cmd-Shift-4 on a retina panel), save into public/images/product/,
+ * and fill in the real pixel dimensions here so Next reserves the
+ * right box and the page does not jump as it loads.
+ */
+export type ProductShot = {
+  src: string;
+  width: number;
+  height: number;
+  /** Say what is ON it, not that it is a screenshot. */
+  alt: string;
+  mark?: string;
+  status?: string;
+  caption?: string;
+};
+
 export const NEXYRA_PRODUCTS = [
   {
     id: "monitoring",
     name: "Network Monitoring",
+    shot: {
+      src: "/images/product/netpulse.jpg",
+      width: 1363,
+      height: 606,
+      mark: "/logos/nexyra-netpulse.svg",
+      status: "Live",
+      alt:
+        "The Nexyra NetPulse console: a row of estate counters across the top — sites monitored, open incidents, alerts suppressed in the last 24 hours, 30-day availability — with an open-incidents panel, a per-site table showing devices, downtime and SLA, and a path-attribution key separating customer LAN from carrier last mile and public internet.",
+      caption:
+        "Path attribution is the part operators reach for: it separates latency added on the customer LAN from the carrier last mile, which is the evidence an ISP ticket needs.",
+    },
     href: "/nexyra#monitoring-detail",
     tag: "Infrastructure intelligence",
     line: "See the network before it fails.",
@@ -282,6 +318,16 @@ export const NEXYRA_PRODUCTS = [
   {
     id: "chat",
     name: "Nexyra Chat",
+    shot: {
+      src: "/images/product/chat.jpg",
+      width: 1366,
+      height: 551,
+      status: "In your browser",
+      alt:
+        "Nexyra Chat open on a new conversation: a left rail with projects, artifacts, scheduled runs and chat history, four starting cards — compare two models, research with sources, build something, read a document — and a composer with a model selector and a persona selector.",
+      caption:
+        "One conversation, several models, and the answer opens in an artifacts panel rather than scrolling away up the thread.",
+    },
     href: "/nexyra#chat-detail",
     tag: "Enterprise assistant",
     line: "Your organisation's own assistant.",
@@ -496,21 +542,23 @@ export const PROCESS_STEPS = [
  *   kubernetes.svg    #326CE5
  *   docker.svg        #2496ED
  *
- * ── THE TWO THAT ARE MISSING, AND WHY ──────────────────────────
- * AWS and Azure are NOT in simple-icons. Neither is Microsoft.
- * 3,459 icons in the library and zero matches for any of them:
- * those owners had their marks removed. That is not caution on my
- * part, it is Amazon and Microsoft actively policing redistribution
- * of their trademarks — which is worth knowing before putting them
- * on a client-facing page.
+ * ── AWS AND AZURE ──────────────────────────────────────────────
+ * These two came from `devicon` rather than simple-icons, because
+ * simple-icons does not carry them: 3,459 icons and zero matches
+ * for aws, amazon, azure or microsoft — those owners had their
+ * marks removed from that library.
  *
- * Get them from the source instead:
- *   aws.svg    aws.amazon.com/architecture/icons  (Asset Package)
- *   azure.svg  Microsoft Azure architecture icons
+ * Both files are the official artwork, untouched apart from their
+ * viewBox, which was cropped to the drawing's measured bounds
+ * (aws 1.67:1, azure 1.06:1). Devicon ships them letterboxed inside
+ * a 128x128 square, so at icon size the AWS wordmark rendered about
+ * 26px wide and unreadable. Cropping changes the frame, never the
+ * mark — no stretching, no recolouring, no redrawing.
  *
- * Save into `public/logos/` and uncomment the two `logo` lines
- * below. Until then those two cards show the name in type, which is
- * what all eight looked like before.
+ * If you would rather use each vendor's own asset package, they are
+ * at aws.amazon.com/architecture/icons and Microsoft's Azure
+ * architecture icons. Drop the file in at the same path and it
+ * replaces this one with no code change.
  *
  * Both vendors' guidelines allow showing the mark to describe
  * technology you work with, but NOT in a way implying partnership,
@@ -556,6 +604,13 @@ export type TechItem = {
   desc: string;
   /** Path under /public. Renders in place of the wordmark. */
   logo?: string;
+  /**
+   * True when the logo file already contains the brand name, so the
+   * card shows the mark alone at a larger size instead of a small
+   * icon with the name repeated beside it. AWS is the only one of
+   * the eight: its mark IS the "aws" lettering plus the smile.
+   */
+  wordmark?: boolean;
   /** A certification the team currently holds. See notes above. */
   cert?: string;
 };
@@ -564,13 +619,14 @@ export const TECH_STACK: TechItem[] = [
   {
     name: "AWS",
     desc: "Scalable cloud infrastructure and secure deployments",
-    // logo: "/logos/aws.svg",
+    logo: "/logos/aws.svg",
+    wordmark: true,
     // cert: "2 × Certified Solutions Architect – Associate",
   },
   {
     name: "Azure",
     desc: "Enterprise cloud architecture and Microsoft ecosystem integration",
-    // logo: "/logos/azure.svg",
+    logo: "/logos/azure.svg",
     // cert: "Certified: Azure Administrator Associate",
   },
   {

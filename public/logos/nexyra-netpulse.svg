@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Nexyra NetPulse">
+  <title>Nexyra NetPulse</title>
+  <!-- ══════════════════════════════════════════════════════════
+       NEXYRA NETPULSE — an original mark drawn for this product.
+
+       First attempt was a heartbeat line inside a ring. It was a
+       cliché, and worse, the trace ran straight through the node it
+       was meant to single out, so the one lit thing in the mark
+       disappeared behind the busiest thing in the mark.
+
+       This says what the product says: three devices on one estate,
+       one of them is the cause, and the pulse belongs to THAT one.
+       Net in the triangle, Pulse in the ring around the lit node.
+
+       Held to five shapes plus two rings because the mark has to
+       survive 20px in a nav. Steel for the estate, champagne for
+       the signal — the same two roles those colours carry across
+       the rest of the site, so it joins the family without needing
+       to be explained. Fixed hex, not currentColor: it sits on both
+       dark and light grounds and must read the same on each.
+       ══════════════════════════════════════════════════════════ -->
+
+  <!-- the estate: three devices, linked -->
+  <path d="M32 25 18 50M32 25l14 25M18 50h28"
+        fill="none" stroke="#7E93AC" stroke-width="2.6"
+        stroke-linecap="round" stroke-linejoin="round" opacity="0.62"/>
+
+  <!-- the pulse, belonging to the node that is the cause. Two rings
+       at falling opacity read as one expanding wave; a single ring
+       reads as a selection halo and three reads as wifi.
+
+       Radii are 10.5 and 15.5 with the node at y=25, so the outer
+       ring tops out at y=9.5 and the lower nodes bottom at y=54 —
+       the drawing spans 9.5 to 54 and centres on 31.75. The first
+       version put the node at y=18 with a 17.5 ring, which ran the
+       wave off the top of the viewBox and left the bottom empty. -->
+  <circle cx="32" cy="25" r="10.5" fill="none" stroke="#D9AE63"
+          stroke-width="2.2" opacity="0.42"/>
+  <circle cx="32" cy="25" r="15.5" fill="none" stroke="#D9AE63"
+          stroke-width="2" opacity="0.17"/>
+
+  <!-- the two that are only symptoms -->
+  <circle cx="18" cy="50" r="4" fill="#7E93AC"/>
+  <circle cx="46" cy="50" r="4" fill="#7E93AC"/>
+
+  <!-- the cause -->
+  <circle cx="32" cy="25" r="5.2" fill="#D9AE63"/>
+</svg>
