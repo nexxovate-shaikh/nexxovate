@@ -276,7 +276,36 @@ export type ProductShot = {
   caption?: string;
 };
 
-export const NEXYRA_PRODUCTS = [
+/**
+ * ── WHY THIS IS ANNOTATED AND NOT INFERRED ────────────────────
+ * It used to be a bare `= [`. With `shot` present on two entries
+ * and absent on the other two, TypeScript infers a UNION of two
+ * different object shapes, and `product.shot` then fails to
+ * compile:
+ *
+ *   Property 'shot' does not exist on type
+ *   '{ id: string; name: string; href: string; ... }'
+ *
+ * `next dev --webpack` does not type-check on every request, so
+ * the page ran locally. `next build` does, so the Vercel
+ * deployment failed and the site kept serving the previous build —
+ * which looked exactly like the push never happening.
+ *
+ * The annotation makes `shot` optional on all four, which is the
+ * truth: two products have a capture and two do not yet.
+ */
+export type NexyraProduct = {
+  id: string;
+  name: string;
+  href: string;
+  tag: string;
+  line: string;
+  desc: string;
+  points: string[];
+  shot?: ProductShot;
+};
+
+export const NEXYRA_PRODUCTS: NexyraProduct[] = [
   {
     id: "monitoring",
     name: "Network Monitoring",
@@ -300,6 +329,16 @@ export const NEXYRA_PRODUCTS = [
   {
     id: "service-desk",
     name: "AI Service Desk Agent",
+    shot: {
+      src: "/images/product/service-desk.jpg",
+      width: 2800,
+      height: 1240,
+      status: "Autonomy: scoped",
+      alt:
+        "The Nexyra AI Service Desk console: counters for open tickets, tickets resolved by the agent in 24 hours, deflection rate and median time to close; a queue ranked by what the agent can finish now, with tickets marked agent-acting, resolved or escalated; and an open ticket showing the agent's five-step trail — read the ticket, check the systems of record, execute the runbook, verify, write up and close.",
+      caption:
+        "The trail is the product. Every step the agent took is on the ticket, including which systems it consulted and why the action fell inside its declared authority.",
+    },
     href: "/nexyra#service-desk-detail",
     tag: "Autonomous support",
     line: "Tickets that resolve themselves.",
@@ -309,6 +348,16 @@ export const NEXYRA_PRODUCTS = [
   {
     id: "auditor",
     name: "Website Auditor",
+    shot: {
+      src: "/images/product/auditor.jpg",
+      width: 2800,
+      height: 1240,
+      status: "Last run 2h ago",
+      alt:
+        "The Nexyra Website Auditor report: four score gauges for performance, accessibility, SEO and security posture; a findings table ranked by business impact with rows tagged Revenue, Risk, Reach and Hygiene alongside the affected route and the effort to fix; and a Core Web Vitals panel showing largest contentful paint, interaction to next paint, cumulative layout shift and time to first byte.",
+      caption:
+        "Ranked by business impact, not scanner severity — which is why a slow checkout outranks a missing header, and the top row is the one worth doing first.",
+    },
     href: "/nexyra#auditor-detail",
     tag: "Performance and security",
     line: "Every weakness, ranked by what it costs you.",
