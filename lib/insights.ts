@@ -4,6 +4,10 @@
    NEXAF all read from the same source.
    ============================================================ */
 
+/* Posters are the site's own designed service panels, and every accent
+   is champagne. The originals were blue and violet stock images with
+   per-article accent colours from the other rebuild's palette, which
+   is why the Insights pages looked like a different company. */
 export type Insight = {
   slug: string;
   title: string;
@@ -25,8 +29,8 @@ export const INSIGHTS: Insight[] = [
       "Assistants changed how operations teams work. Autonomy changes what they are responsible for — and that is a governance question long before it is a technology one.",
     readingTime: "6 min",
     featured: true,
-    poster: "/images/ai.jpg",
-    accent: "#4d7cff",
+    poster: "/images/services/ai.jpg",
+    accent: "#D9AE63",
     body: [
       {
         paragraphs: [
@@ -65,8 +69,8 @@ export const INSIGHTS: Insight[] = [
     excerpt:
       "Cyber risk stopped being an IT concern the moment it became a reporting obligation. The board question is no longer whether you are secure, but how quickly you can prove what happened.",
     readingTime: "5 min",
-    poster: "/images/cyber.jpg",
-    accent: "#b451d8",
+    poster: "/images/services/security.jpg",
+    accent: "#D9AE63",
     body: [
       {
         paragraphs: [
@@ -97,8 +101,8 @@ export const INSIGHTS: Insight[] = [
     excerpt:
       "Adding people is the easy part. Adding people without losing the judgement that made the team good is where most scaling programmes quietly fail.",
     readingTime: "5 min",
-    poster: "/images/team.jpg",
-    accent: "#7a5cff",
+    poster: "/images/services/talent.jpg",
+    accent: "#D9AE63",
     body: [
       {
         paragraphs: [

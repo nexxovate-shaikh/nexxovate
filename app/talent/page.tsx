@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Section, Container } from "@/app/components/ui";
+import { Section, Container, Accent } from "@/app/components/ui";
 import {
   PageHero,
   SectionHead,
@@ -10,7 +10,7 @@ import {
  import { TALENT_MODELS, TALENT_PROOF } from "@/lib/content/pages";
 
 export const metadata: Metadata = {
-  title: "Talent Solutions",
+  title: "IT Talent and Staffing Solutions",
   description:
     "Enterprise talent solutions including contract staffing, contract-to-hire, permanent recruitment and offshore dedicated teams.",
 };
@@ -20,15 +20,15 @@ export default function TalentPage() {
     <>
       <PageHero
         kicker="Technology talent solutions"
-        lines={[<>Enterprise talent for</>, <>high-performance teams</>]}
+        lines={[<>Enterprise talent for</>, <Accent>high-performance teams</Accent>]}
         intro="Nexxovate helps organisations attract, scale and retain top technology talent through flexible, enterprise-grade workforce models."
-        image="/images/staffing-hero.jpg"
+        image="/images/plates/talent.jpg"
         alt="Enterprise staffing"
         cta="/contact"
         ctaLabel="Request a talent consultation"
       />
 
-      <Section band="light" zone="ai">
+      <Section band="light" zone="ai" className="ground-grid">
         <Container>
           <SectionHead
             kicker="Workforce models"
@@ -40,14 +40,14 @@ export default function TalentPage() {
         </Container>
       </Section>
 
-      <Section band="deep" zone="security">
+      <Section band="deep" zone="security" className="ground-aurora">
         <Container>
           <ProofList
             kicker="Why Nexxovate"
             title="Why organisations trust us"
             accent="with talent"
             points={TALENT_PROOF}
-            image="/images/team.jpg"
+            image="/images/plates/proof-talent.jpg"
             alt="Team collaboration"
           />
         </Container>

@@ -467,20 +467,24 @@ export const PROBLEMS = [
 
 /* ── Case studies — carried over ────────────────────────────── */
 
+/* Images are designed panels of what each engagement produced, in the
+   site's own palette — replacing stock photography that could have
+   belonged to any IT company. The result lines on the case studies
+   page are unchanged. */
 export const CASE_STUDIES = [
   {
     title: "AI Customer Support Assistant",
-    img: "/images/ai-assistant.jpg",
+    img: "/images/work/cs-support.jpg",
     desc: "Conversational AI assistant automating customer support requests and reducing response times across digital channels.",
   },
   {
     title: "Business Workflow Automation",
-    img: "/images/automation.jpg",
+    img: "/images/work/cs-workflow.jpg",
     desc: "Enterprise automation platform processing documents, extracting data and orchestrating operational workflows.",
   },
   {
     title: "AI Analytics Dashboard",
-    img: "/images/dashboard.jpg",
+    img: "/images/work/cs-analytics.jpg",
     desc: "AI-powered analytics platform transforming operational data into predictive insights and intelligent decisions.",
   },
 ];

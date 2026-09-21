@@ -39,7 +39,7 @@ import { Reveal, Stagger, StaggerItem } from "@/lib/motion";
    ══════════════════════════════════════════════════════════════ */
 
 export const metadata: Metadata = {
-  title: "Services",
+  title: "Enterprise IT and AI Services",
   description:
     "Enterprise IT and managed infrastructure, AI and intelligent automation, cybersecurity, digital transformation, talent and training from Nexxovate.",
 };
@@ -51,7 +51,7 @@ export default function ServicesPage() {
         kicker="Enterprise technology services"
         lines={[<>Enterprise services</>, <Accent>for the intelligent era</Accent>]}
         intro="From IT modernisation to AI-powered transformation, Nexxovate delivers the infrastructure, intelligence and security that enterprise operations depend on."
-        image="/images/services-hero.jpg"
+        image="/images/plates/services.jpg"
         alt="Enterprise services"
         cta="/contact"
         ctaLabel="Scope an engagement"
@@ -140,7 +140,7 @@ export default function ServicesPage() {
             title="Why enterprises"
             accent="choose us"
             points={SERVICE_PROOF}
-            image="/images/office.jpg"
+            image="/images/plates/proof-services.jpg"
             alt="Enterprise delivery"
           />
         </Container>

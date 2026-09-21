@@ -7,7 +7,7 @@ import { LegalShell } from "@/app/components/LegalShell";
    statement that claims no gaps is not credible. */
 
 export const metadata: Metadata = {
-  title: "Accessibility",
+  title: "Accessibility Statement",
   description:
     "How nexxovate.com is built for accessibility, what has been verified, and what is still outstanding.",
 };

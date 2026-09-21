@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Glyph from "./visual/Glyph";
 import { Reveal, Stagger, StaggerItem, MaskText, EASE } from "@/lib/motion";
 import { Section, Container, Kicker, Accent, Button } from "./ui";
 import type { Offer } from "@/lib/content/pages";
@@ -42,7 +43,7 @@ export function PageHero({
   zone?: "infrastructure" | "ai" | "security" | "transformation";
 }) {
   return (
-    <Section zone={zone} band="dark" className="!pt-[88px] !pb-14 md:!pb-18">
+    <Section zone={zone} band="dark" className="ground-rays !pt-[88px] !pb-14 md:!pb-18">
       <Container className="pb-10 pt-4 md:pb-12 md:pt-6">
         <div className="relative isolate overflow-hidden rounded-[20px] md:rounded-[28px]">
           <div className="relative min-h-[440px] md:min-h-[520px]">
@@ -150,6 +151,45 @@ export function OfferGrid({ offers }: { offers: Offer[] }) {
       {offers.map((offer, i) => (
         <StaggerItem key={offer.title}>
           <article className="group relative flex h-full flex-col overflow-hidden rounded-[14px] border border-line bg-ink-2 transition-colors duration-500 hover:border-line-lit">
+            {offer.glyph ? (
+              /* The emblem header. A lit ground — one pool of steel
+                 top-left, champagne low-right, a fine dot grid — with
+                 the emblem at reading size bottom-left and an
+                 oversized faint echo of it bleeding off the top-right
+                 corner. The echo is what gives a flat mark depth. */
+              <div
+                className="relative h-[190px] overflow-hidden"
+                style={{
+                  background:
+                    "radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--color-steel) 14%, transparent), transparent 60%), radial-gradient(90% 90% at 100% 100%, color-mix(in srgb, var(--color-champagne) 12%, transparent), transparent 62%), var(--color-ink-2)",
+                }}
+              >
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 opacity-60"
+                  style={{
+                    backgroundImage:
+                      "radial-gradient(color-mix(in srgb, var(--color-silver) 18%, transparent) 1px, transparent 1.3px)",
+                    backgroundSize: "18px 18px",
+                    maskImage: "linear-gradient(135deg, transparent 30%, #000)",
+                    WebkitMaskImage: "linear-gradient(135deg, transparent 30%, #000)",
+                  }}
+                />
+                <Glyph
+                  id={offer.glyph}
+                  size={230}
+                  className="absolute -right-12 -top-10 opacity-[0.09] transition-[opacity,transform] duration-700 ease-out group-hover:-translate-x-2 group-hover:opacity-[0.16]"
+                />
+                <Glyph
+                  id={offer.glyph}
+                  size={84}
+                  className="absolute bottom-5 left-5 transition-transform duration-500 ease-out group-hover:-translate-y-1"
+                />
+                <span className="font-mono-label absolute right-6 top-5 tabular-nums text-faint">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              </div>
+            ) : (
             <div className="relative h-[190px] overflow-hidden">
               <Image
                 src={offer.img}
@@ -163,6 +203,8 @@ export function OfferGrid({ offers }: { offers: Offer[] }) {
                 {String(i + 1).padStart(2, "0")}
               </span>
             </div>
+
+            )}
 
             <div className="flex flex-1 flex-col p-6 md:p-7">
               <h3 className="font-display text-[length:var(--text-h4)] font-semibold">
@@ -261,7 +303,7 @@ export function PageCTA({
   label?: string;
 }) {
   return (
-    <Section zone="transformation" band="dark">
+    <Section zone="transformation" band="dark" className="ground-breathe">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"

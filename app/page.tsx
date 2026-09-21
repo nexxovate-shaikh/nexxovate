@@ -658,7 +658,7 @@ const BENTO = ["lg:col-span-3", "lg:col-span-2", "lg:col-span-2", "lg:col-span-3
 
 function NexyraShowcase() {
   return (
-    <Section zone="ai" band="deep" className="ground-grid">
+    <Section zone="ai" band="deep" className="ground-orbit">
       <Container>
         <div className="mb-9 grid gap-8 md:mb-11 md:grid-cols-2 md:items-end">
           <Reveal>
@@ -1312,7 +1312,7 @@ function Recognition() {
   const hasAwards = AWARDS.length > 0;
 
   return (
-    <Section zone="transformation" band="light">
+    <Section zone="transformation" band="light" className="ground-breathe">
       <Container>
         <Awards />
         <TechStrip first={!hasAwards} />

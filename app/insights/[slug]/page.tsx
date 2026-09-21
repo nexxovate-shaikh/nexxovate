@@ -1,11 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
-
-import CTASection from "../../components/site/CTASection";
-import CurvedMedia from "../../components/site/CurvedMedia";
-import { Section, Shell } from "../../components/site/primitives";
+import { Section, Container } from "@/app/components/ui";
+import { PageCTA } from "@/app/components/PageShell";
+import ServiceCard from "@/app/components/visual/ServiceCard";
+import { Reveal, Stagger, StaggerItem } from "@/lib/motion";
 import { INSIGHTS, getInsight } from "@/lib/insights";
+
+/* ══════════════════════════════════════════════════════════════
+   INSIGHTS — article.
+
+   Same slugs, same metadata and static params as the rebuild's
+   version, so every existing article URL still resolves. What
+   changed is the setting: this site's type, bands and palette, and
+   a measure held to about 68 characters — past roughly 75 a reader
+   starts losing the line on the way back, which on long-form writing
+   is the difference between finishing an article and skimming it.
+   ══════════════════════════════════════════════════════════════ */
 
 export function generateStaticParams() {
   return INSIGHTS.map((i) => ({ slug: i.slug }));
@@ -18,14 +30,18 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = getInsight(slug);
-
   if (!post) return { title: "Insight not found" };
-
   return {
     title: post.title,
     description: post.excerpt,
     alternates: { canonical: `/insights/${post.slug}` },
-    openGraph: { title: post.title, description: post.excerpt },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: "article",
+      images: [{ url: post.poster }],
+    },
+    twitter: { card: "summary_large_image", title: post.title, description: post.excerpt, images: [post.poster] },
   };
 }
 
@@ -36,135 +52,114 @@ export default async function InsightPage({
 }) {
   const { slug } = await params;
   const post = getInsight(slug);
-
   if (!post) notFound();
 
   const more = INSIGHTS.filter((i) => i.slug !== post.slug).slice(0, 2);
 
   return (
     <>
-      {/* ---- article header ---- */}
-      <section className="grain relative overflow-hidden bg-void pb-16 pt-40 md:pt-48">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-1/3 left-1/2 h-[70vmax] w-[70vmax] -translate-x-1/2 rounded-full opacity-40 blur-[150px]"
-          style={{
-            background: `radial-gradient(circle, ${post.accent}2e 0%, transparent 66%)`,
-          }}
-        />
-
-        <Shell width="wide">
+      {/* ── Header ── */}
+      <Section band="dark" zone="ai" className="ground-aurora !pt-[120px] md:!pt-[140px]">
+        <Container>
           <Link
             href="/insights"
-            className="group inline-flex items-center gap-2 font-mono-ui text-[0.62rem] uppercase tracking-[0.18em] text-white/35 transition-colors hover:text-paper"
+            className="font-mono-label inline-flex items-center gap-3 text-faint transition-colors hover:text-text"
           >
-            <span className="transition-transform duration-500 group-hover:-translate-x-1" aria-hidden>
-              ←
-            </span>
-            All insights
+            <span aria-hidden="true">←</span> All insights
           </Link>
 
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <span
-              className="rounded-full border px-3.5 py-1.5 font-mono-ui text-[0.6rem] uppercase tracking-[0.16em]"
-              style={{ borderColor: `${post.accent}55`, color: post.accent }}
+          <Reveal>
+            <p className="font-mono-label mt-10 text-[color:var(--color-champagne)]">
+              {post.category} · {post.readingTime} read
+            </p>
+            <h1 className="font-display mt-6 max-w-[20ch] text-[length:var(--text-display)] font-semibold leading-[1.02]">
+              {post.title}
+            </h1>
+            <p className="mt-7 max-w-[60ch] text-[length:var(--text-lead)] leading-relaxed text-mute">
+              {post.excerpt}
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <div
+              className="relative mt-12 aspect-[16/10] overflow-hidden rounded-[20px] md:mt-14 md:rounded-[24px]"
+              style={{
+                border: "1px solid var(--color-line)",
+                boxShadow: "0 28px 64px rgba(4,8,18,0.5)",
+              }}
             >
-              {post.category}
-            </span>
-            <span className="font-mono-ui text-[0.62rem] tracking-[0.14em] text-white/30">
-              {post.readingTime} read
-            </span>
-          </div>
-
-          <h1 className="display-xl mt-7 max-w-[20ch] text-forge">{post.title}</h1>
-
-          <p className="lede mt-8">{post.excerpt}</p>
-        </Shell>
-      </section>
-
-      <Section tone="void" tight className="!pt-0">
-        <Shell width="wide">
-          <CurvedMedia
-            poster={post.poster}
-            accent={post.accent}
-            label={post.category}
-            height="clamp(240px, 32vw, 420px)"
-          />
-        </Shell>
+              <Image
+                src={post.poster}
+                alt=""
+                fill
+                priority
+                sizes="(max-width: 1360px) 100vw, 1280px"
+                className="object-cover"
+              />
+            </div>
+          </Reveal>
+        </Container>
       </Section>
 
-      {/* ---- body ---- */}
-      <Section tone="void" className="!pt-4">
-        <Shell width="narrow">
-          <article className="max-w-[68ch]">
+      {/* ── Body ── */}
+      <Section band="light" zone="ai" className="ground-grid">
+        <Container>
+          <article className="mx-auto max-w-[68ch]">
             {post.body.map((block, i) => (
-              <div key={i} className={i > 0 ? "mt-14" : ""}>
+              <div key={i} className={i === 0 ? "" : "mt-12"}>
                 {block.heading && (
-                  <h2 className="display-md mb-6 text-paper">{block.heading}</h2>
+                  <h2 className="font-display text-[length:var(--text-h3)] font-semibold leading-tight">
+                    {block.heading}
+                  </h2>
                 )}
-                {block.paragraphs.map((paragraph, j) => (
+                {block.paragraphs.map((para, j) => (
                   <p
                     key={j}
-                    className={`text-[1.02rem] leading-[1.78] text-mute ${j > 0 ? "mt-6" : ""}`}
+                    className={`text-[17.5px] leading-[1.75] text-mute ${
+                      block.heading || j > 0 ? "mt-5" : ""
+                    }`}
                   >
-                    {paragraph}
+                    {para}
                   </p>
                 ))}
               </div>
             ))}
           </article>
-
-          <div className="rule mt-20" />
-
-          <p className="mt-8 max-w-[60ch] text-[0.86rem] leading-relaxed text-faint">
-            Written by the Nexxovate delivery team. If this sits close to a problem
-            you are living with,{" "}
-            <Link href="/contact" className="text-electric-soft underline underline-offset-4">
-              talk to us
-            </Link>
-            .
-          </p>
-        </Shell>
+        </Container>
       </Section>
 
-      {/* ---- more ---- */}
-      <Section tone="ink" tight className="border-t border-white/[0.06]">
-        <Shell width="full">
-          <p className="kicker">Keep reading</p>
+      {/* ── More ── */}
+      {more.length > 0 && (
+        <Section band="deep" zone="ai" className="ground-dust">
+          <Container>
+            <h2 className="font-display mb-10 text-[length:var(--text-h3)] font-semibold">
+              Keep reading
+            </h2>
+            <Stagger className="grid gap-8 md:gap-10 lg:grid-cols-2">
+              {more.map((m, i) => (
+                <StaggerItem key={m.slug}>
+                  <ServiceCard
+                    index={i}
+                    title={m.title}
+                    result={`${m.category} · ${m.readingTime} read`}
+                    desc={m.excerpt}
+                    panel={m.poster}
+                    panelAlt=""
+                    href={`/insights/${m.slug}`}
+                    cta="Read the article"
+                  />
+                </StaggerItem>
+              ))}
+            </Stagger>
+          </Container>
+        </Section>
+      )}
 
-          <div className="mt-10 grid gap-px border-t border-white/[0.09] md:grid-cols-2">
-            {more.map((item, i) => (
-              <Link
-                key={item.slug}
-                href={`/insights/${item.slug}`}
-                className={`group p-8 transition-colors duration-500 hover:bg-white/[0.02] ${
-                  i > 0 ? "md:border-l md:border-white/[0.09]" : ""
-                }`}
-              >
-                <p className="font-mono-ui text-[0.6rem] uppercase tracking-[0.18em] text-electric-soft">
-                  {item.category}
-                </p>
-                <h3 className="mt-5 max-w-[24ch] font-display text-xl font-medium leading-snug tracking-[-0.02em] text-paper">
-                  {item.title}
-                </h3>
-                <span className="mt-8 inline-flex items-center gap-2 text-[0.78rem] text-faint transition-colors duration-400 group-hover:text-paper">
-                  Read
-                  <span className="transition-transform duration-500 group-hover:translate-x-1" aria-hidden>
-                    →
-                  </span>
-                </span>
-              </Link>
-            ))}
-          </div>
-        </Shell>
-      </Section>
-
-      <CTASection
-        eyebrow="Strategic guidance"
-        title="Apply this to your own estate."
-        body="The fastest next step is a conversation with the people who wrote it."
-        primary={{ href: "/contact", label: "Speak to an expert" }}
-        secondary={{ href: "/insights", label: "More insights" }}
+      <PageCTA
+        title="Talk to the people"
+        accent="who wrote this"
+        intro="If this describes something your team is living with, we would like to hear about it."
+        label="Start the conversation"
       />
     </>
   );

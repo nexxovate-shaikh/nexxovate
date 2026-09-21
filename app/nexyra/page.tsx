@@ -8,9 +8,9 @@ import { NexyraLockup } from "@/app/components/visual/NexyraMark";
 import ProductShowcase from "@/app/components/visual/ProductShowcase";
 
 export const metadata: Metadata = {
-  title: "Nexyra",
+  title: "Nexyra — AI Products Platform",
   description:
-    "Nexyra is Nexxovate's enterprise AI ecosystem: network monitoring, an autonomous service desk agent, website auditing and a conversational assistant grounded in your own data.",
+    "Nexyra by Nexxovate: network monitoring, an autonomous service desk, website auditing and an AI assistant grounded in your own data.",
 };
 
 export default function NexyraPage() {

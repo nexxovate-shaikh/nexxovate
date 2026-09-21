@@ -1,0 +1,6 @@
+Contact: mailto:info@nexxovate.com
+Contact: https://nexxovate.com/security
+Expires: 2027-09-21T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://nexxovate.com/.well-known/security.txt
+Policy: https://nexxovate.com/security

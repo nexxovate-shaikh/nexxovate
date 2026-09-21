@@ -105,11 +105,21 @@ const nextConfig: NextConfig = {
       { source: "/images/:path*", headers: LONG_CACHE },
       { source: "/video/:path*", headers: LONG_CACHE },
       { source: "/logos/:path*", headers: LONG_CACHE },
-      /* Root-level files (og.jpg, icons, logo-lockup.png) keep the
-         default. A regex rule could match them by extension, but a
-         malformed `source` fails the entire Vercel build with
-         "Invalid source" — not worth that risk for a few small files
-         that are requested once per visit anyway. */
+      /* Root-level files, listed one by one. Plain literal paths,
+         not a regex: a malformed `source` fails the whole Vercel
+         build, and a literal path cannot be malformed. */
+      ...[
+        "/og.jpg",
+        "/favicon.ico",
+        "/icon-32.png",
+        "/icon-512.png",
+        "/apple-touch-icon.png",
+        "/logo-lockup.png",
+        "/logo-mark.png",
+        "/nexyra-avatar.png",
+        "/nexyra-lockup.png",
+        "/nexyra-mark.png",
+      ].map((source) => ({ source, headers: LONG_CACHE })),
     ];
   },
 };

@@ -252,6 +252,7 @@ export default function EnquiryForm() {
         ref={honeypot}
         type="text"
         name="website"
+        aria-label="Leave this field empty"
         tabIndex={-1}
         autoComplete="off"
         aria-hidden="true"

@@ -1,3 +1,4 @@
+import type { GlyphId } from "@/app/components/visual/Glyph";
 /* ══════════════════════════════════════════════════════════════
    Inner-page content.
 
@@ -15,6 +16,8 @@
 export type Offer = {
   title: string;
   img: string;
+  /** Drawn emblem shown instead of `img`. See components/visual/Glyph. */
+  glyph?: GlyphId;
   desc: string;
 };
 
@@ -23,31 +26,37 @@ export type Offer = {
 export const SERVICE_OFFERS: Offer[] = [
   {
     title: "IT & Managed Services",
+    glyph: "infra",
     img: "/images/cloud.jpg",
     desc: "Cloud infrastructure, platform reliability and day-to-day operations run as a managed service, so your team is freed from keeping the lights on.",
   },
   {
     title: "AI & Intelligent Automation",
+    glyph: "ai",
     img: "/images/ai.jpg",
     desc: "Assistants, agents and workflow automation that take routine work off people entirely — and escalate the rest with full context.",
   },
   {
     title: "Cybersecurity & Risk",
+    glyph: "shield",
     img: "/images/cyber.jpg",
     desc: "Threat protection, governance frameworks and resilient architecture, designed around the regulations you actually answer to.",
   },
   {
     title: "Digital Transformation",
+    glyph: "transform",
     img: "/images/office.jpg",
     desc: "Modernising legacy platforms and operations onto cloud-native foundations, sequenced so the business keeps running throughout.",
   },
   {
     title: "Consulting Services",
+    glyph: "consult",
     img: "/images/team.jpg",
     desc: "Architecture review, roadmap definition and delivery assurance from engineers who have built the systems they are advising on.",
   },
   {
     title: "Service & Product Offerings",
+    glyph: "product",
     img: "/images/dashboard.jpg",
     desc: "The Nexyra product suite alongside bespoke builds, so you can adopt what exists and commission only what does not.",
   },
@@ -65,21 +74,25 @@ export const SERVICE_PROOF = [
 export const TALENT_MODELS: Offer[] = [
   {
     title: "Contract Staffing",
+    glyph: "contract",
     img: "/images/contract-staffing.jpg",
     desc: "Specialist engineers embedded in your delivery teams for a defined engagement, with the flexibility to scale up or stand down as the roadmap moves.",
   },
   {
     title: "Contract-to-Hire",
+    glyph: "bridge",
     img: "/images/contract-to-hire.jpg",
     desc: "Work together before committing. Engineers join on contract and convert to permanent once both sides know the fit is right.",
   },
   {
     title: "Permanent Hiring",
+    glyph: "permanent",
     img: "/images/permanent-hiring.jpg",
     desc: "Full-cycle recruitment for critical roles, screened against real technical depth rather than keyword-matched CVs.",
   },
   {
     title: "Offshore & Dedicated Teams",
+    glyph: "offshore",
     img: "/images/offshore-team.jpg",
     desc: "A dedicated squad operating as an extension of your organisation, with your process, your standards and your working hours.",
   },
@@ -97,21 +110,25 @@ export const TALENT_PROOF = [
 export const TRAINING_PROGRAMS: Offer[] = [
   {
     title: "Corporate Training Programs",
+    glyph: "corporate",
     img: "/images/corporate-training.jpg",
     desc: "Structured curricula built around your stack and your delivery goals, run for whole teams rather than scattered individuals.",
   },
   {
     title: "Online Learning",
+    glyph: "online",
     img: "/images/online-learning.jpg",
     desc: "Self-paced modules with practical assessment, so progress is measured by what people can build rather than hours logged.",
   },
   {
     title: "Offline & Classroom Training",
+    glyph: "classroom",
     img: "/images/offline-training.jpg",
     desc: "Instructor-led workshops for the topics that genuinely need a room — architecture, incident response, hands-on labs.",
   },
   {
     title: "Career Transformation Programs",
+    glyph: "career",
     img: "/images/career-program.jpg",
     desc: "Longer pathways that move people into cloud, AI and platform engineering roles, with mentoring through the difficult middle.",
   },

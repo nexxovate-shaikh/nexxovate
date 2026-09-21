@@ -569,14 +569,20 @@ html.lenis, html.lenis body { height: auto; }
 .ground-aurora,
 .ground-dust,
 .ground-grid,
-.ground-sheen {
+.ground-sheen,
+.ground-orbit,
+.ground-rays,
+.ground-breathe {
   isolation: isolate;
 }
 
 .ground-aurora::before,
 .ground-dust::before,
 .ground-grid::before,
-.ground-sheen::before {
+.ground-sheen::before,
+.ground-orbit::before,
+.ground-rays::before,
+.ground-breathe::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -646,4 +652,73 @@ html.lenis, html.lenis body { height: auto; }
   .ground-sheen::before { animation: none; }
   .ground-dust::before  { opacity: 0.6; }
   .ground-sheen::before { transform: translateX(0); }
+}
+
+/* ── Three more grounds, so no page repeats one ─────────────────
+
+     .ground-orbit    fine concentric rings off the right edge, slowly
+                      turning, with one champagne ring — precision,
+                      like the inside of a watch movement
+     .ground-rays     a colonnade of hairline verticals fading down
+                      the section — architecture, used in heroes
+     .ground-breathe  two light pools that swell and settle over nine
+                      seconds — warmth, used behind calls to action
+
+   Same rules as the first four: pseudo-element at z-index -1,
+   colours from band tokens, transform and opacity only, stopped
+   under reduced motion. */
+
+.ground-orbit { overflow: hidden; }
+.ground-orbit::before {
+  inset: auto;
+  width: 1180px;
+  height: 1180px;
+  right: -440px;
+  top: 50%;
+  margin-top: -590px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle,
+      transparent 0 430px,
+      color-mix(in srgb, var(--color-champagne) 55%, transparent) 430px 431.5px,
+      transparent 432px),
+    repeating-radial-gradient(circle,
+      transparent 0 34px,
+      color-mix(in srgb, var(--color-steel) 20%, transparent) 34px 35px);
+  -webkit-mask-image: conic-gradient(from 200deg, transparent 0 8%, #000 30%, #000 55%, transparent 80%);
+          mask-image: conic-gradient(from 200deg, transparent 0 8%, #000 30%, #000 55%, transparent 80%);
+  animation: ground-orbit 90s linear infinite;
+}
+@keyframes ground-orbit { to { transform: rotate(360deg); } }
+
+.ground-rays::before {
+  background:
+    radial-gradient(60% 50% at 78% 0%,
+      color-mix(in srgb, var(--color-champagne) 12%, transparent), transparent 70%),
+    repeating-linear-gradient(90deg,
+      transparent 0 118px,
+      color-mix(in srgb, var(--color-silver) 8%, transparent) 118px 119px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 88%);
+          mask-image: linear-gradient(to bottom, #000 0%, transparent 88%);
+  animation: ground-rays 11s ease-in-out infinite alternate;
+}
+@keyframes ground-rays { from { opacity: 0.55; } to { opacity: 1; } }
+
+.ground-breathe::before {
+  background:
+    radial-gradient(720px 480px at 88% 8%,
+      color-mix(in srgb, var(--color-champagne) 20%, transparent), transparent 66%),
+    radial-gradient(640px 440px at 6% 98%,
+      color-mix(in srgb, var(--color-steel) 18%, transparent), transparent 66%);
+  animation: ground-breathe 9s ease-in-out infinite alternate;
+}
+@keyframes ground-breathe {
+  from { opacity: 0.55; transform: scale(1); }
+  to   { opacity: 1;    transform: scale(1.05); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ground-orbit::before,
+  .ground-rays::before,
+  .ground-breathe::before { animation: none; }
 }

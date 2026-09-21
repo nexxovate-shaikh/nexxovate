@@ -23,7 +23,7 @@ import { LegalShell } from "@/app/components/LegalShell";
    ══════════════════════════════════════════════════════════════ */
 
 export const metadata: Metadata = {
-  title: "Terms of use",
+  title: "Terms of Use for This Website",
   description:
     "Terms governing use of nexxovate.com. Interim notice while the formal terms are finalised.",
 };

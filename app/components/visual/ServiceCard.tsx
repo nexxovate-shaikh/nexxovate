@@ -35,6 +35,9 @@ export default function ServiceCard({
   panel,
   panelAlt,
   href = "/contact",
+  result,
+  cta = "Talk to us about this",
+  wide = false,
 }: {
   index: number;
   title: string;
@@ -42,6 +45,15 @@ export default function ServiceCard({
   panel: string;
   panelAlt: string;
   href?: string;
+  /** A stated outcome, shown in champagne under the title. */
+  result?: string;
+  cta?: string;
+  /**
+   * Featured layout: on large screens the panel sits beside the text
+   * instead of above it, so one lead item can span a full row without
+   * its panel becoming a 1280px-wide, 800px-tall slab.
+   */
+  wide?: boolean;
 }) {
   return (
     <article className="group relative h-full">
@@ -70,7 +82,9 @@ export default function ServiceCard({
             same whether it sits on a light section or a dark one. */}
         <div
           data-band="dark"
-          className="flex h-full flex-col overflow-hidden rounded-[19px] md:rounded-[23px]"
+          className={`flex h-full flex-col overflow-hidden rounded-[19px] md:rounded-[23px] ${
+            wide ? "lg:grid lg:grid-cols-[1.35fr_1fr] lg:items-center" : ""
+          }`}
         >
           <div className="relative aspect-[16/10] overflow-hidden">
             <Image
@@ -84,7 +98,7 @@ export default function ServiceCard({
                 read as one object rather than a picture on a box. */}
             <div
               aria-hidden="true"
-              className="absolute inset-x-0 bottom-0 h-24"
+              className={`absolute inset-x-0 bottom-0 h-24 ${wide ? "lg:hidden" : ""}`}
               style={{
                 background:
                   "linear-gradient(to bottom, transparent, var(--color-ink))",
@@ -92,13 +106,18 @@ export default function ServiceCard({
             />
           </div>
 
-          <div className="flex flex-1 flex-col px-7 pb-8 pt-2 md:px-9 md:pb-9">
+          <div className={`flex flex-1 flex-col px-7 pb-8 pt-2 md:px-9 md:pb-9 ${wide ? "lg:py-10 lg:pl-4 lg:pr-12" : ""}`}>
             <span className="font-mono-label tabular-nums text-[color:var(--color-champagne)]">
               {String(index + 1).padStart(2, "0")}
             </span>
             <h3 className="font-display mt-4 text-[length:var(--text-h3)] font-semibold leading-tight">
               {title}
             </h3>
+            {result && (
+              <p className="font-display mt-3 text-[length:var(--text-h4)] font-medium text-[color:var(--color-champagne)]">
+                {result}
+              </p>
+            )}
             <p className="mt-4 flex-1 leading-relaxed text-mute">{desc}</p>
 
             <span className="mt-8 inline-flex items-center gap-2.5 text-[14.5px] font-medium text-text">
@@ -107,7 +126,7 @@ export default function ServiceCard({
                 className="h-px w-6 transition-[width] duration-500 ease-out group-hover:w-10"
                 style={{ background: "var(--color-champagne)" }}
               />
-              Talk to us about this
+              {cta}
             </span>
           </div>
         </div>

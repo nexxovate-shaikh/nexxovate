@@ -7,7 +7,7 @@ import { LegalShell } from "@/app/components/LegalShell";
    your legal and security sign-off. */
 
 export const metadata: Metadata = {
-  title: "AI policy",
+  title: "Responsible AI Policy",
   description:
     "How AI is used on nexxovate.com, pending publication of the full AI policy.",
 };

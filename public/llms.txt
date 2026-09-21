@@ -1,0 +1,33 @@
+# Nexxovate
+
+> Nexxovate builds enterprise AI platforms, cloud infrastructure and secure digital systems, and provides technology talent and training. Home of Nexyra: network monitoring, an autonomous service desk agent, website auditing and conversational AI.
+
+## Services
+
+- [Enterprise services](https://nexxovate.com/services): IT and managed infrastructure, AI and intelligent automation, cybersecurity and risk protection, digital transformation.
+- [AI consultation](https://nexxovate.com/ai-consultation): estate mapping, opportunity assessment, governance design and a measured roadmap for adopting AI.
+- [Talent solutions](https://nexxovate.com/talent): engineering talent and specialised technical teams for critical initiatives.
+- [Training](https://nexxovate.com/training): upskilling teams in modern technology, AI and cloud engineering.
+- [Case studies](https://nexxovate.com/case-studies): results from AI and automation engagements.
+
+## Nexyra products
+
+- [Nexyra overview](https://nexxovate.com/nexyra): the Nexyra enterprise AI ecosystem.
+- Network Monitoring: continuous infrastructure telemetry with anomaly correlation and failure prediction.
+- AI Service Desk Agent: resolves routine tickets using your runbooks and systems of record, and escalates the hard ones.
+- [Website Auditor](https://audit.nexxovate.com/): performance, accessibility, SEO, security and AI-search findings ordered by business impact.
+- Nexyra Chat: an assistant grounded in your own documents and data, with cited answers.
+
+## Company
+
+- [About](https://nexxovate.com/about)
+- [Insights](https://nexxovate.com/insights)
+- [Contact](https://nexxovate.com/contact)
+
+## Policies
+
+- [Privacy](https://nexxovate.com/privacy)
+- [Responsible AI policy](https://nexxovate.com/ai-policy)
+- [Terms of use](https://nexxovate.com/terms)
+- [Accessibility](https://nexxovate.com/accessibility)
+- [Responsible disclosure](https://nexxovate.com/security)

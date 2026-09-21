@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalShell } from "@/app/components/LegalShell";
 
 export const metadata: Metadata = {
-  title: "Responsible disclosure",
+  title: "Responsible Disclosure Policy",
   description:
     "How to report a security vulnerability in Nexxovate's website or products.",
 };

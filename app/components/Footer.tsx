@@ -56,13 +56,12 @@ import { Container } from "./ui";
    nav and the sitemap, so the three cannot drift apart.
    ══════════════════════════════════════════════════════════════ */
 
+/* LinkedIn and X are switched off: the site audit reported both
+   URLs as dead on every page. When the company pages exist, put the
+   real URLs back in and they render again — nothing else changes.
+     { label: "LinkedIn", href: "https://www.linkedin.com/company/<handle>", short: "in" },
+     { label: "X", href: "https://x.com/<handle>", short: "X" }, */
 const SOCIAL = [
-  {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/company/nexxovate",
-    short: "in",
-  },
-  { label: "X", href: "https://x.com/nexxovate", short: "X" },
   { label: "GitHub", href: "https://github.com/nexxovate-shaikh", short: "GH" },
 ];
 

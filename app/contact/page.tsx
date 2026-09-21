@@ -41,7 +41,7 @@ import EnquiryForm from "@/app/components/home/EnquiryForm";
    ══════════════════════════════════════════════════════════════ */
 
 export const metadata: Metadata = {
-  title: "Contact",
+  title: "Contact Nexxovate Experts",
   description:
     "Tell us what is slow, manual or fragile. Enterprise enquiries are read by the people who scope the work, not by a sales queue.",
 };
@@ -91,7 +91,7 @@ export default function ContactPage() {
         kicker="Contact"
         lines={[<>Tell us what is slow,</>, <Accent>manual or fragile</Accent>]}
         intro="The more specific you are, the more useful the first reply will be. A sentence about the workflow that costs your team the most attention is worth more than a completed brief."
-        image="/images/contact-hero.jpg"
+        image="/images/plates/contact.jpg"
         alt="Nexxovate"
         zone="transformation"
       />
