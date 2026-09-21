@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import FAQ from "@/app/components/FAQ";
+import { FAQ_TRAINING } from "@/lib/content/faq";
 import { Section, Container, Accent } from "@/app/components/ui";
 import {
   PageHero,
@@ -10,7 +12,7 @@ import {
  import { TRAINING_PROGRAMS, TRAINING_PROOF } from "@/lib/content/pages";
 
 export const metadata: Metadata = {
-  title: "Corporate Technology Training",
+  title: "Future-Ready Learning for Tech Teams",
   description:
     "Enterprise training programs including corporate training, online learning, classroom workshops and career transformation pathways.",
 };
@@ -52,6 +54,8 @@ export default function TrainingPage() {
           />
         </Container>
       </Section>
+
+      <FAQ items={FAQ_TRAINING} />
 
       <PageCTA
         title="Build future-ready"

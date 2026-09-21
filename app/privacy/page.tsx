@@ -16,7 +16,7 @@ import { LegalShell } from "@/app/components/LegalShell";
    or any other regime. Get the real statement written. */
 
 export const metadata: Metadata = {
-  title: "Privacy Policy and Your Data",
+  title: "Privacy Policy: How We Handle Your Data",
   description:
     "What nexxovate.com collects and where it goes, pending publication of the full privacy statement.",
 };

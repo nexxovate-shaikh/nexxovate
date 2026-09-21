@@ -65,9 +65,9 @@ export default function Awards() {
           <Kicker>Recognition</Kicker>
           <h2 className="font-display mt-6 text-[length:var(--text-display)] font-semibold leading-[0.95]">
             We are
-            <br />
+            {" "}<br />
             industry
-            <br />
+            {" "}<br />
             recognised
           </h2>
 

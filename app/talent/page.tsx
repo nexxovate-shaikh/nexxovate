@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import FAQ from "@/app/components/FAQ";
+import { FAQ_TALENT } from "@/lib/content/faq";
 import { Section, Container, Accent } from "@/app/components/ui";
 import {
   PageHero,
@@ -10,7 +12,7 @@ import {
  import { TALENT_MODELS, TALENT_PROOF } from "@/lib/content/pages";
 
 export const metadata: Metadata = {
-  title: "IT Talent and Staffing Solutions",
+  title: "Enterprise Talent for High-Performance Teams",
   description:
     "Enterprise talent solutions including contract staffing, contract-to-hire, permanent recruitment and offshore dedicated teams.",
 };
@@ -52,6 +54,8 @@ export default function TalentPage() {
           />
         </Container>
       </Section>
+
+      <FAQ items={FAQ_TALENT} />
 
       <PageCTA
         title="Build stronger teams"

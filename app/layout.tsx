@@ -40,7 +40,7 @@ const mono = JetBrains_Mono({
 });
 
 const DESCRIPTION =
-  "Nexxovate builds enterprise AI platforms, cloud infrastructure and secure digital systems. Home of Nexyra — network monitoring, autonomous service desk, website auditing and conversational AI.";
+  "Nexxovate builds enterprise AI platforms, cloud infrastructure and secure digital systems, and is home of the Nexyra AI product suite.";
 
 export const metadata: Metadata = {
   /* Was https://nexxovate.in. Every relative URL Next resolves for

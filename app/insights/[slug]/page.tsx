@@ -31,17 +31,23 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getInsight(slug);
   if (!post) return { title: "Insight not found" };
+  /* Search engines show about 155 characters of a description; past
+     that it is cut mid-word. Trim at a word boundary instead. */
+  const description =
+    post.excerpt.length <= 158
+      ? post.excerpt
+      : post.excerpt.slice(0, 155).replace(/\s+\S*$/, "") + "…";
   return {
     title: post.title,
-    description: post.excerpt,
+    description,
     alternates: { canonical: `/insights/${post.slug}` },
     openGraph: {
       title: post.title,
-      description: post.excerpt,
+      description,
       type: "article",
       images: [{ url: post.poster }],
     },
-    twitter: { card: "summary_large_image", title: post.title, description: post.excerpt, images: [post.poster] },
+    twitter: { card: "summary_large_image", title: post.title, description, images: [post.poster] },
   };
 }
 

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import FAQ from "@/app/components/FAQ";
+import { FAQ_INSIGHTS } from "@/lib/content/faq";
 import { Section, Container, Kicker, Accent } from "@/app/components/ui";
 import { PageHero, PageCTA } from "@/app/components/PageShell";
 import ServiceCard from "@/app/components/visual/ServiceCard";
@@ -18,7 +20,7 @@ import { INSIGHTS } from "@/lib/insights";
    ══════════════════════════════════════════════════════════════ */
 
 export const metadata: Metadata = {
-  title: "Insights on Enterprise AI",
+  title: "Insights on the Autonomous Enterprise",
   description:
     "Writing from Nexxovate on enterprise AI, operations, cybersecurity and building technology teams.",
 };
@@ -75,6 +77,8 @@ export default function InsightsPage() {
           </Stagger>
         </Container>
       </Section>
+
+      <FAQ items={FAQ_INSIGHTS} />
 
       <PageCTA
         title="Have a problem worth"

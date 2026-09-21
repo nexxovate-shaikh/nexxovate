@@ -98,7 +98,7 @@ export default function Footer() {
         <div className="grid gap-14 lg:grid-cols-[1fr_1.25fr] lg:gap-20">
           <h2 className="font-display max-w-[11ch] text-[clamp(2.4rem,4.4vw,3.9rem)] font-semibold leading-[1.02]">
             Amplifying
-            <br />
+            {" "}<br />
             <span style={{ color: "var(--color-champagne)" }}>
               AI intelligence
             </span>

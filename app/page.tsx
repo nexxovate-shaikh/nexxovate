@@ -457,7 +457,7 @@ function Capabilities() {
             <Kicker>Enterprise AI capabilities</Kicker>
             <h2 className="font-display mt-6 text-[length:var(--text-h2)] font-semibold">
               What Nexyra
-              <br />
+              {" "}<br />
               delivers
             </h2>
           </Reveal>
@@ -565,7 +565,7 @@ function Problems() {
             <Kicker>Problems we solve</Kicker>
             <h2 className="font-display mt-6 text-[length:var(--text-h2)] font-semibold">
               If any of this
-              <br />
+              {" "}<br />
               <Accent>sounds familiar</Accent>
             </h2>
           </Reveal>
@@ -665,7 +665,7 @@ function NexyraShowcase() {
             <Kicker>The Nexyra ecosystem</Kicker>
             <h2 className="font-display mt-6 text-[length:var(--text-h2)] font-semibold">
               Four products,
-              <br />
+              {" "}<br />
               one intelligence layer
             </h2>
           </Reveal>
@@ -1038,7 +1038,7 @@ function TechStrip({ first = false }: { first?: boolean }) {
           </p>
           <h2 className="font-display mt-6 text-[clamp(2.4rem,5vw,4.25rem)] font-semibold leading-[1.02]">
             Built on the platforms
-            <br />
+            {" "}<br />
             your teams already run
           </h2>
           <p className="mx-auto mt-5 max-w-md leading-relaxed text-mute">
@@ -1253,7 +1253,7 @@ function Careers() {
             <Kicker>Careers at Nexxovate</Kicker>
             <h2 className="font-display mt-6 text-[length:var(--text-h2)] font-semibold">
               The people who
-              <br />
+              {" "}<br />
               <Accent>build the systems</Accent>
             </h2>
             <p className="mt-7 max-w-[52ch] text-[length:var(--text-lead)] leading-relaxed text-mute">

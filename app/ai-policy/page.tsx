@@ -7,7 +7,7 @@ import { LegalShell } from "@/app/components/LegalShell";
    your legal and security sign-off. */
 
 export const metadata: Metadata = {
-  title: "Responsible AI Policy",
+  title: "Responsible AI Policy: How We Use AI",
   description:
     "How AI is used on nexxovate.com, pending publication of the full AI policy.",
 };
@@ -38,7 +38,10 @@ export default function AiPolicyPage() {
       <p>
         Some photography and video on this site is AI-generated and used to
         illustrate the kind of work described. It does not depict Nexxovate
-        clients, staff, premises or real engagements.
+        clients, staff, premises or real engagements. The dashboard-style
+        panels on the services pages are designed illustrations of what each
+        service produces; the figures in them are examples, not client
+        results.
       </p>
 
       <h2>What is not yet documented here</h2>
@@ -46,6 +49,13 @@ export default function AiPolicyPage() {
         This page does not yet set out model governance, human-oversight
         thresholds, evaluation and bias testing, or how AI is used in delivery
         for clients. Those belong in the formal policy, which is in preparation.
+      </p>
+
+      <h2>Questions</h2>
+      <p>
+        If you have a question about how AI is used on this site or in our
+        products, email info@nexxovate.com or use the contact form, and a
+        person will reply.
       </p>
     </LegalShell>
   );

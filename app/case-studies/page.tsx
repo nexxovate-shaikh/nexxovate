@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import FAQ from "@/app/components/FAQ";
+import { FAQ_CASE_STUDIES } from "@/lib/content/faq";
 import { Section, Container, Kicker, Accent } from "@/app/components/ui";
 import ServiceCard from "@/app/components/visual/ServiceCard";
 import { PageHero, SectionHead, PageCTA } from "@/app/components/PageShell";
@@ -27,7 +29,7 @@ import { CASE_STUDIES } from "@/lib/content/site";
    ══════════════════════════════════════════════════════════════ */
 
 export const metadata: Metadata = {
-  title: "Case Studies — AI and Automation",
+  title: "Case Studies: Solutions We've Built",
   description:
     "Intelligent platforms and automation systems Nexxovate has built across AI, cloud infrastructure and enterprise operations.",
 };
@@ -98,6 +100,8 @@ export default function CaseStudiesPage() {
           </Reveal>
         </Container>
       </Section>
+
+      <FAQ items={FAQ_CASE_STUDIES} />
 
       <PageCTA
         title="Tell us what is slow,"

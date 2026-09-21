@@ -7,7 +7,7 @@ import { MISSION, VISION, PRINCIPLES, TEAM } from "@/lib/content/pages";
 import { REASONS, TESTIMONIALS } from "@/lib/content/site";
 
 export const metadata: Metadata = {
-  title: "About Us — Our Story and Approach",
+  title: "About Us: Building Intelligent Enterprises",
   description:
     "Nexxovate's mission, vision, leadership and enterprise-first approach to IT, AI, cybersecurity, staffing and digital transformation.",
 };
@@ -131,7 +131,7 @@ export default function AboutPage() {
                 <Kicker>Trusted technology partner</Kicker>
                 <h2 className="font-display mt-6 text-[length:var(--text-h2)] font-semibold">
                   Why teams
-                  <br />
+                  {" "}<br />
                   choose Nexxovate
                 </h2>
               </Reveal>

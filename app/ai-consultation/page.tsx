@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import FAQ from "@/app/components/FAQ";
+import { FAQ_CONSULTATION } from "@/lib/content/faq";
 import { Section, Container, Kicker, Accent } from "@/app/components/ui";
 import { PageHero, PageCTA } from "@/app/components/PageShell";
 import ServiceCard from "@/app/components/visual/ServiceCard";
@@ -19,7 +21,7 @@ import { Reveal, Stagger, StaggerItem } from "@/lib/motion";
    ══════════════════════════════════════════════════════════════ */
 
 export const metadata: Metadata = {
-  title: "AI Consultation and Roadmaps",
+  title: "AI Consultation: Where Autonomy Belongs",
   description:
     "A four-week consultation that maps your estate, ranks where autonomy belongs, designs the governance and ends in a roadmap you could hand to another partner.",
 };
@@ -155,6 +157,8 @@ export default function ConsultationPage() {
           </Stagger>
         </Container>
       </Section>
+
+      <FAQ items={FAQ_CONSULTATION} />
 
       <PageCTA
         title="Start with the estate"

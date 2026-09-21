@@ -213,7 +213,12 @@ export function MaskText({
   return (
     <Tag className={className}>
       {lines.map((line, i) => (
+        /* The " " before each line after the first: the lines are
+           block spans, so they break visually on their own, but in
+           the text a crawler or screen reader reads they would run
+           together — "AI systems thatrun the work". */
         <span key={i} className="block overflow-hidden pb-[0.12em]">
+          {i > 0 && <span className="sr-only"> </span>}
           {reduced ? (
             <span className="block">{line}</span>
           ) : (

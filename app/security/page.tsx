@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalShell } from "@/app/components/LegalShell";
 
 export const metadata: Metadata = {
-  title: "Responsible Disclosure Policy",
+  title: "Responsible Disclosure of Security Issues",
   description:
     "How to report a security vulnerability in Nexxovate's website or products.",
 };
@@ -52,9 +52,22 @@ export default function SecurityPage() {
       {/* NOTE FOR NEXXOVATE — remove this paragraph once the address
           exists. A disclosure page whose only route is a marketing
           contact form is a disclosure page researchers will skip. */}
+      <h2>In scope</h2>
+      <ul>
+        <li>This website, nexxovate.com, and its subdomains.</li>
+        <li>
+          The Nexyra products, including the website auditor at
+          audit.nexxovate.com.
+        </li>
+      </ul>
+      <h2>Where to send it</h2>
       <p>
-        A dedicated security address is being set up. Until then, please use the
-        contact form and mark your message <strong>Security</strong>.
+        Email <a href="mailto:info@nexxovate.com?subject=Security">info@nexxovate.com</a>{" "}
+        with <strong>Security</strong> in the subject line, or use the contact
+        form and mark your message the same way. A machine-readable version of
+        this policy is published at{" "}
+        <a href="/.well-known/security.txt">/.well-known/security.txt</a>, so
+        security tools can find the right contact automatically.
       </p>
     </LegalShell>
   );

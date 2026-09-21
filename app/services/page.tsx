@@ -39,7 +39,7 @@ import { Reveal, Stagger, StaggerItem } from "@/lib/motion";
    ══════════════════════════════════════════════════════════════ */
 
 export const metadata: Metadata = {
-  title: "Enterprise IT and AI Services",
+  title: "Enterprise Services for the Intelligent Era",
   description:
     "Enterprise IT and managed infrastructure, AI and intelligent automation, cybersecurity, digital transformation, talent and training from Nexxovate.",
 };
@@ -65,7 +65,7 @@ export default function ServicesPage() {
               <Kicker>What we do</Kicker>
               <h2 className="font-display mt-6 text-[length:var(--text-h2)] font-semibold">
                 Six capabilities,
-                <br />
+                {" "}<br />
                 <Accent>one delivery standard</Accent>
               </h2>
             </Reveal>

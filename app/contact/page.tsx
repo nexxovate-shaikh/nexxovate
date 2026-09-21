@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import FAQ from "@/app/components/FAQ";
+import { FAQ_CONTACT } from "@/lib/content/faq";
 import Link from "next/link";
 import { Section, Container, Kicker, Accent, StatusDot } from "@/app/components/ui";
 import { PageHero } from "@/app/components/PageShell";
@@ -41,7 +43,7 @@ import EnquiryForm from "@/app/components/home/EnquiryForm";
    ══════════════════════════════════════════════════════════════ */
 
 export const metadata: Metadata = {
-  title: "Contact Nexxovate Experts",
+  title: "Contact Us: Tell Us What Is Slow or Manual",
   description:
     "Tell us what is slow, manual or fragile. Enterprise enquiries are read by the people who scope the work, not by a sales queue.",
 };
@@ -213,6 +215,8 @@ export default function ContactPage() {
           </Stagger>
         </Container>
       </Section>
+
+      <FAQ items={FAQ_CONTACT} title="Before you" accent="write to us" />
     </>
   );
 }
