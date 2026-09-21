@@ -450,7 +450,7 @@ function StatsStrip() {
 
 function Capabilities() {
   return (
-    <Section zone="ai" band="light">
+    <Section zone="ai" band="light" className="ground-sheen">
       <Container>
         <div className="mb-8 grid gap-8 md:mb-10 md:grid-cols-2 md:items-end">
           <Reveal>
@@ -558,7 +558,7 @@ function Capabilities() {
 
 function Problems() {
   return (
-    <Section zone="ai" band="deep">
+    <Section zone="ai" band="deep" className="ground-aurora">
       <Container>
         <div className="mb-8 grid gap-8 md:mb-10 md:grid-cols-2 md:items-end">
           <Reveal>
@@ -658,7 +658,7 @@ const BENTO = ["lg:col-span-3", "lg:col-span-2", "lg:col-span-2", "lg:col-span-3
 
 function NexyraShowcase() {
   return (
-    <Section zone="ai" band="deep">
+    <Section zone="ai" band="deep" className="ground-grid">
       <Container>
         <div className="mb-9 grid gap-8 md:mb-11 md:grid-cols-2 md:items-end">
           <Reveal>
@@ -805,7 +805,7 @@ function ProductivityRow() {
 
 function ServicesGrid() {
   return (
-    <Section zone="security" band="light">
+    <Section zone="security" band="light" className="ground-grid">
       <Container>
         <div className="mb-9 grid gap-10 md:mb-10 md:grid-cols-2 md:items-end">
           <Reveal>
@@ -1246,7 +1246,7 @@ function TechStrip({ first = false }: { first?: boolean }) {
 
 function Careers() {
   return (
-    <Section zone="security" band="dark">
+    <Section zone="security" band="dark" className="ground-dust">
       <Container>
         <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
           <Reveal>

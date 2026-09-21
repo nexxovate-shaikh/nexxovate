@@ -1,34 +1,25 @@
-/* ══════════════════════════════════════════════════════════════
-   robots.txt, served from a plain route handler.
+import { SITE_URL } from "@/lib/site-url";
 
-   This replaces app/robots.tsx (now deleted), which used Next's
-   metadata convention. That convention routes the file through
-   next-metadata-route-loader, which writes the project's absolute
-   path into a single-quoted JS string. This project lives under
+/* robots.txt, served from a plain route handler rather than the
+   metadata convention (see the note in app/sitemap.ts on why that
+   convention breaks under a path containing an apostrophe).
 
-     C:\Users\Shaikh's PC\nexxovate
+   The Sitemap line used to read https://nexxovate.in/sitemap.xml —
+   the wrong domain — which is why the audit found no sitemap URLs
+   belonging to nexxovate.com. It now comes from SITE_URL.
 
-   and the apostrophe in that path closes the string early, so the
-   generated module fails to parse:
-
-     Module parse failed: Unexpected token (11:69)
-
-   In dev that is not a quiet failure — the broken module is in the
-   compile graph, so every route on the site returned 500, not just
-   this one.
-
-   A route handler never touches that loader, so it is immune. The
-   rules below are byte-for-byte what app/robots.tsx returned.
-   ══════════════════════════════════════════════════════════════ */
-
-const BASE = "https://nexxovate.in";
-
+   /admin, /api, /client and /platform are application surfaces, not
+   pages anyone should land on from a search result. */
 export function GET() {
   const body = [
     "User-agent: *",
     "Allow: /",
+    "Disallow: /admin",
+    "Disallow: /api/",
+    "Disallow: /client",
+    "Disallow: /platform",
     "",
-    `Sitemap: ${BASE}/sitemap.xml`,
+    `Sitemap: ${SITE_URL}/sitemap.xml`,
     "",
   ].join("\n");
 

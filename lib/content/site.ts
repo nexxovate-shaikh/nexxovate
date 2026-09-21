@@ -28,6 +28,8 @@
  * the concierge without pulling the whole chat bundle into its own
  * import graph.
  */
+import { AUDITOR_URL } from "@/lib/site-url";
+
 export const OPEN_CHAT_EVENT = "nexyra:open-chat";
 
 /* ── Navigation ─────────────────────────────────────────────── */
@@ -75,7 +77,7 @@ export const NAV: NavItem[] = [
           },
           {
             label: "Website Auditor",
-            href: "/nexyra#auditor-detail",
+            href: AUDITOR_URL,
             note: "Performance and security auditing",
           },
           {
@@ -168,7 +170,7 @@ export const FOOTER_GROUPS = [
       { label: "Overview", href: "/nexyra" },
       { label: "Network Monitoring", href: "/nexyra#monitoring-detail" },
       { label: "AI Service Desk Agent", href: "/nexyra#service-desk-detail" },
-      { label: "Website Auditor", href: "/nexyra#auditor-detail" },
+      { label: "Website Auditor", href: AUDITOR_URL },
       { label: "Nexyra Chat", href: "/nexyra#chat-detail" },
     ],
   },
@@ -303,6 +305,13 @@ export type NexyraProduct = {
   desc: string;
   points: string[];
   shot?: ProductShot;
+  /**
+   * A product that is live and self-serve. The /nexyra block leads
+   * with this as its primary action instead of "talk to us" — someone
+   * who can try the product in ten seconds should not be asked to
+   * book a call first.
+   */
+  live?: { href: string; label: string };
 };
 
 export const NEXYRA_PRODUCTS: NexyraProduct[] = [
@@ -348,6 +357,7 @@ export const NEXYRA_PRODUCTS: NexyraProduct[] = [
   {
     id: "auditor",
     name: "Website Auditor",
+    live: { href: AUDITOR_URL, label: "Run a free audit" },
     shot: {
       src: "/images/product/auditor.jpg",
       width: 2800,
@@ -358,7 +368,7 @@ export const NEXYRA_PRODUCTS: NexyraProduct[] = [
       caption:
         "Ranked by business impact, not scanner severity — which is why a slow checkout outranks a missing header, and the top row is the one worth doing first.",
     },
-    href: "/nexyra#auditor-detail",
+    href: AUDITOR_URL,
     tag: "Performance and security",
     line: "Every weakness, ranked by what it costs you.",
     desc: "Crawls a property end to end and returns performance, accessibility, SEO and security findings ordered by business impact rather than by scanner severity — so the first thing on the list is the first thing worth fixing.",
@@ -420,7 +430,7 @@ export const PROBLEMS = [
     response:
       "Continuous auditing tracks performance, accessibility and security against a threshold, and reports the drift while it is still cheap to reverse.",
     product: "Nexyra Website Auditor",
-    href: "/nexyra#auditor-detail",
+    href: AUDITOR_URL,
     image: "/images/prob-3.jpg",
   },
   {
@@ -517,34 +527,76 @@ export const TESTIMONIALS = [
 
 /* ── Services — carried over ────────────────────────────────── */
 
-export const SERVICES = [
+/**
+ * `panel` is a designed interface panel, not a photograph.
+ *
+ * The previous services imagery was stock AI art — a glowing hand on
+ * a circuit board, a server corridor, a purple padlock — with scanline
+ * overlays and a curved "portal" frame. None of it said anything about
+ * what the service produces, and all of it was the kind of image a
+ * reader has already seen on a hundred other IT sites.
+ *
+ * Each panel instead shows the OUTPUT of the service, in the site's
+ * own palette and typefaces (Archivo, Inter Tight, JetBrains Mono),
+ * rendered at 2x. Each carries exactly one champagne element — the
+ * thing that matters — which is the rule the rest of the site follows.
+ * The figures in them are illustrative, and the panels are labelled
+ * as such on the page.
+ */
+export type Service = {
+  title: string;
+  img: string;
+  desc: string;
+  panel?: string;
+  panelAlt?: string;
+};
+
+export const SERVICES: Service[] = [
   {
     title: "IT & Managed Infrastructure",
+    panel: "/images/services/infra.jpg",
+    panelAlt:
+      "Estate availability across three regions, with one change in flight highlighted against thirty days of uptime.",
     img: "/images/cloud.jpg",
     desc: "Modern cloud infrastructure, platform reliability and scalable technology operations.",
   },
   {
     title: "AI & Intelligent Automation",
+    panel: "/images/services/ai.jpg",
+    panelAlt:
+      "A five-step agent loop — trigger, understand, retrieve, act, verify — with the act step highlighted as running inside declared authority.",
     img: "/images/ai.jpg",
     desc: "AI assistants, workflow automation and intelligent systems that eliminate manual work.",
   },
   {
     title: "Cybersecurity & Risk Protection",
+    panel: "/images/services/security.jpg",
+    panelAlt:
+      "A containment timeline from detection at zero seconds to a verified known-good state at forty-seven seconds, with the containment step highlighted.",
     img: "/images/cyber.jpg",
     desc: "Advanced threat protection, governance frameworks and resilient security architecture.",
   },
   {
     title: "Digital Transformation",
+    panel: "/images/services/transformation.jpg",
+    panelAlt:
+      "Before and after: a monolithic ERP, nightly batch jobs and email approvals replaced by composable services, event-driven sync and policy-based approvals, with migration at sixty-eight per cent.",
     img: "/images/office.jpg",
     desc: "Modernizing business platforms and operations using cloud-native technologies.",
   },
   {
     title: "Technology Talent Solutions",
+    panel: "/images/services/talent.jpg",
+    panelAlt:
+      "Four engineering roles — platform, machine learning, security architecture and site reliability — each with its skills, and the security architect highlighted as starting next.",
     img: "/images/team.jpg",
     desc: "High-impact engineering talent and specialized technical teams for critical initiatives.",
   },
   {
     title: "Training & Capability Development",
+    panel: "/images/services/training.jpg",
+    panelAlt:
+      "A four-module certification path with completion rings, the secure-delivery module in progress, and cohort completion at eighty-two per cent.",
     img: "/images/training.jpg",
     desc: "Upskilling teams with modern technology, AI and cloud engineering practices.",
   },
@@ -821,6 +873,7 @@ export const LEGAL: { label: string; href: string }[] = [
   { label: "Accessibility", href: "/accessibility" },
   { label: "Privacy", href: "/privacy" },
   { label: "AI policy", href: "/ai-policy" },
+  { label: "Terms", href: "/terms" },
   { label: "Responsible disclosure", href: "/security" },
   { label: "Sitemap", href: "/sitemap.xml" },
 ];

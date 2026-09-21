@@ -1,167 +1,169 @@
 import type { Metadata } from "next";
-
-import PageHero from "../components/site/PageHero";
-import CTASection from "../components/site/CTASection";
+import { Section, Container, Kicker, Accent } from "@/app/components/ui";
 import {
-  IndexList,
-  Pillars,
-  QuoteBand,
-  SplitFeature,
-  StatRow,
-} from "../components/site/blocks";
+  PageHero,
+  SectionHead,
+  OfferGrid,
+  ProofList,
+  PageCTA,
+} from "@/app/components/PageShell";
+import ServiceCard from "@/app/components/visual/ServiceCard";
+import { SERVICE_OFFERS, SERVICE_PROOF } from "@/lib/content/pages";
+import { SERVICES, PROCESS_STEPS } from "@/lib/content/site";
+import { Reveal, Stagger, StaggerItem } from "@/lib/motion";
+
+/* ══════════════════════════════════════════════════════════════
+   SERVICES.
+
+   What was here: the other rebuild's page, running a WebGL
+   "WorldSequence" per service — a curved portal frame around stock
+   AI imagery with a scanline overlay. It was the page that lagged
+   on scroll, and the images were the ones you said you disliked.
+
+   What is here: this site's own system, no WebGL, and the six
+   services as premium framed cards — the same construction as the
+   product frames on /nexyra — each leading with a panel that shows
+   what the service PRODUCES rather than decorating it.
+
+   Every section has its own ground, so the page never reads as the
+   same dark rectangle repeated:
+
+     hero            the page hero's own image
+     services        .ground-dust    — the glitter, at the edges
+     process         .ground-grid    — structure, for a sequence
+     why us          .ground-aurora  — warmth behind the argument
+     portfolio       .ground-sheen   — a slow travelling highlight
+
+   Nothing was removed: the portfolio, the proof list and the
+   four-step process are all still here, re-grounded.
+   ══════════════════════════════════════════════════════════════ */
 
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Nexxovate enterprise services: AI and intelligent automation, cloud and infrastructure, cybersecurity and risk, digital transformation, managed services, talent and capability building.",
-  alternates: { canonical: "/services" },
+    "Enterprise IT and managed infrastructure, AI and intelligent automation, cybersecurity, digital transformation, talent and training from Nexxovate.",
 };
 
 export default function ServicesPage() {
   return (
     <>
       <PageHero
-        eyebrow="Enterprise services"
-        title="Capability, engineered"
-        accent="for autonomy."
-        state="activation"
-        lede="Six practices that compound. Each one is useful on its own; together they are how an estate climbs from monitored to self-governing without ever taking a step it cannot reverse."
-        primary={{ href: "/contact", label: "Let's build the future" }}
-        secondary={{ href: "/ams", label: "Explore AMS" }}
+        kicker="Enterprise technology services"
+        lines={[<>Enterprise services</>, <Accent>for the intelligent era</Accent>]}
+        intro="From IT modernisation to AI-powered transformation, Nexxovate delivers the infrastructure, intelligence and security that enterprise operations depend on."
+        image="/images/services-hero.jpg"
+        alt="Enterprise services"
+        cta="/contact"
+        ctaLabel="Scope an engagement"
       />
 
-      <StatRow
-        items={[
-          { value: "7.6+", label: "Years of enterprise delivery" },
-          { value: "24/7", label: "Operational readiness" },
-          { value: "Security", label: "First by architecture" },
-          { value: "Measured", label: "At every stage" },
-        ]}
-      />
+      {/* ── The six services ── */}
+      <Section band="deep" zone="ai" className="ground-dust">
+        <Container>
+          <div className="mb-12 grid gap-8 md:mb-16 md:grid-cols-2 md:items-end">
+            <Reveal>
+              <Kicker>What we do</Kicker>
+              <h2 className="font-display mt-6 text-[length:var(--text-h2)] font-semibold">
+                Six capabilities,
+                <br />
+                <Accent>one delivery standard</Accent>
+              </h2>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p className="text-[length:var(--text-lead)] leading-relaxed text-mute md:ml-auto md:max-w-md md:text-right">
+                Each panel shows what the work produces — the dashboard,
+                the timeline, the team — not a picture of a server room.
+              </p>
+            </Reveal>
+          </div>
 
-      <SplitFeature
-        id="ai"
-        eyebrow="AI & Intelligent Automation"
-        heading="From copilots to closed loops."
-        body="Most AI programmes stall at the assistant — useful, but still waiting on a person. The work that changes an operating cost is the next step: giving a system the authority, the evidence and the execution path to finish the job itself."
-        points={[
-          "Reasoning agents with scoped authority and designed escalation",
-          "Governed memory and a queryable knowledge estate",
-          "Deterministic workflows agents invoke rather than improvise",
-          "Every autonomous decision attributable and replayable",
-        ]}
-        media={{ poster: "/images/ai.jpg", video: "/videos/ai.mp4", caption: "Reasoning, authority, execution — governed as one." }}
-        href={{ label: "Explore Nexyra OS", url: "/nexyra/os" }}
-        accent="#4d7cff"
-        tone="ink"
-      />
+          {/* Two columns, not three: at three the panels drop to about
+              400px wide and their type becomes decoration. At two they
+              stay readable, which is the whole reason they are there. */}
+          <Stagger className="grid gap-8 md:gap-10 lg:grid-cols-2">
+            {SERVICES.map((svc, i) =>
+              svc.panel ? (
+                <StaggerItem key={svc.title}>
+                  <ServiceCard
+                    index={i}
+                    title={svc.title}
+                    desc={svc.desc}
+                    panel={svc.panel}
+                    panelAlt={svc.panelAlt ?? ""}
+                  />
+                </StaggerItem>
+              ) : null
+            )}
+          </Stagger>
 
-      <SplitFeature
-        id="cloud"
-        eyebrow="Cloud & Infrastructure"
-        heading="Global estate, orchestrated as one."
-        body="Regions, providers and generations of technology, presented and operated as a single intelligent system — where placement, capacity and cost become decisions the platform makes continuously rather than decisions a change board makes quarterly."
-        points={[
-          "Every region, provider and legacy footprint mapped as one surface",
-          "Data movement placed where latency and cost actually demand",
-          "Capacity and posture tuned without waiting for a change window",
-          "Observability designed in, not retrofitted after the first outage",
-        ]}
-        media={{ poster: "/images/cloud.jpg", video: "/videos/cloud.mp4", caption: "One fabric across regions and providers." }}
-        flip
-        accent="#39d0d8"
-      />
+          <p className="mt-10 text-[13px] text-faint">
+            Panels are illustrative of each service&apos;s output; figures
+            shown are examples, not client results.
+          </p>
+        </Container>
+      </Section>
 
-      <SplitFeature
-        id="security"
-        eyebrow="Cybersecurity & Risk"
-        heading="Contain it before it becomes an incident."
-        body="A threat surfaces. The system detects the deviation, intelligence establishes the blast radius, controls engage across identity, network and endpoint, the threat is isolated, and the environment returns to a verified good state — in seconds, not across a shift handover."
-        points={[
-          "Behavioural baselines that understand your estate, not a generic one",
-          "Blast radius and lineage established before containment decisions",
-          "Controls engaged automatically inside a declared authority boundary",
-          "Continuous assurance rather than an annual attestation",
-        ]}
-        media={{ poster: "/images/cyber.jpg", video: "/videos/security.mp4", caption: "Detect, analyse, isolate, stabilise." }}
-        accent="#b451d8"
-        tone="ink"
-      />
+      {/* ── How we work ── */}
+      <Section band="light" zone="transformation" className="ground-grid">
+        <Container>
+          <Reveal className="mb-9 max-w-2xl md:mb-11">
+            <Kicker>The process</Kicker>
+            <h2 className="font-display mt-6 text-[length:var(--text-h2)] font-semibold">
+              How Nexxovate works
+            </h2>
+          </Reveal>
 
-      <SplitFeature
-        id="transformation"
-        eyebrow="Digital Transformation"
-        heading="From fragmented to self-governing."
-        body="Transformation is a sequence, not a programme launch. Fragmented systems become connected systems; connected systems become intelligent ones; intelligent systems become an enterprise that runs and governs itself. Each horizon is measured before the next begins."
-        points={[
-          "Integration first, so there is a single operational truth to reason from",
-          "Prediction and recommendation placed inside existing workflows",
-          "Bounded classes of work handed to closed-loop autonomy",
-          "Every horizon reversible, every step measured",
-        ]}
-        media={{ poster: "/images/office.jpg", video: "/videos/transformation.mp4", caption: "Fragmented → connected → intelligent → autonomous." }}
-        flip
-        accent="#e2c188"
-      />
+          <Stagger className="grid gap-px overflow-hidden rounded-[16px] border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+            {PROCESS_STEPS.map((step, i) => (
+              <StaggerItem key={step.title} className="bg-ink">
+                <div className="flex h-full flex-col p-7 md:p-8">
+                  <span className="font-mono-label tabular-nums text-[color:var(--color-champagne)]">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="font-display mt-5 text-[length:var(--text-h4)] font-semibold">
+                    {step.title}
+                  </h3>
+                  <p className="mt-3 flex-1 text-[14.6px] leading-relaxed text-mute">
+                    {step.desc}
+                  </p>
+                </div>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </Container>
+      </Section>
 
-      <QuoteBand
-        quote="The distance between automated and autonomous is where the operating cost still lives."
-        attribution="Nexxovate"
-      />
+      <Section band="deep" zone="security" className="ground-aurora">
+        <Container>
+          <ProofList
+            kicker="Why Nexxovate"
+            title="Why enterprises"
+            accent="choose us"
+            points={SERVICE_PROOF}
+            image="/images/office.jpg"
+            alt="Enterprise delivery"
+          />
+        </Container>
+      </Section>
 
-      <IndexList
-        eyebrow="Also delivered"
-        heading="The practices that make the rest possible."
-        intro="Autonomous systems still need people who can govern them, and organisations that can absorb the change."
-        rows={[
-          {
-            title: "Autonomous Managed Services",
-            body: "Closed-loop operations from signal to resolution, with authority, evidence and rollback declared up front.",
-            href: "/ams",
-            meta: "Flagship",
-          },
-          {
-            title: "Talent Solutions",
-            body: "Contract, contract-to-hire, permanent and dedicated offshore teams — engineering capability at enterprise scale.",
-            href: "/staffing",
-          },
-          {
-            title: "Capability & Training",
-            body: "Structured programmes that build the engineering and operational capability to run intelligent systems responsibly.",
-            href: "/training",
-          },
-          {
-            title: "Consulting & Advisory",
-            body: "Where autonomy is safe to introduce first, what it should be measured against, and what must stay in human hands.",
-            href: "/ai-consultation",
-          },
-        ]}
-      />
+      <Section band="dark" zone="ai" className="ground-sheen">
+        <Container>
+          <SectionHead
+            kicker="Engagement models"
+            title="How we"
+            accent="engage"
+            intro="Enterprise-grade delivery models designed for scale and complexity."
+          />
+          <OfferGrid offers={SERVICE_OFFERS} />
+        </Container>
+      </Section>
 
-      <Pillars
-        eyebrow="How we deliver"
-        heading="Why enterprises keep us after the first programme."
-        items={[
-          {
-            title: "Governance up front",
-            body: "Authority boundaries, escalation paths and measurement are agreed before anything is automated — not documented afterwards.",
-          },
-          {
-            title: "Ownership, not resourcing",
-            body: "We take outcomes, not headcount lines. The delivery model has a name against every commitment.",
-          },
-          {
-            title: "Security by architecture",
-            body: "Access is a governed capability at the connector, never a shared credential in a runbook.",
-          },
-          {
-            title: "Reversible by default",
-            body: "Every change carries its rollback. The worst case is a reversal and an escalation, never a surprise.",
-          },
-        ]}
+      <PageCTA
+        title="Let us design your"
+        accent="transformation roadmap"
+        intro="Engage with Nexxovate experts to modernise, secure and scale your organisation."
+        label="Talk to our experts"
       />
-
-      <CTASection />
     </>
   );
 }

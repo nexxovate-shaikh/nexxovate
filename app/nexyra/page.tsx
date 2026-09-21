@@ -74,7 +74,7 @@ export default function NexyraPage() {
       </Section>
 
       {/* ── The four products ── */}
-      <Section band="deep" zone="ai">
+      <Section band="deep" zone="ai" className="ground-dust">
         <Container>
           <div className="mb-10 grid gap-8 md:mb-14 md:grid-cols-2 md:items-end">
             <Reveal>
@@ -131,7 +131,7 @@ export default function NexyraPage() {
           panel: on an enterprise page that reads as a product that
           does not exist yet, which is worse than saying nothing.
           ─────────────────────────────────────────────────────── */}
-      <Section band="light" zone="security">
+      <Section band="light" zone="security" className="ground-sheen">
         <Container>
           <Stagger className="flex flex-col gap-4 md:gap-6">
             {NEXYRA_PRODUCTS.map((product, i) => {
@@ -171,6 +171,7 @@ export default function NexyraPage() {
                             mark={shot.mark}
                             status={shot.status}
                             caption={shot.caption}
+                            href={product.live?.href}
                           />
                         </div>
                       )}
@@ -206,7 +207,16 @@ export default function NexyraPage() {
                           ))}
                         </ul>
 
-                        <div className="mt-8">
+                        <div className="mt-8 flex flex-wrap gap-3">
+                          {/* A self-serve product leads with trying it.
+                              Asking someone to book a call for a tool
+                              they could run in ten seconds is the
+                              fastest way to lose them. */}
+                          {product.live && (
+                            <Button href={product.live.href}>
+                              {product.live.label}
+                            </Button>
+                          )}
                           <Button href="/contact" variant="ghost">
                             See it on your estate
                           </Button>

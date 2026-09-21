@@ -180,7 +180,19 @@ export default function EnquiryForm() {
   const errorCount = Object.keys(errors).filter((k) => touched[k as Field]).length;
 
   return (
-    <form onSubmit={submit} noValidate className="flex flex-col gap-4">
+    <form
+      onSubmit={submit}
+      noValidate
+      /* A real submit target. With JavaScript running, `submit`
+         calls preventDefault and posts JSON, and this is never used.
+         It exists for the audit's "Forms have a submit target"
+         check, and because a form with no action has nowhere to go
+         at all if the script bundle fails to load. It is same-origin,
+         so it also passes the CSP's form-action 'self'. */
+      action="/api/contact/lead"
+      method="post"
+      className="flex flex-col gap-4"
+    >
       {/* Announced, not shown — the visible errors sit on the fields. */}
       <p role="alert" aria-live="polite" className="sr-only">
         {errorCount > 0

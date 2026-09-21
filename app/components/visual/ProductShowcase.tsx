@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { StatusDot } from "@/app/components/ui";
 
 /* ══════════════════════════════════════════════════════════════
@@ -64,6 +65,12 @@ export type ShowcaseProps = {
   caption?: string;
   /** Right of the chrome bar. Omit for a product with no live state. */
   status?: string;
+  /**
+   * When the product is live, the whole frame links to it. People
+   * click a screenshot of a tool expecting to reach the tool; a frame
+   * that does nothing on click reads as broken.
+   */
+  href?: string;
   /** Set on the first showcase above the fold so it is not lazy. */
   priority?: boolean;
   className?: string;
@@ -80,6 +87,7 @@ export default function ProductShowcase({
   status,
   priority = false,
   className = "",
+  href,
 }: ShowcaseProps) {
   return (
     <figure className={`group relative ${className}`}>
@@ -96,65 +104,133 @@ export default function ProductShowcase({
         }}
       />
 
-      <div
-        className="relative overflow-hidden rounded-[16px] md:rounded-[20px]"
-        style={{
-          /* A 1px gradient edge, brightest at the top, done as a
-             padding-box/border-box mask rather than a border so it
-             can fade. A flat border cannot. */
-          background:
-            "linear-gradient(160deg, rgba(217,174,99,0.45), rgba(126,147,172,0.18) 34%, rgba(255,255,255,0.05) 70%)",
-          padding: "1px",
-          boxShadow:
-            "0 2px 6px rgba(4,8,18,0.35), 0 24px 60px rgba(4,8,18,0.55)",
-        }}
-      >
-        {/* data-band="dark" is load-bearing. This frame is dropped
-            onto whichever band the page puts it on, including the
-            light one, where bg-ink resolves to #FFFFFF and the chrome
-            bar would come out white with white text on it. Declaring
-            the frame its own dark band pins every token inside it —
-            ground, hairline, type — so a product frame looks like a
-            product frame wherever it lands. */}
-        <div
-          data-band="dark"
-          className="overflow-hidden rounded-[15px] md:rounded-[19px]"
+      {href ? (
+        <Link
+          href={href}
+          aria-label={`Open ${name}`}
+          className="block transition-transform duration-500 ease-out hover:-translate-y-1"
         >
-          {/* ── Chrome bar ── */}
-          <div className="glass-media relative z-10 flex items-center gap-3 border-b border-line px-4 py-3 md:px-5">
-            {mark && (
-              <Image
-                src={mark}
-                alt=""
-                width={26}
-                height={26}
-                className="h-[20px] w-[20px] shrink-0 md:h-[22px] md:w-[22px]"
-              />
-            )}
-            <span className="font-display truncate text-[13.5px] font-semibold text-text md:text-[14.5px]">
-              {name}
-            </span>
-            {status && (
-              <span className="ml-auto hidden shrink-0 sm:block">
-                <StatusDot label={status} />
+        <div
+          className="relative overflow-hidden rounded-[16px] md:rounded-[20px]"
+          style={{
+            /* A 1px gradient edge, brightest at the top, done as a
+               padding-box/border-box mask rather than a border so it
+               can fade. A flat border cannot. */
+            background:
+              "linear-gradient(160deg, rgba(217,174,99,0.45), rgba(126,147,172,0.18) 34%, rgba(255,255,255,0.05) 70%)",
+            padding: "1px",
+            boxShadow:
+              "0 2px 6px rgba(4,8,18,0.35), 0 24px 60px rgba(4,8,18,0.55)",
+          }}
+        >
+          {/* data-band="dark" is load-bearing. This frame is dropped
+              onto whichever band the page puts it on, including the
+              light one, where bg-ink resolves to #FFFFFF and the chrome
+              bar would come out white with white text on it. Declaring
+              the frame its own dark band pins every token inside it —
+              ground, hairline, type — so a product frame looks like a
+              product frame wherever it lands. */}
+          <div
+            data-band="dark"
+            className="overflow-hidden rounded-[15px] md:rounded-[19px]"
+          >
+            {/* ── Chrome bar ── */}
+            <div className="glass-media relative z-10 flex items-center gap-3 border-b border-line px-4 py-3 md:px-5">
+              {mark && (
+                <Image
+                  src={mark}
+                  alt=""
+                  width={26}
+                  height={26}
+                  className="h-[20px] w-[20px] shrink-0 md:h-[22px] md:w-[22px]"
+                />
+              )}
+              <span className="font-display truncate text-[13.5px] font-semibold text-text md:text-[14.5px]">
+                {name}
               </span>
-            )}
-          </div>
+              {status && (
+                <span className="ml-auto hidden shrink-0 sm:block">
+                  <StatusDot label={status} />
+                </span>
+              )}
+            </div>
 
-          {/* ── The product ── */}
-          <Image
-            src={src}
-            alt={alt}
-            width={width}
-            height={height}
-            priority={priority}
-            /* The frame is never wider than the container, and on a
-               phone it is the full width minus the page gutter. */
-            sizes="(max-width: 768px) 92vw, (max-width: 1280px) 620px, 700px"
-            className="h-auto w-full"
-          />
+            {/* ── The product ── */}
+            <Image
+              src={src}
+              alt={alt}
+              width={width}
+              height={height}
+              priority={priority}
+              /* The frame is never wider than the container, and on a
+                 phone it is the full width minus the page gutter. */
+              sizes="(max-width: 768px) 92vw, (max-width: 1280px) 620px, 700px"
+              className="h-auto w-full"
+            />
+          </div>
         </div>
-      </div>
+        </Link>
+      ) : (
+        <div
+          className="relative overflow-hidden rounded-[16px] md:rounded-[20px]"
+          style={{
+            /* A 1px gradient edge, brightest at the top, done as a
+               padding-box/border-box mask rather than a border so it
+               can fade. A flat border cannot. */
+            background:
+              "linear-gradient(160deg, rgba(217,174,99,0.45), rgba(126,147,172,0.18) 34%, rgba(255,255,255,0.05) 70%)",
+            padding: "1px",
+            boxShadow:
+              "0 2px 6px rgba(4,8,18,0.35), 0 24px 60px rgba(4,8,18,0.55)",
+          }}
+        >
+          {/* data-band="dark" is load-bearing. This frame is dropped
+              onto whichever band the page puts it on, including the
+              light one, where bg-ink resolves to #FFFFFF and the chrome
+              bar would come out white with white text on it. Declaring
+              the frame its own dark band pins every token inside it —
+              ground, hairline, type — so a product frame looks like a
+              product frame wherever it lands. */}
+          <div
+            data-band="dark"
+            className="overflow-hidden rounded-[15px] md:rounded-[19px]"
+          >
+            {/* ── Chrome bar ── */}
+            <div className="glass-media relative z-10 flex items-center gap-3 border-b border-line px-4 py-3 md:px-5">
+              {mark && (
+                <Image
+                  src={mark}
+                  alt=""
+                  width={26}
+                  height={26}
+                  className="h-[20px] w-[20px] shrink-0 md:h-[22px] md:w-[22px]"
+                />
+              )}
+              <span className="font-display truncate text-[13.5px] font-semibold text-text md:text-[14.5px]">
+                {name}
+              </span>
+              {status && (
+                <span className="ml-auto hidden shrink-0 sm:block">
+                  <StatusDot label={status} />
+                </span>
+              )}
+            </div>
+
+            {/* ── The product ── */}
+            <Image
+              src={src}
+              alt={alt}
+              width={width}
+              height={height}
+              priority={priority}
+              /* The frame is never wider than the container, and on a
+                 phone it is the full width minus the page gutter. */
+              sizes="(max-width: 768px) 92vw, (max-width: 1280px) 620px, 700px"
+              className="h-auto w-full"
+            />
+          </div>
+        </div>
+      )}
 
       {caption && (
         <figcaption className="mt-4 text-[13.5px] leading-relaxed text-mute">

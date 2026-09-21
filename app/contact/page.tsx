@@ -97,7 +97,7 @@ export default function ContactPage() {
       />
 
       {/* ── The form ── */}
-      <Section band="deep" zone="transformation">
+      <Section band="deep" zone="transformation" className="ground-aurora">
         <Container>
           <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
             {/* THE PLATE. The form's ground is one step lighter than
@@ -176,7 +176,7 @@ export default function ContactPage() {
           For the visitor who is not ready to type anything. Without
           this the page is a dead end for everyone who is still
           deciding, which is most of the people who reach it. */}
-      <Section band="light" zone="transformation">
+      <Section band="light" zone="transformation" className="ground-grid">
         <Container>
           <Reveal>
             <Kicker>Not ready to write yet</Kicker>
